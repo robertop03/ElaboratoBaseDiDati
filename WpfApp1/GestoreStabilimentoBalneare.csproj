@@ -115,6 +115,15 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="resources\table_icon.png" />
+    <Resource Include="resources\umbrella_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="view\umbrella_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="model\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -6,8 +6,12 @@
         xmlns:local="clr-namespace:WpfApp1.view"
         mc:Ignorable="d"
         x:Name="wndRistorante"
-        Title="Ristorante" Height="450" Width="800">
-    <Grid>
-        
+        Title="Ristorante" Height="500" Width="900" ResizeMode="NoResize">
+    <Grid Background="Beige">
+        <Canvas Name="salaCanvas" Background="Tan"  Margin="0,20,0,49" MouseRightButtonDown="salaCanvas_MouseRightButtonDown">
+        </Canvas>
+        <Label x:Name="lblNumeroTavoli" Content="Tavoli in sala: " HorizontalAlignment="Left" Margin="10,426,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="btnRimuoviTavolo" Content="Rimuovi tavolo" HorizontalAlignment="Left" Margin="708,422,0,0" Width="137" Height="35" VerticalAlignment="Top"/>
+        <Button x:Name="btnPrenotaTavolo" Content="Prenota" HorizontalAlignment="Left" Margin="556,422,0,0" Width="137" Height="35" VerticalAlignment="Top"/>
     </Grid>
 </Window>

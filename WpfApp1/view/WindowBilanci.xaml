@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfApp1.view"
         mc:Ignorable="d"
         x:Name="wndBilanci"
-        Title="Bilanci" Height="450" Width="800">
+        Title="Bilanci" Height="500" Width="900" ResizeMode="NoResize">
     <Grid>
         
     </Grid>
