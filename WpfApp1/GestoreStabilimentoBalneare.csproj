@@ -62,6 +62,9 @@
     <Compile Include="model\impl\AbstractOggettoPrenotabile.cs" />
     <Compile Include="model\impl\Ombrellone.cs" />
     <Compile Include="model\impl\Tavolo.cs" />
+    <Compile Include="view\SelectSeatsDialog.xaml.cs">
+      <DependentUpon>SelectSeatsDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="view\WindowBilanci.xaml.cs">
       <DependentUpon>WindowBilanci.xaml</DependentUpon>
     </Compile>
@@ -83,6 +86,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="view\SelectSeatsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="view\WindowBilanci.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

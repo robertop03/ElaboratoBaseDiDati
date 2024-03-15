@@ -11,8 +11,6 @@ namespace WpfApp1.model.impl
             Occupato = false;
         }
 
-        public Tavolo() { }
-
         public int NumeroPosti { get; set; }
         public int IdTavolo { get; set; }
 

@@ -14,6 +14,8 @@ namespace WpfApp1.view
     public partial class WindowRistorante : Window
     {
         private readonly ControllerImpl controller;
+        private int idTavolo = 1;
+
         public WindowRistorante()
         {
             InitializeComponent();
@@ -49,26 +51,29 @@ namespace WpfApp1.view
             // Verifica della risposta dell'utente
             if (result == MessageBoxResult.Yes)
             {
-                CheckBox newCheckBox = new CheckBox();
-                Image newTable = new Image
+                SelectSeatsDialog dialog = new SelectSeatsDialog();
+                if ((bool)dialog.ShowDialog())
                 {
-                    Source = new BitmapImage(new Uri("../resources/table_icon.png", UriKind.Relative)),
-                    Width = 50,
-                    Height = 50
-                };
-                newCheckBox.Content = newTable;
-                Canvas.SetLeft(newCheckBox, currentLeft);
-                Canvas.SetTop(newCheckBox, currentTop);
+                    CheckBox newCheckBox = new CheckBox();
+                    Image newTable = new Image
+                    {
+                        Source = new BitmapImage(new Uri("../resources/table_icon.png", UriKind.Relative)),
+                        Width = 50,
+                        Height = 50
+                    };
+                    newCheckBox.Content = newTable;
+                    Canvas.SetLeft(newCheckBox, currentLeft);
+                    Canvas.SetTop(newCheckBox, currentTop);
+                    MessageBox.Show("" + idTavolo);
+                    _ = salaCanvas.Children.Add(newCheckBox);
+                    controller.AggiungiTavolo(idTavolo++, dialog.SelectedSeats);
 
-                _ = salaCanvas.Children.Add(newCheckBox);
-
-                controller.AggiungiTavolo();
-
-                currentLeft += TableSize + MinimumSpacing;
-                if (currentLeft + TableSize > salaCanvas.ActualWidth - EdgeSpacing)
-                {
-                    currentLeft = EdgeSpacing;
-                    currentTop += TableSize + MinimumSpacing;
+                    currentLeft += TableSize + MinimumSpacing;
+                    if (currentLeft + TableSize > salaCanvas.ActualWidth - EdgeSpacing)
+                    {
+                        currentLeft = EdgeSpacing;
+                        currentTop += TableSize + MinimumSpacing;
+                    }
                 }
             }
         }

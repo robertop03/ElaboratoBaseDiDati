@@ -26,9 +26,9 @@ namespace WpfApp1.controller.impl
             AggiuntoOmbrellone?.Invoke(this, EventArgs.Empty);
         }
 
-        public void AggiungiTavolo()
+        public void AggiungiTavolo(int idTavolo, int numeroPosti)
         {
-            Tavolo tavolo = new Tavolo();
+            Tavolo tavolo = new Tavolo(idTavolo, numeroPosti);
             ListaTavoli.Add(tavolo);
             AggiuntoTavolo?.Invoke(this, EventArgs.Empty);
         }

@@ -11,7 +11,7 @@ namespace WpfApp1.controller.api
     {
         void AggiungiOmbrellone(int numeroRiga, int numeroColonna);
 
-        void AggiungiTavolo();
+        void AggiungiTavolo(int idTavolo, int numeroPosti);
 
         void RimuoviOmbrellone(Ombrellone ombrellone);
 
