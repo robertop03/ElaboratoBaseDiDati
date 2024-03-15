@@ -7,9 +7,8 @@
         mc:Ignorable="d"
         Title="Gestore stabilimento balneare" Height="205.241" Width="376.771" ResizeMode="CanMinimize">
     <Grid>
-        <Button x:Name="btnSpiaggia" Content="Spiaggia" HorizontalAlignment="Left" Margin="45,31,0,0" VerticalAlignment="Top" Width="100" Height="50" Click="btnSpiaggia_Click"/>
-        <Button x:Name="btnRistorante" Content="Ristorante" HorizontalAlignment="Left" Margin="202,31,0,0" VerticalAlignment="Top" Width="100" Height="50" Click="btnRistorante_Click"/>
-        <Button x:Name="btnBilanci" Content="Bilanci" HorizontalAlignment="Left" Margin="125,102,0,0" VerticalAlignment="Top" Width="100" Height="50" Click="btnBilanci_Click"/>
-    
+        <Button x:Name="btnSpiaggia" Style="{StaticResource CustomButtonStyle}" Content="Spiaggia" HorizontalAlignment="Left" Margin="45,31,0,0" VerticalAlignment="Top" Width="100" Height="50" Click="btnSpiaggia_Click"/>
+        <Button x:Name="btnRistorante" Style="{StaticResource CustomButtonStyle}" Content="Ristorante" HorizontalAlignment="Left" Margin="202,31,0,0" VerticalAlignment="Top" Width="100" Height="50" Click="btnRistorante_Click"/>
+        <Button x:Name="btnBilanci" Style="{StaticResource CustomButtonStyle}" Content="Bilanci" HorizontalAlignment="Left" Margin="125,102,0,0" VerticalAlignment="Top" Width="100" Height="50" Click="btnBilanci_Click"/>
     </Grid>
 </Window>

@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using WpfApp1.controller.impl;
 
 namespace WpfApp1.view
 {
@@ -19,9 +13,14 @@ namespace WpfApp1.view
     /// </summary>
     public partial class WindowRistorante : Window
     {
+        private readonly ControllerImpl controller;
         public WindowRistorante()
         {
             InitializeComponent();
+            controller = new ControllerImpl();
+            DataContext = controller;
+            controller.AggiuntoTavolo += Controller_AggiuntoTavolo;
+            lblNumeroTavoli.Content = "Numero tavoli: 0";
         }
 
         private const double MinimumSpacing = 20;
@@ -30,6 +29,12 @@ namespace WpfApp1.view
 
         private double currentLeft = EdgeSpacing; // Posizione corrente sull'asse X
         private double currentTop = EdgeSpacing; // Posizione corrente sull'asse Y
+
+        private void Controller_AggiuntoTavolo(object sender, EventArgs e)
+        {
+            // Aggiorna il contenuto della Label ogni volta che viene aggiunto un ombrellone
+            lblNumeroTavoli.Content = "Numero tavoli: " + controller.GetNumeroTavoli();
+        }
 
         private void salaCanvas_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -57,6 +62,8 @@ namespace WpfApp1.view
 
                 _ = salaCanvas.Children.Add(newCheckBox);
 
+                controller.AggiungiTavolo();
+
                 currentLeft += TableSize + MinimumSpacing;
                 if (currentLeft + TableSize > salaCanvas.ActualWidth - EdgeSpacing)
                 {
@@ -64,6 +71,26 @@ namespace WpfApp1.view
                     currentTop += TableSize + MinimumSpacing;
                 }
             }
+        }
+
+        private void btnRimuoviTavolo_Click(object sender, RoutedEventArgs e)
+        {
+            if(salaCanvas.Children.OfType<CheckBox>().Any(cb => cb.IsChecked == true))
+            {
+                foreach (CheckBox item in salaCanvas.Children.OfType<CheckBox>().Where(cb => cb.IsChecked == true).ToList())
+                {
+                    salaCanvas.Children.Remove(item);
+                }
+            }
+            else
+            {
+                _ = MessageBox.Show("Seleziona il tavolo da rimuovere.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void btnDisdiciTavolo_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

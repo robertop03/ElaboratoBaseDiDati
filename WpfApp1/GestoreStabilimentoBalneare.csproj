@@ -55,6 +55,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="controller\api\IController.cs" />
+    <Compile Include="controller\impl\ControllerImpl.cs" />
+    <Compile Include="model\api\IOmbrellone.cs" />
+    <Compile Include="model\api\ITavolo.cs" />
+    <Compile Include="model\impl\AbstractOggettoPrenotabile.cs" />
+    <Compile Include="model\impl\Ombrellone.cs" />
+    <Compile Include="model\impl\Tavolo.cs" />
     <Compile Include="view\WindowBilanci.xaml.cs">
       <DependentUpon>WindowBilanci.xaml</DependentUpon>
     </Compile>
@@ -122,8 +129,6 @@
   <ItemGroup>
     <Resource Include="view\umbrella_icon.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="model\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
