@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WpfApp1.controller.impl;
 
@@ -64,8 +65,18 @@ namespace WpfApp1.view
                     newCheckBox.Content = newTable;
                     Canvas.SetLeft(newCheckBox, currentLeft);
                     Canvas.SetTop(newCheckBox, currentTop);
-                    MessageBox.Show("" + idTavolo);
                     _ = salaCanvas.Children.Add(newCheckBox);
+                    TextBlock seatsTextBlock = new TextBlock
+                    {
+                        Text = dialog.SelectedSeats.ToString(), // Assumendo che dialog.SelectedSeats contenga il numero di posti
+                        FontSize = 10,
+                        Foreground = Brushes.Black
+                    };
+                    Canvas.SetLeft(seatsTextBlock, currentLeft + TableSize - seatsTextBlock.ActualWidth);
+                    Canvas.SetTop(seatsTextBlock, currentTop + TableSize - seatsTextBlock.ActualHeight);
+                    _ = salaCanvas.Children.Add(seatsTextBlock);
+
+
                     controller.AggiungiTavolo(idTavolo++, dialog.SelectedSeats);
 
                     currentLeft += TableSize + MinimumSpacing;
