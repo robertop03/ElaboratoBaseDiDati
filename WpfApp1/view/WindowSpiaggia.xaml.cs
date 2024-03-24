@@ -67,10 +67,7 @@ namespace WpfApp1.view
                 // Imposta la posizione dell'ombrello
                 Canvas.SetLeft(newCheckBox, currentLeft);
                 Canvas.SetTop(newCheckBox, currentTop);
-
-                // Aggiungi l'ombrello al Canvas
-                _ = spiaggiaCanvas.Children.Add(newCheckBox);
-
+                
                 if (currentLeft + UmbrellaSize + MinimumSpacing > spiaggiaCanvas.ActualWidth - EdgeSpacing)
                 {
                     // Passa alla riga successiva
@@ -93,6 +90,9 @@ namespace WpfApp1.view
 
                 // Aggiunta dell'ombrellone nella lista di ombrelloni mediante il controller
                 controller.AggiungiOmbrellone(numeroRiga, numeroColonna);
+                var rigaEcolonna = (numeroRiga, numeroColonna);
+                newCheckBox.Tag = rigaEcolonna;
+                _ = spiaggiaCanvas.Children.Add(newCheckBox); // Aggiungi l'ombrello al Canvas
 
                 numeroColonna++;
                 // Verifica se è necessario passare alla riga successiva
@@ -120,12 +120,62 @@ namespace WpfApp1.view
             return numeroColonne;
         }
 
+        private void btnDisdiciOmbrellone_Click(object sender, RoutedEventArgs e)
+        {
+            if (spiaggiaCanvas.Children.OfType<CheckBox>().Any(cb => cb.IsChecked == true))
+            {
+                foreach (CheckBox item in spiaggiaCanvas.Children.OfType<CheckBox>().Where(cb => cb.IsChecked == true).ToList())
+                {
+                    if (item.Content is Image image)
+                    {
+                        if (item.IsChecked == true)
+                        {
+                            var rigaEColonna = (ValueTuple<int, int>)item.Tag;
+                            controller.DisdiciOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2);
+                            image.Source = new BitmapImage(new Uri("../resources/umbrella_icon.png", UriKind.Relative));
+                        }
+                    }
+                    item.IsChecked = false;
+                }
+            }
+            else
+            {
+                _ = MessageBox.Show("Seleziona l'ombrellone da disdire.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void btnPrenotaOmbrellone_Click(object sender, RoutedEventArgs e)
+        {
+            if (spiaggiaCanvas.Children.OfType<CheckBox>().Any(cb => cb.IsChecked == true))
+            {
+                foreach (CheckBox item in spiaggiaCanvas.Children.OfType<CheckBox>().Where(cb => cb.IsChecked == true).ToList())
+                {
+                    if (item.Content is Image image)
+                    {
+                        if (item.IsChecked == true)
+                        {
+                            var rigaEColonna = (ValueTuple<int, int>)item.Tag;
+                            controller.PrenotaOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2);
+                            image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
+                        }
+                    }
+                    item.IsChecked = false;
+                }
+            }
+            else
+            {
+                _ = MessageBox.Show("Seleziona l'ombrellone da prenotare.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
         private void btnRimuoviOmbrellone_Click(object sender, RoutedEventArgs e)
         {
             if (spiaggiaCanvas.Children.OfType<CheckBox>().Any(cb => cb.IsChecked == true))
             {
                 foreach (CheckBox item in spiaggiaCanvas.Children.OfType<CheckBox>().Where(cb => cb.IsChecked == true).ToList())
                 {
+                    var rigaEColonna = (ValueTuple<int, int>)item.Tag;
+                    controller.RimuoviOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2);
                     spiaggiaCanvas.Children.Remove(item);
                 }
             }
@@ -134,5 +184,6 @@ namespace WpfApp1.view
                 _ = MessageBox.Show("Seleziona l'ombrellone da rimuovere.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.ObjectModel;
 using WpfApp1.controller.api;
 using WpfApp1.model.impl;
@@ -33,34 +34,70 @@ namespace WpfApp1.controller.impl
             AggiuntoTavolo?.Invoke(this, EventArgs.Empty);
         }
 
-        public void DisdiciOmbrellone(Ombrellone ombrellone)
+        public void DisdiciOmbrellone(int numeroRiga, int numeroColonna)
         {
-            ombrellone.Occupato = false;
+            for (int i = ListaOmbrelloni.Count - 1; i >= 0; i--)
+            {
+                if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
+                {
+                    ListaOmbrelloni[i].Disdici();
+                }
+            }
         }
 
-        public void DisdiciTavolo(Tavolo tavolo)
+        public void DisdiciTavolo(int idTavolo)
         {
-            tavolo.Occupato = false;
+            for (int i = ListaTavoli.Count - 1; i >= 0; i--)
+            {
+                if (ListaTavoli[i].IdTavolo == idTavolo)
+                {
+                    ListaTavoli[i].Disdici();
+                }
+            }
         }
 
-        public void PrenotaOmbrellone(Ombrellone ombrellone)
+        public void PrenotaOmbrellone(int numeroRiga, int numeroColonna)
         {
-            ombrellone.Occupato = true;
+            for (int i = ListaOmbrelloni.Count - 1; i >= 0; i--)
+            {
+                if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
+                {
+                    ListaOmbrelloni[i].Prenota();
+                }
+            }
         }
 
-        public void PrenotaTavolo(Tavolo tavolo)
+        public void PrenotaTavolo(int idTavolo)
         {
-            tavolo.Occupato = true;
+            for (int i = ListaTavoli.Count - 1; i >= 0; i--)
+            {
+                if (ListaTavoli[i].IdTavolo == idTavolo)
+                {
+                    ListaTavoli[i].Prenota();
+                }
+            }
         }
 
-        public void RimuoviOmbrellone(Ombrellone ombrellone)
+        public void RimuoviOmbrellone(int numeroRiga, int numeroColonna)
         {
-            _ = ListaOmbrelloni.Remove(ombrellone);
+            for (int i = ListaOmbrelloni.Count - 1; i >= 0; i--)
+            {
+                if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
+                {
+                    ListaOmbrelloni.RemoveAt(i);
+                }
+            }
         }
 
-        public void RimuoviTavolo(Tavolo tavolo)
+        public void RimuoviTavolo(int idTavolo)
         {
-            _ = ListaTavoli.Remove(tavolo);
+            for (int i = ListaTavoli.Count - 1; i >= 0; i--)
+            {
+                if (ListaTavoli[i].IdTavolo == idTavolo)
+                {
+                    ListaTavoli.RemoveAt(i);
+                }
+            }
         }
 
         public int GetNumeroTavoli()

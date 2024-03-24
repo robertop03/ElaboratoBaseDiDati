@@ -5,5 +5,9 @@
         int NumeroRiga { get; set; }
 
         int NumeroColonna { get; set; }
+
+        void Prenota();
+
+        void Disdici();
     }
 }

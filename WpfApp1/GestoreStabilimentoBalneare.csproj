@@ -60,7 +60,10 @@
     <Compile Include="model\api\IOmbrellone.cs" />
     <Compile Include="model\api\ITavolo.cs" />
     <Compile Include="model\impl\AbstractOggettoPrenotabile.cs" />
+    <Compile Include="model\impl\Evento.cs" />
     <Compile Include="model\impl\Ombrellone.cs" />
+    <Compile Include="model\impl\Ospite.cs" />
+    <Compile Include="model\impl\Persona.cs" />
     <Compile Include="model\impl\Tavolo.cs" />
     <Compile Include="view\SelectSeatsDialog.xaml.cs">
       <DependentUpon>SelectSeatsDialog.xaml</DependentUpon>
@@ -136,6 +139,11 @@
   <ItemGroup>
     <Resource Include="view\umbrella_icon.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="resources\umbrella_icon_booked.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\table_icon_booked.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

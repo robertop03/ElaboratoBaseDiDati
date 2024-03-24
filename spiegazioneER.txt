@@ -1,0 +1,48 @@
+PERCHE FATTA LA CHIAVE DELL'ENTITA PRENOTAZIONE_TAVOLO IN QUEL MODO:
+fatta in quel modo perchè uno stesso tavolo può essere prenotato più volte lo stesso giorno, quindi la sua prenotazione, deve poter essere
+identificata in modo univoco sia dall'id del tavolo che dalla tipo (pranzo o cena).
+
+
+CARDINALITA
+OSPITE (0, N) - (0, N) EVENTO => ad ogni evento possono partecipare da 0 a N ospiti e ogni ospite può
+partecipare a 0 o N eventi.
+
+EVENTO (0, N) - (0, N) CLIENTE => non tutti i clienti sono avvisati degli eventi (solo quelli iscritti alla 
+newsletter) e i clienti avvisati possono essere avvisati di 0 o N eventi.
+
+CLIENTE (1, N) - (1, 1) PRENOTAZIONE => una prenotazione può essere fatta da solo un cliente, mentre un cliente può fare da 1 a N 
+prenotazioni (non parto da 0 perche per essere registrato come cliente significa che ha fatto almeno una prenotazione)
+
+PRENOTAZIONE_OMBRELLONE (1, N) -  (1, 1) OMBRELLONE => una prenotazione_ombrellone può essere fatta per pronotare da 1 a N ombrelloni
+mentre se prenoto un ombrellone, esso sarà legato solo a quella prenotazione (per l'arco di tempo della prenotazione)
+
+PRENOTAZIONE_TAVOLO (1, N) - (1, N) TAVOLO => una prenotazione_tavolo può essere fatta per pronotare da 1 a N tavoli
+mentre se prenoto un tavolo esso può comunque far parte di un'altra prenotazione (una per il pranzo e una per la cena)
+
+TAVOLO (1, N) - (1, 1) ORDINE => un tavolo può effettuare da 1 a N ordini ma un ordine appartiene solo ad un tavolo
+ovvero 2 tavoli diversi non possono effettuare lo stesso ordine (magari hanno stessi menu scelti ma hanno id diverso)
+
+ORDINE (0, N) - (1,N) MENU => in ogni ordine vi possono essere da 1 a N MENU, mentre ogni MENU può essere presente in 0 o N ordini
+(ho messo 0 perché un menu potrebbe anche non essere mai ordinato)
+
+MENU (1, N) - (1, N) PIATTO => un piatto può appartenere a più menu, e un menu contiene
+da 1 a N piatti
+
+
+DOMANDE:
+- la percentuale sconto è meglio gestirla come entità a parte sconto collegata a PRENOTAZIONE_OMBRELLONE oppure 
+c'è un altro modo migliore per gestirla, sapendo che abbiamo solo 2 percentuali di sconto applicabili, una 
+se la durata della prenotazione è >= 15 giorni l'altra se >= 30 giorni.
+
+- come gestire le prenotazioni, in modo che ogni ombrellone sia univocamente prenotato in un determinato arco di tempo
+e che un tavolo sia univocamente prenotato in un determinato giorno per un determinato pasto (pranzo o cena)
+
+- eventuale aggiunta dei lettini, la faccio oppure no? se si mi come implementarla?
+
+- la relazione tra ordine menu le cardinalità vanno bene o meglio 1 N invece che 0 N?
+
+- è abbastanza complesso per i 4 punti?
+
+- nella relazione, cosa intende per "Intervista"
+
+- chiedere se ha senso implementare ad esempio Persona, Servizio e Prenotazione come classi astratte e le loro entità figlie come classi che implementano le astratte

@@ -12,7 +12,7 @@
         </Canvas>
         <Label x:Name="lblNumeroOmbrelloni" Content="Ombrelloni in spiaggia: {Binding Get}" HorizontalAlignment="Left" Margin="10,426,0,0" VerticalAlignment="Top"/>
         <Button x:Name="btnRimuoviOmbrellone" Style="{StaticResource CustomButtonStyle}" Content="Rimuovi ombrellone" HorizontalAlignment="Left" Margin="708,422,0,0" Width="137" Height="35" VerticalAlignment="Top" Click="btnRimuoviOmbrellone_Click"/>
-        <Button x:Name="btnPrenotaOmbrellone" Style="{StaticResource CustomButtonStyle}" Content="Prenota" HorizontalAlignment="Left" Margin="556,422,0,0" Width="137" Height="35" VerticalAlignment="Top"/>
-        <Button x:Name="btnDisdiciOmbrellone" Style="{StaticResource CustomButtonStyle}" Content="Disdici ombrellone" HorizontalAlignment="Left" Margin="401,422,0,0" Width="137" Height="35" VerticalAlignment="Top" Click="btnRimuoviOmbrellone_Click"/>
+        <Button x:Name="btnPrenotaOmbrellone" Style="{StaticResource CustomButtonStyle}" Content="Prenota" HorizontalAlignment="Left" Margin="556,422,0,0" Width="137" Height="35" VerticalAlignment="Top" Click="btnPrenotaOmbrellone_Click"/>
+        <Button x:Name="btnDisdiciOmbrellone" Style="{StaticResource CustomButtonStyle}" Content="Disdici ombrellone" HorizontalAlignment="Left" Margin="401,422,0,0" Width="137" Height="35" VerticalAlignment="Top" Click="btnDisdiciOmbrellone_Click" />
     </Grid>
 </Window>

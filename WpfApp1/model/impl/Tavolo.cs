@@ -22,5 +22,15 @@ namespace WpfApp1.model.impl
             infoTavolo += "numero posti: " + NumeroPosti;
             return infoTavolo;
         }
+
+        public void Prenota()
+        {
+            Occupato = true;
+        }
+
+        public void Disdici()
+        {
+            Occupato = false;
+        }
     }
 }

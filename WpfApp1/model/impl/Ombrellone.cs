@@ -21,5 +21,15 @@ namespace WpfApp1.model.impl
             infoOmbrellone += Occupato ? "stato = occupato" : "non occupato";
             return infoOmbrellone;
         }
+
+        public void Prenota()
+        {
+            Occupato = true;
+        }
+
+        public void Disdici()
+        {
+            Occupato = false;
+        }
     }
 }

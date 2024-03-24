@@ -17,6 +17,7 @@ namespace WpfApp1.view
         private readonly ControllerImpl controller;
         private int idTavolo = 1;
 
+
         public WindowRistorante()
         {
             InitializeComponent();
@@ -68,7 +69,7 @@ namespace WpfApp1.view
                     _ = salaCanvas.Children.Add(newCheckBox);
                     TextBlock seatsTextBlock = new TextBlock
                     {
-                        Text = dialog.SelectedSeats.ToString(), // Assumendo che dialog.SelectedSeats contenga il numero di posti
+                        Text = dialog.SelectedSeats.ToString(),
                         FontSize = 10,
                         Foreground = Brushes.Black
                     };
@@ -76,7 +77,7 @@ namespace WpfApp1.view
                     Canvas.SetTop(seatsTextBlock, currentTop + TableSize - seatsTextBlock.ActualHeight);
                     _ = salaCanvas.Children.Add(seatsTextBlock);
 
-
+                    newCheckBox.Tag = idTavolo;
                     controller.AggiungiTavolo(idTavolo++, dialog.SelectedSeats);
 
                     currentLeft += TableSize + MinimumSpacing;
@@ -91,10 +92,11 @@ namespace WpfApp1.view
 
         private void btnRimuoviTavolo_Click(object sender, RoutedEventArgs e)
         {
-            if(salaCanvas.Children.OfType<CheckBox>().Any(cb => cb.IsChecked == true))
+            if (salaCanvas.Children.OfType<CheckBox>().Any(cb => cb.IsChecked == true))
             {
                 foreach (CheckBox item in salaCanvas.Children.OfType<CheckBox>().Where(cb => cb.IsChecked == true).ToList())
                 {
+                    controller.RimuoviTavolo((int)item.Tag);
                     salaCanvas.Children.Remove(item);
                 }
             }
@@ -106,7 +108,48 @@ namespace WpfApp1.view
 
         private void btnDisdiciTavolo_Click(object sender, RoutedEventArgs e)
         {
-            
+            if (salaCanvas.Children.OfType<CheckBox>().Any(cb => cb.IsChecked == true))
+            {
+                foreach (CheckBox item in salaCanvas.Children.OfType<CheckBox>().Where(cb => cb.IsChecked == true).ToList())
+                {
+                    if (item.Content is Image image)
+                    {
+                        if (item.IsChecked == true)
+                        {
+                            controller.DisdiciTavolo((int)item.Tag);
+                            image.Source = new BitmapImage(new Uri("../resources/table_icon.png", UriKind.Relative));
+                        }
+                    }
+                    item.IsChecked = false;
+                }
+            }
+            else
+            {
+                _ = MessageBox.Show("Seleziona il tavolo da prenotare.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void btnPrenotaTavolo_Click(object sender, RoutedEventArgs e)
+        {
+            if (salaCanvas.Children.OfType<CheckBox>().Any(cb => cb.IsChecked == true))
+            {
+                foreach (CheckBox item in salaCanvas.Children.OfType<CheckBox>().Where(cb => cb.IsChecked == true).ToList())
+                {
+                    if (item.Content is Image image)
+                    {
+                        if (item.IsChecked == true)
+                        {
+                            controller.PrenotaTavolo((int)item.Tag);
+                            image.Source = new BitmapImage(new Uri("../resources/table_icon_booked.png", UriKind.Relative));
+                        }
+                    }
+                    item.IsChecked = false;
+                }
+            }
+            else
+            {
+                _ = MessageBox.Show("Seleziona il tavolo da disdire.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
     }
 }

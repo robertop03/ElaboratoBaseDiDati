@@ -13,17 +13,17 @@ namespace WpfApp1.controller.api
 
         void AggiungiTavolo(int idTavolo, int numeroPosti);
 
-        void RimuoviOmbrellone(Ombrellone ombrellone);
+        void RimuoviOmbrellone(int numeroRiga, int numeroColonna);
 
-        void RimuoviTavolo(Tavolo tavolo);
+        void RimuoviTavolo(int idTavolo);
 
-        void PrenotaOmbrellone(Ombrellone ombrellone);
+        void PrenotaOmbrellone(int numeroRiga, int numeroColonna);
 
-        void PrenotaTavolo(Tavolo tavolo);
+        void PrenotaTavolo(int idTavolo);
 
-        void DisdiciOmbrellone(Ombrellone ombrellone);
+        void DisdiciOmbrellone(int numeroRiga, int numeroColonna);
 
-        void DisdiciTavolo(Tavolo tavolo);
+        void DisdiciTavolo(int idTavolo);
 
         int GetNumeroTavoli();
 
@@ -32,5 +32,6 @@ namespace WpfApp1.controller.api
         string InfoTavolo();
 
         string InfoOmbrellone();
+
     }
 }
