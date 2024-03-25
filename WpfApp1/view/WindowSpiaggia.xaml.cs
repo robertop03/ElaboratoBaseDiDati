@@ -21,7 +21,8 @@ namespace WpfApp1.view
             InitializeComponent();
             controller = new ControllerImpl();
             DataContext = controller;
-            controller.AggiuntoOmbrellone += Controller_AggiuntoOmbrellone;
+            controller.AggiuntoOmbrellone += Controller_ModifiedNumberOmbrellas;
+            controller.RimossoOmbrellone += Controller_ModifiedNumberOmbrellas;
             lblNumeroOmbrelloni.Content = "Numero ombrelloni: 0";
         }
 
@@ -32,7 +33,7 @@ namespace WpfApp1.view
         private double currentLeft = EdgeSpacing; // Posizione corrente sull'asse X
         private double currentTop = EdgeSpacing; // Posizione corrente sull'asse Y
 
-        private void Controller_AggiuntoOmbrellone(object sender, EventArgs e)
+        private void Controller_ModifiedNumberOmbrellas(object sender, EventArgs e)
         {
             // Aggiorna il contenuto della Label ogni volta che viene aggiunto un ombrellone
             lblNumeroOmbrelloni.Content = "Numero ombrelloni: " + controller.GetNumeroOmbrelloni();

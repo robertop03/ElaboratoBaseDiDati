@@ -23,8 +23,10 @@ namespace WpfApp1.view
             InitializeComponent();
             controller = new ControllerImpl();
             DataContext = controller;
-            controller.AggiuntoTavolo += Controller_AggiuntoTavolo;
+            controller.AggiuntoTavolo += Controller_ModifiedNumberTables;
+            controller.RimossoTavolo += Controller_ModifiedNumberTables;
             lblNumeroTavoli.Content = "Numero tavoli: 0";
+
         }
 
         private const double MinimumSpacing = 20;
@@ -34,7 +36,7 @@ namespace WpfApp1.view
         private double currentLeft = EdgeSpacing; // Posizione corrente sull'asse X
         private double currentTop = EdgeSpacing; // Posizione corrente sull'asse Y
 
-        private void Controller_AggiuntoTavolo(object sender, EventArgs e)
+        private void Controller_ModifiedNumberTables(object sender, EventArgs e)
         {
             // Aggiorna il contenuto della Label ogni volta che viene aggiunto un ombrellone
             lblNumeroTavoli.Content = "Numero tavoli: " + controller.GetNumeroTavoli();

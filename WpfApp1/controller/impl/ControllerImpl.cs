@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.ObjectModel;
 using WpfApp1.controller.api;
 using WpfApp1.model.impl;
@@ -12,7 +11,9 @@ namespace WpfApp1.controller.impl
         public ObservableCollection<Tavolo> ListaTavoli { get; set; }
 
         public event EventHandler AggiuntoOmbrellone;
+        public event EventHandler RimossoOmbrellone;
         public event EventHandler AggiuntoTavolo;
+        public event EventHandler RimossoTavolo;
 
         public ControllerImpl()
         {
@@ -87,6 +88,7 @@ namespace WpfApp1.controller.impl
                     ListaOmbrelloni.RemoveAt(i);
                 }
             }
+            RimossoOmbrellone?.Invoke(this, EventArgs.Empty);
         }
 
         public void RimuoviTavolo(int idTavolo)
@@ -98,6 +100,7 @@ namespace WpfApp1.controller.impl
                     ListaTavoli.RemoveAt(i);
                 }
             }
+            RimossoTavolo?.Invoke(this, EventArgs.Empty);
         }
 
         public int GetNumeroTavoli()
