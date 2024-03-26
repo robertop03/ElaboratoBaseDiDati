@@ -50,45 +50,43 @@ namespace WpfApp1.view
                 _ = MessageBox.Show("Non c'è abbastanza spazio per aggiungere un altro tavolo.", "Spazio esaurito", MessageBoxButton.OK, MessageBoxImage.Error);
                 return; // Esci dal metodo
             }
-            MessageBoxResult result = MessageBox.Show("Vuoi davvero aggiungere un tavolo?", "Conferma", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            CustomMessageBoxAddTable selectSeatsDialog = new CustomMessageBoxAddTable();
+            _ = selectSeatsDialog.ShowDialog();
 
             // Verifica della risposta dell'utente
-            if (result == MessageBoxResult.Yes)
+            if (selectSeatsDialog.Result)
             {
-                SelectSeatsDialog dialog = new SelectSeatsDialog();
-                if ((bool)dialog.ShowDialog())
+                CheckBox newCheckBox = new CheckBox();
+                Image newTable = new Image
                 {
-                    CheckBox newCheckBox = new CheckBox();
-                    Image newTable = new Image
-                    {
-                        Source = new BitmapImage(new Uri("../resources/table_icon.png", UriKind.Relative)),
-                        Width = 50,
-                        Height = 50
-                    };
-                    newCheckBox.Content = newTable;
-                    Canvas.SetLeft(newCheckBox, currentLeft);
-                    Canvas.SetTop(newCheckBox, currentTop);
-                    _ = salaCanvas.Children.Add(newCheckBox);
-                    TextBlock seatsTextBlock = new TextBlock
-                    {
-                        Text = dialog.SelectedSeats.ToString(),
-                        FontSize = 10,
-                        Foreground = Brushes.Black
-                    };
-                    Canvas.SetLeft(seatsTextBlock, currentLeft + TableSize - seatsTextBlock.ActualWidth);
-                    Canvas.SetTop(seatsTextBlock, currentTop + TableSize - seatsTextBlock.ActualHeight);
-                    _ = salaCanvas.Children.Add(seatsTextBlock);
+                    Source = new BitmapImage(new Uri("../resources/table_icon.png", UriKind.Relative)),
+                    Width = 50,
+                    Height = 50
+                };
+                newCheckBox.Content = newTable;
+                Canvas.SetLeft(newCheckBox, currentLeft);
+                Canvas.SetTop(newCheckBox, currentTop);
+                _ = salaCanvas.Children.Add(newCheckBox);
+                TextBlock seatsTextBlock = new TextBlock
+                {
+                    Text = selectSeatsDialog.SelectedSeats.ToString(),
+                    FontSize = 10,
+                    Foreground = Brushes.Black
+                };
+                Canvas.SetLeft(seatsTextBlock, currentLeft + TableSize - seatsTextBlock.ActualWidth);
+                Canvas.SetTop(seatsTextBlock, currentTop + TableSize - seatsTextBlock.ActualHeight);
+                _ = salaCanvas.Children.Add(seatsTextBlock);
 
-                    newCheckBox.Tag = idTavolo;
-                    controller.AggiungiTavolo(idTavolo++, dialog.SelectedSeats);
+                newCheckBox.Tag = idTavolo;
+                controller.AggiungiTavolo(idTavolo++, selectSeatsDialog.SelectedSeats);
 
-                    currentLeft += TableSize + MinimumSpacing;
-                    if (currentLeft + TableSize > salaCanvas.ActualWidth - EdgeSpacing)
-                    {
-                        currentLeft = EdgeSpacing;
-                        currentTop += TableSize + MinimumSpacing;
-                    }
+                currentLeft += TableSize + MinimumSpacing;
+                if (currentLeft + TableSize > salaCanvas.ActualWidth - EdgeSpacing)
+                {
+                    currentLeft = EdgeSpacing;
+                    currentTop += TableSize + MinimumSpacing;
                 }
+
             }
         }
 
@@ -127,7 +125,7 @@ namespace WpfApp1.view
             }
             else
             {
-                _ = MessageBox.Show("Seleziona il tavolo da prenotare.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _ = MessageBox.Show("Seleziona il tavolo da disdire.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -150,7 +148,7 @@ namespace WpfApp1.view
             }
             else
             {
-                _ = MessageBox.Show("Seleziona il tavolo da disdire.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _ = MessageBox.Show("Seleziona il tavolo da prenotare.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
     }
