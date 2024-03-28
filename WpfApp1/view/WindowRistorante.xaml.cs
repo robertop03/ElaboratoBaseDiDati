@@ -73,11 +73,13 @@ namespace WpfApp1.view
                     FontSize = 10,
                     Foreground = Brushes.Black
                 };
+                
                 Canvas.SetLeft(seatsTextBlock, currentLeft + TableSize - seatsTextBlock.ActualWidth);
                 Canvas.SetTop(seatsTextBlock, currentTop + TableSize - seatsTextBlock.ActualHeight);
                 _ = salaCanvas.Children.Add(seatsTextBlock);
 
                 newCheckBox.Tag = idTavolo;
+                seatsTextBlock.Tag = idTavolo;
                 controller.AggiungiTavolo(idTavolo++, selectSeatsDialog.SelectedSeats);
 
                 currentLeft += TableSize + MinimumSpacing;
@@ -96,6 +98,11 @@ namespace WpfApp1.view
             {
                 foreach (CheckBox item in salaCanvas.Children.OfType<CheckBox>().Where(cb => cb.IsChecked == true).ToList())
                 {
+                    TextBlock textBlock = salaCanvas.Children.OfType<TextBlock>().FirstOrDefault(tb => tb.Tag != null && (int)tb.Tag == (int)item.Tag);
+                    if (textBlock != null)
+                    {
+                        salaCanvas.Children.Remove(textBlock);
+                    }
                     controller.RimuoviTavolo((int)item.Tag);
                     salaCanvas.Children.Remove(item);
                 }

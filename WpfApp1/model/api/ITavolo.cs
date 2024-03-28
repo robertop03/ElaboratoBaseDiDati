@@ -5,9 +5,5 @@
         int NumeroPosti { get; set; }
 
         string InfoTavolo();
-
-        void Prenota();
-
-        void Disdici();
     }
 }

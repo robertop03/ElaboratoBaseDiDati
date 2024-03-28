@@ -9,6 +9,7 @@ namespace WpfApp1.controller.impl
     {
         public ObservableCollection<Ombrellone> ListaOmbrelloni { get; set; }
         public ObservableCollection<Tavolo> ListaTavoli { get; set; }
+        public ObservableCollection<Prenotazione> ListaPrenotazioni { get; set; }
 
         public event EventHandler AggiuntoOmbrellone;
         public event EventHandler RimossoOmbrellone;
@@ -19,6 +20,7 @@ namespace WpfApp1.controller.impl
         {
             ListaOmbrelloni = new ObservableCollection<Ombrellone>();
             ListaTavoli = new ObservableCollection<Tavolo>();
+            ListaPrenotazioni = new ObservableCollection<Prenotazione>();
         }
 
         public void AggiungiOmbrellone(int numeroRiga, int numeroColonna)
@@ -41,7 +43,7 @@ namespace WpfApp1.controller.impl
             {
                 if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
                 {
-                    ListaOmbrelloni[i].Disdici();
+                    // ListaOmbrelloni[i].Disdici();
                 }
             }
         }
@@ -52,20 +54,37 @@ namespace WpfApp1.controller.impl
             {
                 if (ListaTavoli[i].IdTavolo == idTavolo)
                 {
-                    ListaTavoli[i].Disdici();
+                    // ListaTavoli[i].Disdici();
                 }
             }
         }
 
-        public void PrenotaOmbrellone(int numeroRiga, int numeroColonna)
+        public void PrenotaOmbrellone(int numeroRiga, int numeroColonna, DateTime dataInzio, DateTime dataFine)
         {
             for (int i = ListaOmbrelloni.Count - 1; i >= 0; i--)
             {
                 if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
                 {
-                    ListaOmbrelloni[i].Prenota();
+                    Prenotazione prenotazione = new Prenotazione(dataInzio, dataFine, numeroRiga, numeroColonna);
+                    ListaPrenotazioni.Add(prenotazione);
                 }
             }
+        }
+
+        public bool ControlloOmbrelloneLibero(int numeroRiga, int numeroColonna, DateTime dataInizio, DateTime dataFine)
+        {
+            for (int i = ListaPrenotazioni.Count - 1; i >= 0; i--)
+            {
+                if (ListaPrenotazioni[i].RigaOmbrellonePrenotato == numeroRiga &&
+                    ListaPrenotazioni[i].ColonnaOmbrellonePrenotato == numeroColonna &&
+                    ((dataInizio >= ListaPrenotazioni[i].DataInizio && dataInizio <= ListaPrenotazioni[i].DataFine) ||
+                    (dataFine >= ListaPrenotazioni[i].DataInizio && dataFine <= ListaPrenotazioni[i].DataFine) ||
+                    (dataInizio <= ListaPrenotazioni[i].DataInizio && dataFine >= ListaPrenotazioni[i].DataFine)))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public void PrenotaTavolo(int idTavolo)
@@ -74,7 +93,7 @@ namespace WpfApp1.controller.impl
             {
                 if (ListaTavoli[i].IdTavolo == idTavolo)
                 {
-                    ListaTavoli[i].Prenota();
+                    // ListaTavoli[i].Prenota();
                 }
             }
         }

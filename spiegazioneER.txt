@@ -1,6 +1,3 @@
-PERCHE FATTA LA CHIAVE DELL'ENTITA PRENOTAZIONE_TAVOLO IN QUEL MODO:
-fatta in quel modo perchè uno stesso tavolo può essere prenotato più volte lo stesso giorno, quindi la sua prenotazione, deve poter essere
-identificata in modo univoco sia dall'id del tavolo che dalla tipo (pranzo o cena).
 
 
 CARDINALITA
@@ -22,27 +19,19 @@ mentre se prenoto un tavolo esso può comunque far parte di un'altra prenotazion
 TAVOLO (1, N) - (1, 1) ORDINE => un tavolo può effettuare da 1 a N ordini ma un ordine appartiene solo ad un tavolo
 ovvero 2 tavoli diversi non possono effettuare lo stesso ordine (magari hanno stessi menu scelti ma hanno id diverso)
 
-ORDINE (0, N) - (1,N) MENU => in ogni ordine vi possono essere da 1 a N MENU, mentre ogni MENU può essere presente in 0 o N ordini
+ORDINE (0, N) - (0,N) MENU => in ogni ordine vi possono essere da 0 a N MENU, mentre ogni MENU può essere presente in 0 o N ordini
 (ho messo 0 perché un menu potrebbe anche non essere mai ordinato)
 
-MENU (1, N) - (1, N) PIATTO => un piatto può appartenere a più menu, e un menu contiene
-da 1 a N piatti
+MENU (1, N) - (2, N) PIATTO => un piatto può appartenere a più menu, e un menu contiene
+da 2 a N piatti
 
 
 DOMANDE:
-- la percentuale sconto è meglio gestirla come entità a parte sconto collegata a PRENOTAZIONE_OMBRELLONE oppure 
-c'è un altro modo migliore per gestirla, sapendo che abbiamo solo 2 percentuali di sconto applicabili, una 
-se la durata della prenotazione è >= 15 giorni l'altra se >= 30 giorni.
 
 - come gestire le prenotazioni, in modo che ogni ombrellone sia univocamente prenotato in un determinato arco di tempo
 e che un tavolo sia univocamente prenotato in un determinato giorno per un determinato pasto (pranzo o cena)
 
-- eventuale aggiunta dei lettini, la faccio oppure no? se si mi come implementarla?
+- ha senso la gerarchia su prenotazione? come gestisco il pasto?
 
-- la relazione tra ordine menu le cardinalità vanno bene o meglio 1 N invece che 0 N?
-
-- è abbastanza complesso per i 4 punti?
-
-- nella relazione, cosa intende per "Intervista"
-
-- chiedere se ha senso implementare ad esempio Persona, Servizio e Prenotazione come classi astratte e le loro entità figlie come classi che implementano le astratte
+- va bene come ho gestito il fatto che se il cliente fa una prenotazione per la durata >= di un mese, il cliente dovrà fornire un documento
+e quindi la chiave del cliente sarà il cod_documento (come spiegato in pagina 52 del pdf sull'ER)

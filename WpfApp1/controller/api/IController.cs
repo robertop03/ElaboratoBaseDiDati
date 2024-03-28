@@ -17,7 +17,11 @@ namespace WpfApp1.controller.api
 
         void RimuoviTavolo(int idTavolo);
 
-        void PrenotaOmbrellone(int numeroRiga, int numeroColonna);
+        void PrenotaOmbrellone(int numeroRiga, int numeroColonna, DateTime dataInzio, DateTime dataFine);
+
+        bool ControlloOmbrelloneLibero(int numeroRiga, int numeroColonna, DateTime dataInzio, DateTime dataFine);
+
+        // bool ControlloTavoloLibero();
 
         void PrenotaTavolo(int idTavolo);
 

@@ -2,7 +2,7 @@
 
 namespace WpfApp1.model.impl
 {
-    internal class Ombrellone : AbstractOggettoPrenotabile, IOmbrellone
+    internal class Ombrellone : IOmbrellone
     {
         public int NumeroRiga { get; set; }
         public int NumeroColonna { get; set; }
@@ -11,25 +11,14 @@ namespace WpfApp1.model.impl
         {
             NumeroRiga = numeroRiga;
             NumeroColonna = numeroColonna;
-            Occupato = false;
         }
 
         public string InfoOmbrellone()
         {
             string infoOmbrellone = string.Empty;
             infoOmbrellone += "ombrellone n°: " + NumeroRiga + "(riga) " + NumeroColonna + "(colonna)";
-            infoOmbrellone += Occupato ? "stato = occupato" : "non occupato";
             return infoOmbrellone;
         }
 
-        public void Prenota()
-        {
-            Occupato = true;
-        }
-
-        public void Disdici()
-        {
-            Occupato = false;
-        }
     }
 }

@@ -59,12 +59,15 @@
     <Compile Include="controller\impl\ControllerImpl.cs" />
     <Compile Include="model\api\IOmbrellone.cs" />
     <Compile Include="model\api\ITavolo.cs" />
-    <Compile Include="model\impl\AbstractOggettoPrenotabile.cs" />
     <Compile Include="model\impl\Evento.cs" />
     <Compile Include="model\impl\Ombrellone.cs" />
     <Compile Include="model\impl\Ospite.cs" />
     <Compile Include="model\impl\Persona.cs" />
+    <Compile Include="model\impl\Prenotazione.cs" />
     <Compile Include="model\impl\Tavolo.cs" />
+    <Compile Include="view\SelectDateDialog.xaml.cs">
+      <DependentUpon>SelectDateDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="view\SelectSeatsDialog.xaml.cs">
       <DependentUpon>SelectSeatsDialog.xaml</DependentUpon>
     </Compile>
@@ -89,6 +92,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="view\SelectDateDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="view\SelectSeatsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

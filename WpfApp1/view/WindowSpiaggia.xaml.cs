@@ -24,6 +24,10 @@ namespace WpfApp1.view
             controller.AggiuntoOmbrellone += Controller_ModifiedNumberOmbrellas;
             controller.RimossoOmbrellone += Controller_ModifiedNumberOmbrellas;
             lblNumeroOmbrelloni.Content = "Numero ombrelloni: 0";
+
+            int year = DateTime.Now.Year;
+            dtpCalendar.DisplayDateStart = new DateTime(year, 6, 1);
+            dtpCalendar.DisplayDateEnd = new DateTime(year, 9, 30);
         }
 
         private const double MinimumSpacing = 17; // Spazio minimo tra gli ombrelloni
@@ -68,7 +72,7 @@ namespace WpfApp1.view
                 // Imposta la posizione dell'ombrello
                 Canvas.SetLeft(newCheckBox, currentLeft);
                 Canvas.SetTop(newCheckBox, currentTop);
-                
+
                 if (currentLeft + UmbrellaSize + MinimumSpacing > spiaggiaCanvas.ActualWidth - EdgeSpacing)
                 {
                     // Passa alla riga successiva
@@ -91,7 +95,7 @@ namespace WpfApp1.view
 
                 // Aggiunta dell'ombrellone nella lista di ombrelloni mediante il controller
                 controller.AggiungiOmbrellone(numeroRiga, numeroColonna);
-                var rigaEcolonna = (numeroRiga, numeroColonna);
+                (int numeroRiga, int numeroColonna) rigaEcolonna = (numeroRiga, numeroColonna);
                 newCheckBox.Tag = rigaEcolonna;
                 _ = spiaggiaCanvas.Children.Add(newCheckBox); // Aggiungi l'ombrello al Canvas
 
@@ -131,7 +135,7 @@ namespace WpfApp1.view
                     {
                         if (item.IsChecked == true)
                         {
-                            var rigaEColonna = (ValueTuple<int, int>)item.Tag;
+                            (int, int) rigaEColonna = (ValueTuple<int, int>)item.Tag;
                             controller.DisdiciOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2);
                             image.Source = new BitmapImage(new Uri("../resources/umbrella_icon.png", UriKind.Relative));
                         }
@@ -155,9 +159,26 @@ namespace WpfApp1.view
                     {
                         if (item.IsChecked == true)
                         {
-                            var rigaEColonna = (ValueTuple<int, int>)item.Tag;
-                            controller.PrenotaOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2);
-                            image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
+                            // mostrare la cosa per decidere la durata della prenotazione
+                            (int, int) rigaEColonna = (ValueTuple<int, int>)item.Tag;
+                            int riga = rigaEColonna.Item1;
+                            int colonna = rigaEColonna.Item2;
+                            SelectDateDialog dialog = new SelectDateDialog();
+                            
+                            if (dialog.ShowDialog() == true)
+                            {
+                                DateTime dataInizio = dialog.DataInizio;
+                                DateTime dataFine = dialog.DataFine;
+                                if (controller.ControlloOmbrelloneLibero(riga, colonna, dataInizio, dataFine))
+                                {
+                                    controller.PrenotaOmbrellone(riga, colonna, dataInizio, dataFine);
+                                    image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
+                                }
+                                else
+                                {
+                                    _ = MessageBox.Show("Stai tentando di prenotare un ombrellone che risulta già prenotato quel periodo.", "Errore", MessageBoxButton.OK, MessageBoxImage.Error);
+                                }
+                            }
                         }
                     }
                     item.IsChecked = false;
@@ -175,7 +196,7 @@ namespace WpfApp1.view
             {
                 foreach (CheckBox item in spiaggiaCanvas.Children.OfType<CheckBox>().Where(cb => cb.IsChecked == true).ToList())
                 {
-                    var rigaEColonna = (ValueTuple<int, int>)item.Tag;
+                    (int, int) rigaEColonna = (ValueTuple<int, int>)item.Tag;
                     controller.RimuoviOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2);
                     spiaggiaCanvas.Children.Remove(item);
                 }
