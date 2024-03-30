@@ -10,8 +10,8 @@ newsletter) e i clienti avvisati possono essere avvisati di 0 o N eventi.
 CLIENTE (1, N) - (1, 1) PRENOTAZIONE => una prenotazione può essere fatta da solo un cliente, mentre un cliente può fare da 1 a N 
 prenotazioni (non parto da 0 perche per essere registrato come cliente significa che ha fatto almeno una prenotazione)
 
-PRENOTAZIONE_OMBRELLONE (1, N) -  (1, 1) OMBRELLONE => una prenotazione_ombrellone può essere fatta per pronotare da 1 a N ombrelloni
-mentre se prenoto un ombrellone, esso sarà legato solo a quella prenotazione (per l'arco di tempo della prenotazione)
+PRENOTAZIONE_OMBRELLONE (1, N) -  (1, N) OMBRELLONE => una prenotazione_ombrellone può essere fatta per pronotare da 1 a N ombrelloni
+e se prenoto un ombrellone, esso può far parte anche di più prenotazioni (per periodi di tempo diversi)
 
 PRENOTAZIONE_TAVOLO (1, N) - (1, N) TAVOLO => una prenotazione_tavolo può essere fatta per pronotare da 1 a N tavoli
 mentre se prenoto un tavolo esso può comunque far parte di un'altra prenotazione (una per il pranzo e una per la cena)
@@ -35,3 +35,7 @@ e che un tavolo sia univocamente prenotato in un determinato giorno per un deter
 
 - va bene come ho gestito il fatto che se il cliente fa una prenotazione per la durata >= di un mese, il cliente dovrà fornire un documento
 e quindi la chiave del cliente sarà il cod_documento (come spiegato in pagina 52 del pdf sull'ER)
+
+- vanno bene le chiavi sulle prenotazioni?
+
+DA FARE SU PROGRAMMA:

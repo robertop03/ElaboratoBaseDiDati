@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -54,10 +55,21 @@ namespace WpfApp1.view
                 _ = MessageBox.Show("Non c'è abbastanza spazio per aggiungere un altro ombrellone.", "Spazio esaurito", MessageBoxButton.OK, MessageBoxImage.Error);
                 return; // Esci dal metodo
             }
-            MessageBoxResult result = MessageBox.Show("Vuoi davvero aggiungere un ombrellone?", "Conferma", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            TextBox prezzoTextBox = new TextBox();
+            prezzoTextBox.Text = "Inserisci il prezzo giornaliero...";
+            prezzoTextBox.GotFocus += (s, args) => prezzoTextBox.Text = "";
+
+            // Creazione della finestra di dialogo
+            StackPanel dialogPanel = new StackPanel();
+            dialogPanel.Children.Add(new TextBlock { Text = "Inserisci il prezzo giornaliero dell'ombrellone:" });
+            dialogPanel.Children.Add(prezzoTextBox);
+
+            ConfirmCreationUmbrella confirmCreationUmbrella = new ConfirmCreationUmbrella();
+            _ = confirmCreationUmbrella.ShowDialog();
 
             // Verifica della risposta dell'utente
-            if (result == MessageBoxResult.Yes)
+            if (confirmCreationUmbrella.Result)
             {
                 // Crea un nuovo ombrellone
 
@@ -94,7 +106,7 @@ namespace WpfApp1.view
                 }
 
                 // Aggiunta dell'ombrellone nella lista di ombrelloni mediante il controller
-                controller.AggiungiOmbrellone(numeroRiga, numeroColonna);
+                controller.AggiungiOmbrellone(numeroRiga, numeroColonna, confirmCreationUmbrella.PrezzoGiornaliero);
                 (int numeroRiga, int numeroColonna) rigaEcolonna = (numeroRiga, numeroColonna);
                 newCheckBox.Tag = rigaEcolonna;
                 _ = spiaggiaCanvas.Children.Add(newCheckBox); // Aggiungi l'ombrello al Canvas
@@ -164,7 +176,7 @@ namespace WpfApp1.view
                             int riga = rigaEColonna.Item1;
                             int colonna = rigaEColonna.Item2;
                             SelectDateDialog dialog = new SelectDateDialog();
-                            
+
                             if (dialog.ShowDialog() == true)
                             {
                                 DateTime dataInizio = dialog.DataInizio;
@@ -188,6 +200,35 @@ namespace WpfApp1.view
             {
                 _ = MessageBox.Show("Seleziona l'ombrellone da prenotare.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
+
+        private void dtpCalendar_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DateTime dataSelezionata = dtpCalendar.SelectedDate.Value;
+            List<(int, int)> ombrelloniPrenotati = controller.OmbrelloniPrenotati(dataSelezionata);
+            foreach (CheckBox checkBox in spiaggiaCanvas.Children.OfType<CheckBox>())
+            {
+                (int numeroRiga, int numeroColonna) = ((int, int))checkBox.Tag;
+                if (ombrelloniPrenotati.Contains((numeroRiga, numeroColonna)))
+                {
+                    if (checkBox.Content is Image image)
+                    {
+                        image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
+                    }
+                }
+                else
+                {
+                    if (checkBox.Content is Image image)
+                    {
+                        image.Source = new BitmapImage(new Uri("../resources/umbrella_icon.png", UriKind.Relative));
+                    }
+                }
+            }
+        }
+
+        private void btnInfoOmbrellone_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         private void btnRimuoviOmbrellone_Click(object sender, RoutedEventArgs e)

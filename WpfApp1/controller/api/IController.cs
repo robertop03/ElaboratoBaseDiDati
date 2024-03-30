@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WpfApp1.model.impl;
 
 namespace WpfApp1.controller.api
 {
     internal interface IController
     {
-        void AggiungiOmbrellone(int numeroRiga, int numeroColonna);
+        void AggiungiOmbrellone(int numeroRiga, int numeroColonna, double prezzoGiornaliero);
 
         void AggiungiTavolo(int idTavolo, int numeroPosti);
 
@@ -35,7 +30,7 @@ namespace WpfApp1.controller.api
 
         string InfoTavolo();
 
-        string InfoOmbrellone();
+        string InfoOmbrellone(int riga, int colonna);
 
     }
 }

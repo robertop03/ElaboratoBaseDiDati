@@ -10,10 +10,10 @@
         ShowInTaskbar="False"  WindowStyle="None">
     <Grid>
         <Label Content="Seleziona il numero di posti a sedere:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10"/>
-        <ComboBox x:Name="cmbNumeroPosti" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,41,0,0" Width="120" ItemsSource="{Binding SeatsOptions}" SelectedIndex="0"/>
-        <Button x:Name="btnSiCreazioneTavolo" Content="Sì" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,164.6,10.4" Width="75" Click="btnSiCreazioneTavolo_Click"/>
+        <ComboBox x:Name="cmbNumeroPosti"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,41,0,0" Width="120" ItemsSource="{Binding SeatsOptions}" SelectedIndex="0"/>
+        <Button x:Name="btnSiCreazioneTavolo" Style="{StaticResource CustomButtonStyle}" Content="Sì" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,164.6,10.4" Width="75" Click="btnSiCreazioneTavolo_Click"/>
         
         <Label Content="Vuoi davvero aggiungere un tavolo?" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,79,0,0"/>
-        <Button x:Name="btnNoCreazioneTavolo" Content="No" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,50.6,10.4" Width="75" Click="btnNoCreazioneTavolo_Click" />
+        <Button x:Name="btnNoCreazioneTavolo" Style="{StaticResource CustomButtonStyle}" Content="No" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,50.6,10.4" Width="75" Click="btnNoCreazioneTavolo_Click" />
     </Grid>
 </Window>

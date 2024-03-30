@@ -59,12 +59,17 @@
     <Compile Include="controller\impl\ControllerImpl.cs" />
     <Compile Include="model\api\IOmbrellone.cs" />
     <Compile Include="model\api\ITavolo.cs" />
+    <Compile Include="model\impl\Cliente.cs" />
+    <Compile Include="model\impl\Documento.cs" />
     <Compile Include="model\impl\Evento.cs" />
     <Compile Include="model\impl\Ombrellone.cs" />
     <Compile Include="model\impl\Ospite.cs" />
     <Compile Include="model\impl\Persona.cs" />
     <Compile Include="model\impl\Prenotazione.cs" />
     <Compile Include="model\impl\Tavolo.cs" />
+    <Compile Include="view\ConfirmCreationUmbrella.xaml.cs">
+      <DependentUpon>ConfirmCreationUmbrella.xaml</DependentUpon>
+    </Compile>
     <Compile Include="view\SelectDateDialog.xaml.cs">
       <DependentUpon>SelectDateDialog.xaml</DependentUpon>
     </Compile>
@@ -92,6 +97,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="view\ConfirmCreationUmbrella.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="view\SelectDateDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -142,9 +151,6 @@
   <ItemGroup>
     <Resource Include="resources\table_icon.png" />
     <Resource Include="resources\umbrella_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="view\umbrella_icon.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="resources\umbrella_icon_booked.png" />

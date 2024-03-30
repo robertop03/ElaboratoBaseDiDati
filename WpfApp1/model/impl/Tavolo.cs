@@ -20,6 +20,5 @@ namespace WpfApp1.model.impl
             infoTavolo += "numero posti: " + NumeroPosti;
             return infoTavolo;
         }
-
     }
 }
