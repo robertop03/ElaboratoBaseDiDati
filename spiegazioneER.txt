@@ -39,3 +39,7 @@ e quindi la chiave del cliente sarà il cod_documento (come spiegato in pagina 5
 - vanno bene le chiavi sulle prenotazioni?
 
 DA FARE SU PROGRAMMA:
+se la prenotazione dura con un tempo >= giorni, deve aprire nella window dei dati appare la cosa per inserire i dati del documento, altrimenti no
+registrare il codiceFiscale del Cliente nella Prenotazione
+mettere apposto la proposta del progetto sul sito virtuale
+gestire il numero di ospiti per il quale si prenota

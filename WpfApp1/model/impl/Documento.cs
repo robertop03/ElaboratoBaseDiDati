@@ -5,7 +5,7 @@ namespace WpfApp1.model.impl
     public enum TipoDocumento
     {
         Patente,
-        CartaIdentita,
+        CartaIdentità,
         Passaporto
     }
 

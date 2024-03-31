@@ -56,20 +56,11 @@ namespace WpfApp1.view
                 return; // Esci dal metodo
             }
 
-            TextBox prezzoTextBox = new TextBox();
-            prezzoTextBox.Text = "Inserisci il prezzo giornaliero...";
-            prezzoTextBox.GotFocus += (s, args) => prezzoTextBox.Text = "";
-
-            // Creazione della finestra di dialogo
-            StackPanel dialogPanel = new StackPanel();
-            dialogPanel.Children.Add(new TextBlock { Text = "Inserisci il prezzo giornaliero dell'ombrellone:" });
-            dialogPanel.Children.Add(prezzoTextBox);
-
             ConfirmCreationUmbrella confirmCreationUmbrella = new ConfirmCreationUmbrella();
             _ = confirmCreationUmbrella.ShowDialog();
 
             // Verifica della risposta dell'utente
-            if (confirmCreationUmbrella.Result)
+            if (confirmCreationUmbrella.Result && !double.IsNaN(confirmCreationUmbrella.PrezzoGiornaliero))
             {
                 // Crea un nuovo ombrellone
 
@@ -181,8 +172,13 @@ namespace WpfApp1.view
                             {
                                 DateTime dataInizio = dialog.DataInizio;
                                 DateTime dataFine = dialog.DataFine;
+                                CreationClientDialog creationClientDialog = new CreationClientDialog(dataInizio, dataFine);
                                 if (controller.ControlloOmbrelloneLibero(riga, colonna, dataInizio, dataFine))
                                 {
+                                    if (creationClientDialog.ShowDialog() == true)
+                                    {
+                                        //controller.AggiungiCliente()
+                                    }
                                     controller.PrenotaOmbrellone(riga, colonna, dataInizio, dataFine);
                                     image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
                                 }

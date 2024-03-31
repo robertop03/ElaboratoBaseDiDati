@@ -11,6 +11,7 @@ namespace WpfApp1.controller.impl
         public ObservableCollection<Ombrellone> ListaOmbrelloni { get; set; }
         public ObservableCollection<Tavolo> ListaTavoli { get; set; }
         public ObservableCollection<Prenotazione> ListaPrenotazioniOmbrelloni { get; set; }
+        public ObservableCollection<Cliente> ListaClienti { get; set; }
 
         public event EventHandler AggiuntoOmbrellone;
         public event EventHandler RimossoOmbrellone;
@@ -66,8 +67,8 @@ namespace WpfApp1.controller.impl
             {
                 if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
                 {
-                    Prenotazione prenotazione = new Prenotazione(dataInzio, dataFine, numeroRiga, numeroColonna);
-                    ListaPrenotazioniOmbrelloni.Add(prenotazione);
+                    // Prenotazione prenotazione = new Prenotazione(dataInzio, dataFine, numeroRiga, numeroColonna);
+                    //ListaPrenotazioniOmbrelloni.Add(prenotazione);
                 }
             }
         }
@@ -157,6 +158,12 @@ namespace WpfApp1.controller.impl
             string info = "";
 
             return info;
+        }
+
+        public void AggiungiCliente(string nome, string cognome, string numeroTelefono, int numeroPersoneOspiti, string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale)
+        {
+            Cliente cliente = new Cliente(numeroPersoneOspiti, città, via, civico, email, codiceDocumento, codiceFiscale, nome, cognome, numeroTelefono);
+            ListaClienti.Add(cliente);
         }
     }
 }

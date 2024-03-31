@@ -7,13 +7,13 @@ namespace WpfApp1.view
     /// </summary>
     public partial class ConfirmCreationUmbrella : Window
     {
-        public double PrezzoGiornaliero { get; private set; }
+        public double PrezzoGiornaliero { get; private set; } = double.NaN;
         public bool Result { get; private set; }
 
         public ConfirmCreationUmbrella()
         {
             InitializeComponent();
-            txtPrezzo.Focus();
+            _ = txtPrezzo.Focus();
             txtPrezzo.SelectAll();
         }
 
@@ -22,7 +22,7 @@ namespace WpfApp1.view
             if (double.TryParse(txtPrezzo.Text, out double prezzo) && prezzo >= 5 && prezzo <= 100)
             {
                 PrezzoGiornaliero = prezzo;
-                DialogResult = true; // Chiudi la finestra di dialogo con DialogResult true
+                DialogResult = true;
             }
             else
             {
@@ -37,6 +37,5 @@ namespace WpfApp1.view
             Result = false;
             Close();
         }
-
     }
 }

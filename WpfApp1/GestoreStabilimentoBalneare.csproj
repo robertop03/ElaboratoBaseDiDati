@@ -70,6 +70,9 @@
     <Compile Include="view\ConfirmCreationUmbrella.xaml.cs">
       <DependentUpon>ConfirmCreationUmbrella.xaml</DependentUpon>
     </Compile>
+    <Compile Include="view\CreationClientDialog.xaml.cs">
+      <DependentUpon>CreationClientDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="view\SelectDateDialog.xaml.cs">
       <DependentUpon>SelectDateDialog.xaml</DependentUpon>
     </Compile>
@@ -98,6 +101,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="view\ConfirmCreationUmbrella.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="view\CreationClientDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

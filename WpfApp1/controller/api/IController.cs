@@ -16,6 +16,8 @@ namespace WpfApp1.controller.api
 
         bool ControlloOmbrelloneLibero(int numeroRiga, int numeroColonna, DateTime dataInzio, DateTime dataFine);
 
+        void AggiungiCliente(string nome, string cognome, string numeroTelefono, int numeroPersoneOspiti, string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale);
+
         // bool ControlloTavoloLibero();
 
         void PrenotaTavolo(int idTavolo);
