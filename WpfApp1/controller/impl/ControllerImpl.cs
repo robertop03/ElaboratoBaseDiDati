@@ -10,7 +10,8 @@ namespace WpfApp1.controller.impl
     {
         public ObservableCollection<Ombrellone> ListaOmbrelloni { get; set; }
         public ObservableCollection<Tavolo> ListaTavoli { get; set; }
-        public ObservableCollection<Prenotazione> ListaPrenotazioniOmbrelloni { get; set; }
+        public ObservableCollection<PrenotazioneOmbrellone> ListaPrenotazioniOmbrelloni { get; set; }
+        public ObservableCollection<PrenotazioneTavolo> ListaPrenotazioniTavoli { get; set; }
         public ObservableCollection<Cliente> ListaClienti { get; set; }
 
         public event EventHandler AggiuntoOmbrellone;
@@ -22,7 +23,9 @@ namespace WpfApp1.controller.impl
         {
             ListaOmbrelloni = new ObservableCollection<Ombrellone>();
             ListaTavoli = new ObservableCollection<Tavolo>();
-            ListaPrenotazioniOmbrelloni = new ObservableCollection<Prenotazione>();
+            ListaPrenotazioniOmbrelloni = new ObservableCollection<PrenotazioneOmbrellone>();
+            ListaClienti = new ObservableCollection<Cliente>();
+            ListaPrenotazioniTavoli = new ObservableCollection<PrenotazioneTavolo>();
         }
 
         public void AggiungiOmbrellone(int numeroRiga, int numeroColonna, double prezzoGiornaliero)
@@ -39,36 +42,34 @@ namespace WpfApp1.controller.impl
             AggiuntoTavolo?.Invoke(this, EventArgs.Empty);
         }
 
-        public void DisdiciOmbrellone(int numeroRiga, int numeroColonna)
+        public void DisdiciOmbrellone(DateTime dataInizio, DateTime dataFine, int numeroRiga, int numeroColonna)
+        {
+            foreach (PrenotazioneOmbrellone prenotazione in ListaPrenotazioniOmbrelloni)
+            {
+                if (prenotazione.DataInizio == dataInizio &&
+                    prenotazione.DataFine == dataFine &&
+                    prenotazione.RigaOmbrellonePrenotato == numeroRiga &&
+                    prenotazione.ColonnaOmbrellonePrenotato == numeroColonna)
+                {
+                    _ = ListaPrenotazioniOmbrelloni.Remove(prenotazione);
+                    break;
+                }
+            }
+        }
+
+        public void DisdiciTavolo(int idTavolo, DateTime data, string pasto)
+        {
+
+        }
+
+        public void PrenotaOmbrellone(int numeroRiga, int numeroColonna, DateTime dataInzio, DateTime dataFine, string codiceFiscalePrenotante)
         {
             for (int i = ListaOmbrelloni.Count - 1; i >= 0; i--)
             {
                 if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
                 {
-                    // ListaOmbrelloni[i].Disdici();
-                }
-            }
-        }
-
-        public void DisdiciTavolo(int idTavolo)
-        {
-            for (int i = ListaTavoli.Count - 1; i >= 0; i--)
-            {
-                if (ListaTavoli[i].IdTavolo == idTavolo)
-                {
-                    // ListaTavoli[i].Disdici();
-                }
-            }
-        }
-
-        public void PrenotaOmbrellone(int numeroRiga, int numeroColonna, DateTime dataInzio, DateTime dataFine)
-        {
-            for (int i = ListaOmbrelloni.Count - 1; i >= 0; i--)
-            {
-                if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
-                {
-                    // Prenotazione prenotazione = new Prenotazione(dataInzio, dataFine, numeroRiga, numeroColonna);
-                    //ListaPrenotazioniOmbrelloni.Add(prenotazione);
+                    PrenotazioneOmbrellone prenotazione = new PrenotazioneOmbrellone(dataInzio, dataFine, numeroRiga, numeroColonna, codiceFiscalePrenotante);
+                    ListaPrenotazioniOmbrelloni.Add(prenotazione);
                 }
             }
         }
@@ -128,7 +129,7 @@ namespace WpfApp1.controller.impl
         {
             List<(int, int)> ombrelloniPrenotati = new List<(int, int)>();
 
-            foreach (Prenotazione prenotazione in ListaPrenotazioniOmbrelloni)
+            foreach (PrenotazioneOmbrellone prenotazione in ListaPrenotazioniOmbrelloni)
             {
                 if (data.Date >= prenotazione.DataInizio.Date && data.Date <= prenotazione.DataFine.Date)
                 {
@@ -138,9 +139,24 @@ namespace WpfApp1.controller.impl
             return ombrelloniPrenotati;
         }
 
-        public int GetNumeroTavoli()
+        public void AggiungiCliente(string nome, string cognome, string numeroTelefono, int numeroPersoneOspiti, string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale)
         {
-            return ListaTavoli.Count;
+            Cliente cliente = new Cliente(numeroPersoneOspiti, città, via, civico, email, codiceDocumento, codiceFiscale, nome, cognome, numeroTelefono);
+            ListaClienti.Add(cliente);
+        }
+
+        public List<string> GetPrenotazioniOmbrellone(int numeroRiga, int numeroColonna)
+        {
+            List<string> toReturn = new List<string>();
+            foreach (PrenotazioneOmbrellone prenotazione in ListaPrenotazioniOmbrelloni)
+            {
+                if (prenotazione.RigaOmbrellonePrenotato == numeroRiga &&
+                    prenotazione.ColonnaOmbrellonePrenotato == numeroColonna)
+                {
+                    toReturn.Add("Pren. da: " + prenotazione.DataInizio.ToString("dd/MM/yyyy") + " a: " + prenotazione.DataFine.ToString("dd/MM/yyyy") + " da " + prenotazione.CodiceFiscalePrenotante);
+                }
+            }
+            return toReturn;
         }
 
         public int GetNumeroOmbrelloni()
@@ -148,22 +164,9 @@ namespace WpfApp1.controller.impl
             return ListaOmbrelloni.Count;
         }
 
-        public string InfoTavolo()
+        public int GetNumeroTavoli()
         {
-            throw new NotImplementedException();
-        }
-
-        public string InfoOmbrellone(int riga, int colonna)
-        {
-            string info = "";
-
-            return info;
-        }
-
-        public void AggiungiCliente(string nome, string cognome, string numeroTelefono, int numeroPersoneOspiti, string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale)
-        {
-            Cliente cliente = new Cliente(numeroPersoneOspiti, città, via, civico, email, codiceDocumento, codiceFiscale, nome, cognome, numeroTelefono);
-            ListaClienti.Add(cliente);
+            return ListaTavoli.Count;
         }
     }
 }

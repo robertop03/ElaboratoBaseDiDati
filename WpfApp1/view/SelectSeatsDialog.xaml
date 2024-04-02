@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="SelectSeatsDialog" Height="150" Width="250"
         ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
-        ShowInTaskbar="False"  WindowStyle="None">
+        WindowStyle="None">
     <Grid>
         <Label Content="Seleziona il numero di posti a sedere:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10"/>
         <ComboBox x:Name="cmbNumeroPosti"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,41,0,0" Width="120" ItemsSource="{Binding SeatsOptions}" SelectedIndex="0"/>

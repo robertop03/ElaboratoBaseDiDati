@@ -139,8 +139,17 @@ namespace WpfApp1.view
                         if (item.IsChecked == true)
                         {
                             (int, int) rigaEColonna = (ValueTuple<int, int>)item.Tag;
-                            controller.DisdiciOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2);
-                            image.Source = new BitmapImage(new Uri("../resources/umbrella_icon.png", UriKind.Relative));
+                            CancelBookingDialog cancelBookingDialog = new CancelBookingDialog(controller.GetPrenotazioniOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2))
+                            {
+                                NumeroRigaOmbrellone = rigaEColonna.Item1,
+                                NumeroColonnaOmbrellone = rigaEColonna.Item2
+                            };
+                            _ = cancelBookingDialog.ShowDialog();
+                            if (cancelBookingDialog.Result)
+                            {
+                                controller.DisdiciOmbrellone(cancelBookingDialog.DataInizio, cancelBookingDialog.DataFine, rigaEColonna.Item1, rigaEColonna.Item2);
+                                image.Source = new BitmapImage(new Uri("../resources/umbrella_icon.png", UriKind.Relative));
+                            }
                         }
                     }
                     item.IsChecked = false;
@@ -175,16 +184,23 @@ namespace WpfApp1.view
                                 CreationClientDialog creationClientDialog = new CreationClientDialog(dataInizio, dataFine);
                                 if (controller.ControlloOmbrelloneLibero(riga, colonna, dataInizio, dataFine))
                                 {
-                                    if (creationClientDialog.ShowDialog() == true)
+                                    _ = creationClientDialog.ShowDialog();
+                                    if (creationClientDialog.Result)
                                     {
-                                        //controller.AggiungiCliente()
+                                        controller.AggiungiCliente(creationClientDialog.Nome, creationClientDialog.Cognome, creationClientDialog.NumeroTelefono, creationClientDialog.NumeroPersonePrenotati, creationClientDialog.Città,
+                                            creationClientDialog.Via, creationClientDialog.NumeroCivico, creationClientDialog.Email, creationClientDialog.CodiceDocumento, creationClientDialog.CodiceFiscale);
+                                        controller.PrenotaOmbrellone(riga, colonna, dataInizio, dataFine, creationClientDialog.CodiceFiscale);
+                                        image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
+                                        _ = MessageBox.Show("Registrazione avvenuta con successo.", "Registrazione completata.", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                                     }
-                                    controller.PrenotaOmbrellone(riga, colonna, dataInizio, dataFine);
-                                    image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
+                                    else
+                                    {
+                                        _ = MessageBox.Show("Registrazione annullata.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                    }
                                 }
                                 else
                                 {
-                                    _ = MessageBox.Show("Stai tentando di prenotare un ombrellone che risulta già prenotato quel periodo.", "Errore", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    _ = MessageBox.Show("L'ombrellone risulta essere già prenotato in quel periodo.", "Errore", MessageBoxButton.OK, MessageBoxImage.Error);
                                 }
                             }
                         }
@@ -224,7 +240,21 @@ namespace WpfApp1.view
 
         private void btnInfoOmbrellone_Click(object sender, RoutedEventArgs e)
         {
-
+            if (spiaggiaCanvas.Children.OfType<CheckBox>().Any(cb => cb.IsChecked == true))
+            {
+                foreach (CheckBox item in spiaggiaCanvas.Children.OfType<CheckBox>().Where(cb => cb.IsChecked == true).ToList())
+                {
+                    (int, int) rigaEColonna = (ValueTuple<int, int>)item.Tag;
+                    List<string> info = controller.GetPrenotazioniOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2);
+                    string infoString = string.Join(Environment.NewLine, info);
+                    if (info.Count == 0) { infoString = "L'ombrellone non risulta prenotato."; }
+                    _ = MessageBox.Show(infoString, "Informazioni Ombrellone fila " + rigaEColonna.Item1 + ", colonna " + rigaEColonna.Item2, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            else
+            {
+                _ = MessageBox.Show("Seleziona l'ombrellone di cui avere le informazioni.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void btnRimuoviOmbrellone_Click(object sender, RoutedEventArgs e)

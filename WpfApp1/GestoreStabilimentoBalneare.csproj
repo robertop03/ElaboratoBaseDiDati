@@ -65,8 +65,12 @@
     <Compile Include="model\impl\Ombrellone.cs" />
     <Compile Include="model\impl\Ospite.cs" />
     <Compile Include="model\impl\Persona.cs" />
-    <Compile Include="model\impl\Prenotazione.cs" />
+    <Compile Include="model\impl\PrenotazioneOmbrellone.cs" />
+    <Compile Include="model\impl\PrenotazioneTavolo.cs" />
     <Compile Include="model\impl\Tavolo.cs" />
+    <Compile Include="view\CancelBookingDialog.xaml.cs">
+      <DependentUpon>CancelBookingDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="view\ConfirmCreationUmbrella.xaml.cs">
       <DependentUpon>ConfirmCreationUmbrella.xaml</DependentUpon>
     </Compile>
@@ -100,6 +104,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="view\CancelBookingDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="view\ConfirmCreationUmbrella.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

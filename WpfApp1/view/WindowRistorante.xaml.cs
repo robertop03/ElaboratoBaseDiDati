@@ -123,7 +123,7 @@ namespace WpfApp1.view
                     {
                         if (item.IsChecked == true)
                         {
-                            controller.DisdiciTavolo((int)item.Tag);
+                            // controller.DisdiciTavolo((int)item.Tag);
                             image.Source = new BitmapImage(new Uri("../resources/table_icon.png", UriKind.Relative));
                         }
                     }

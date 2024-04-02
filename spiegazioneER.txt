@@ -7,13 +7,16 @@ partecipare a 0 o N eventi.
 EVENTO (0, N) - (0, N) CLIENTE => non tutti i clienti sono avvisati degli eventi (solo quelli iscritti alla 
 newsletter) e i clienti avvisati possono essere avvisati di 0 o N eventi.
 
-CLIENTE (1, N) - (1, 1) PRENOTAZIONE => una prenotazione può essere fatta da solo un cliente, mentre un cliente può fare da 1 a N 
+CLIENTE (1, N) - (1, 1) PRENOTAZIONE_OMBRELLONE => una prenotazione ombrellone può essere fatta da solo un cliente, mentre un cliente può fare da 1 a N 
 prenotazioni (non parto da 0 perche per essere registrato come cliente significa che ha fatto almeno una prenotazione)
 
-PRENOTAZIONE_OMBRELLONE (1, N) -  (1, N) OMBRELLONE => una prenotazione_ombrellone può essere fatta per pronotare da 1 a N ombrelloni
+CLIENTE (1, N) - (1, 1) PRENOTAZIONE_TAVOLO => una prenotazione tavolo può essere fatta da solo un cliente, mentre un cliente può fare da 1 a N 
+prenotazioni
+
+PRENOTAZIONE_OMBRELLONE (1, 1) -  (1, N) OMBRELLONE => una prenotazione_ombrellone può essere fatta per pronotare da 1 ombrellone
 e se prenoto un ombrellone, esso può far parte anche di più prenotazioni (per periodi di tempo diversi)
 
-PRENOTAZIONE_TAVOLO (1, N) - (1, N) TAVOLO => una prenotazione_tavolo può essere fatta per pronotare da 1 a N tavoli
+PRENOTAZIONE_TAVOLO (1, 1) - (1, N) TAVOLO => una prenotazione_tavolo può essere fatta per pronotare da 1 a N tavoli
 mentre se prenoto un tavolo esso può comunque far parte di un'altra prenotazione (una per il pranzo e una per la cena)
 
 TAVOLO (1, N) - (1, 1) ORDINE => un tavolo può effettuare da 1 a N ordini ma un ordine appartiene solo ad un tavolo
@@ -21,6 +24,8 @@ ovvero 2 tavoli diversi non possono effettuare lo stesso ordine (magari hanno st
 
 ORDINE (0, N) - (0,N) MENU => in ogni ordine vi possono essere da 0 a N MENU, mentre ogni MENU può essere presente in 0 o N ordini
 (ho messo 0 perché un menu potrebbe anche non essere mai ordinato)
+
+ORDINE (0, N) - (0,N) PIATTO => ogni ordine può contenere da 0 a N piatti, mentre ogni piatto può essere contenuto da 0 a N ordini
 
 MENU (1, N) - (2, N) PIATTO => un piatto può appartenere a più menu, e un menu contiene
 da 2 a N piatti
@@ -39,7 +44,5 @@ e quindi la chiave del cliente sarà il cod_documento (come spiegato in pagina 5
 - vanno bene le chiavi sulle prenotazioni?
 
 DA FARE SU PROGRAMMA:
-se la prenotazione dura con un tempo >= giorni, deve aprire nella window dei dati appare la cosa per inserire i dati del documento, altrimenti no
-registrare il codiceFiscale del Cliente nella Prenotazione
-mettere apposto la proposta del progetto sul sito virtuale
-gestire il numero di ospiti per il quale si prenota
+- quando l'utente va a premere disdici per poter disdire una prenotazione, gli appariranno tutte le prenotazione di quell'ombrellone e gli si darà la possibilità di decidere quale disdire
+- mettere anche prezzoGiornaliero nelle info dell'ombrellone
