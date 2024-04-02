@@ -44,5 +44,4 @@ e quindi la chiave del cliente sarà il cod_documento (come spiegato in pagina 5
 - vanno bene le chiavi sulle prenotazioni?
 
 DA FARE SU PROGRAMMA:
-- quando l'utente va a premere disdici per poter disdire una prenotazione, gli appariranno tutte le prenotazione di quell'ombrellone e gli si darà la possibilità di decidere quale disdire
 - mettere anche prezzoGiornaliero nelle info dell'ombrellone

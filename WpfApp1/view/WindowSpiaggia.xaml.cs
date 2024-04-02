@@ -139,16 +139,24 @@ namespace WpfApp1.view
                         if (item.IsChecked == true)
                         {
                             (int, int) rigaEColonna = (ValueTuple<int, int>)item.Tag;
-                            CancelBookingDialog cancelBookingDialog = new CancelBookingDialog(controller.GetPrenotazioniOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2))
+                            List<string> prenotazioni = controller.GetPrenotazioniOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2);
+                            if (prenotazioni.Count != 0)
                             {
-                                NumeroRigaOmbrellone = rigaEColonna.Item1,
-                                NumeroColonnaOmbrellone = rigaEColonna.Item2
-                            };
-                            _ = cancelBookingDialog.ShowDialog();
-                            if (cancelBookingDialog.Result)
+                                CancelBookingDialog cancelBookingDialog = new CancelBookingDialog(prenotazioni)
+                                {
+                                    NumeroRigaOmbrellone = rigaEColonna.Item1,
+                                    NumeroColonnaOmbrellone = rigaEColonna.Item2
+                                };
+                                _ = cancelBookingDialog.ShowDialog();
+                                if (cancelBookingDialog.Result)
+                                {
+                                    controller.DisdiciOmbrellone(cancelBookingDialog.DataInizio, cancelBookingDialog.DataFine, rigaEColonna.Item1, rigaEColonna.Item2);
+                                    image.Source = new BitmapImage(new Uri("../resources/umbrella_icon.png", UriKind.Relative));
+                                }
+                            }
+                            else
                             {
-                                controller.DisdiciOmbrellone(cancelBookingDialog.DataInizio, cancelBookingDialog.DataFine, rigaEColonna.Item1, rigaEColonna.Item2);
-                                image.Source = new BitmapImage(new Uri("../resources/umbrella_icon.png", UriKind.Relative));
+                                _ = MessageBox.Show("Non ci sono prenotazioni riguardanti l'ombrellone selezionato.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
                             }
                         }
                     }
@@ -171,7 +179,6 @@ namespace WpfApp1.view
                     {
                         if (item.IsChecked == true)
                         {
-                            // mostrare la cosa per decidere la durata della prenotazione
                             (int, int) rigaEColonna = (ValueTuple<int, int>)item.Tag;
                             int riga = rigaEColonna.Item1;
                             int colonna = rigaEColonna.Item2;
@@ -248,7 +255,7 @@ namespace WpfApp1.view
                     List<string> info = controller.GetPrenotazioniOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2);
                     string infoString = string.Join(Environment.NewLine, info);
                     if (info.Count == 0) { infoString = "L'ombrellone non risulta prenotato."; }
-                    _ = MessageBox.Show(infoString, "Informazioni Ombrellone fila " + rigaEColonna.Item1 + ", colonna " + rigaEColonna.Item2, MessageBoxButton.OK, MessageBoxImage.Information);
+                    _ = MessageBox.Show(infoString, "Informazioni Ombrellone fila " + rigaEColonna.Item1 + ", colonna " + rigaEColonna.Item2 + " Prezzo giornaliero: " + controller.GetPrezzoGiornalieroOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2).ToString() + "€", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             else

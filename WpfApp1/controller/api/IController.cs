@@ -20,6 +20,8 @@ namespace WpfApp1.controller.api
 
         List<string> GetPrenotazioniOmbrellone(int numeroRiga, int numeroColonna); // ogni elemento della lista è un toString contenente informazioni relative a 1 prenotazione fatta sull'ombrellone
 
+        double GetPrezzoGiornalieroOmbrellone(int numeroRiga, int numeroColonna);
+
         void AggiungiTavolo(int idTavolo, int numeroPosti);
 
         void RimuoviTavolo(int idTavolo);

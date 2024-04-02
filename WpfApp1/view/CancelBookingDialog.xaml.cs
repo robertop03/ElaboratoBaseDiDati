@@ -23,28 +23,36 @@ namespace WpfApp1.view
 
         private void btnConfermaDisdetta_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Sei sicuro di voler disdire questa prenotazione?", "Conferma Disdetta", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-            if (result == MessageBoxResult.Yes)
+            if (lstPrenotazioni.SelectedItem != null)
             {
-                string prenotazioneSelezionata = (string)lstPrenotazioni.SelectedItem;
-                int startIndex = prenotazioneSelezionata.IndexOf(':') + 2;
-                int endIndex = prenotazioneSelezionata.IndexOf(" a:") - 1;
+                MessageBoxResult result = MessageBox.Show("Sei sicuro di voler disdire questa prenotazione?", "Conferma Disdetta", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-                string startDateString = prenotazioneSelezionata.Substring(startIndex, 10);
-                string endDateString = prenotazioneSelezionata.Substring(endIndex + 5, 10);
-                DataInizio = DateTime.Parse(startDateString);
-                DataFine = DateTime.Parse(endDateString);
-                _ = MessageBox.Show("La prenotazione è stata disdetta con successo.", "Disdetta", MessageBoxButton.OK, MessageBoxImage.Information);
-                Result = true;
-                Close();
+                if (result == MessageBoxResult.Yes)
+                {
+                    string prenotazioneSelezionata = (string)lstPrenotazioni.SelectedItem;
+                    int startIndex = prenotazioneSelezionata.IndexOf(':') + 2;
+                    int endIndex = prenotazioneSelezionata.IndexOf(" a:") - 1;
+
+                    string startDateString = prenotazioneSelezionata.Substring(startIndex, 10);
+                    string endDateString = prenotazioneSelezionata.Substring(endIndex + 5, 10);
+                    DataInizio = DateTime.Parse(startDateString);
+                    DataFine = DateTime.Parse(endDateString);
+                    _ = MessageBox.Show("La prenotazione è stata disdetta con successo.", "Disdetta", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Result = true;
+                    Close();
+                }
+                else
+                {
+                    _ = MessageBox.Show("La disdetta è stata annullata.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    Result = false;
+                    Close();
+                }
             }
             else
             {
-                _ = MessageBox.Show("La disdetta è stata annullata", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                Result = false;
-                Close();
+                _ = MessageBox.Show("Selezionare prima una prenotazione da disdire", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
+            
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

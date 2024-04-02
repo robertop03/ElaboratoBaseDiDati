@@ -57,6 +57,18 @@ namespace WpfApp1.controller.impl
             }
         }
 
+        public double GetPrezzoGiornalieroOmbrellone(int numeroRiga, int numeroColonna)
+        {
+            for (int i = ListaOmbrelloni.Count - 1; i >= 0; i--)
+            {
+                if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
+                {
+                    return ListaOmbrelloni[i].PrezzoGiornaliero;
+                }
+            }
+            return double.NaN;
+        }
+
         public void DisdiciTavolo(int idTavolo, DateTime data, string pasto)
         {
 
