@@ -5,17 +5,16 @@ using System.Windows;
 namespace WpfApp1.view
 {
     /// <summary>
-    /// Logica di interazione per CancelBookingDialog.xaml
+    /// Logica di interazione per CancelBookingTablesDialog.xaml
     /// </summary>
-    public partial class CancelBookingDialog : Window
+    public partial class CancelBookingTablesDialog : Window
     {
-        public int NumeroRigaOmbrellone { private get; set; }
-        public int NumeroColonnaOmbrellone { private get; set; }
-        public DateTime DataInizio { get; set; }
-        public DateTime DataFine { get; set; }
+        public int IdTavolo { get; set; }
+        public DateTime Data { get; private set; }
+        public string Pasto { get; private set; }
         public bool Result { get; private set; }
 
-        public CancelBookingDialog(List<string> prenotazioni)
+        public CancelBookingTablesDialog(List<string> prenotazioni)
         {
             InitializeComponent();
             lstPrenotazioni.ItemsSource = prenotazioni;
@@ -30,15 +29,15 @@ namespace WpfApp1.view
                 if (result == MessageBoxResult.Yes)
                 {
                     string prenotazioneSelezionata = (string)lstPrenotazioni.SelectedItem;
-                    int startIndexPrimaData = prenotazioneSelezionata.IndexOf("da ") + "da ".Length;
-                    int endIndexPrimaData = prenotazioneSelezionata.IndexOf(" a ") - 1;
-                    string primaDataString = prenotazioneSelezionata.Substring(startIndexPrimaData, endIndexPrimaData - startIndexPrimaData + 1);
+                    int startIndex = prenotazioneSelezionata.IndexOf("il ") + "il ".Length;
+                    int endIndex = prenotazioneSelezionata.IndexOf(" a ") - 1;
+                    string dateString = prenotazioneSelezionata.Substring(startIndex, endIndex - startIndex + 1);
 
-                    int startIndexSecondaData = prenotazioneSelezionata.IndexOf(" a ") + " a ".Length;
-                    int endIndexSecondaData = prenotazioneSelezionata.LastIndexOf(" da ") - 1;
-                    string secondaDataString = prenotazioneSelezionata.Substring(startIndexSecondaData, endIndexSecondaData - startIndexSecondaData + 1);
-                    DataInizio = DateTime.Parse(primaDataString);
-                    DataFine = DateTime.Parse(secondaDataString);
+                    Data = DateTime.Parse(dateString);
+                    int startIndexPasto = prenotazioneSelezionata.IndexOf(" a ") + " a ".Length;
+                    string pastoParte = prenotazioneSelezionata.Substring(startIndexPasto);
+                    string[] partiPasto = pastoParte.Split(' ');
+                    Pasto = partiPasto[0];
                     _ = MessageBox.Show("La prenotazione è stata disdetta con successo.", "Disdetta", MessageBoxButton.OK, MessageBoxImage.Information);
                     Result = true;
                     Close();
@@ -54,12 +53,11 @@ namespace WpfApp1.view
             {
                 _ = MessageBox.Show("Selezionare prima una prenotazione da disdire", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
-            
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Title = "Prenotazioni - Ombrellone fila " + NumeroRigaOmbrellone + ", colonna " + NumeroColonnaOmbrellone;
+            Title = "Prenotazioni - Tavolo numero " + IdTavolo;
         }
     }
 }

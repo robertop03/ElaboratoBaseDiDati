@@ -44,4 +44,4 @@ e quindi la chiave del cliente sarà il cod_documento (come spiegato in pagina 5
 - vanno bene le chiavi sulle prenotazioni?
 
 DA FARE SU PROGRAMMA:
-- mettere anche prezzoGiornaliero nelle info dell'ombrellone
+- gestiere le disdette dei tavoli

@@ -14,5 +14,6 @@
         <Button x:Name="btnRimuoviTavolo" Style="{StaticResource CustomButtonStyle}" Content="Rimuovi tavolo" HorizontalAlignment="Left" Margin="708,422,0,0" Width="137" Height="35" VerticalAlignment="Top" Click="btnRimuoviTavolo_Click"/>
         <Button x:Name="btnDisdiciTavolo" Style="{StaticResource CustomButtonStyle}" Content="Disdici tavolo" HorizontalAlignment="Left" Margin="390,422,0,0" Width="137" Height="35" VerticalAlignment="Top" Click="btnDisdiciTavolo_Click" />
         <Button x:Name="btnPrenotaTavolo" Style="{StaticResource CustomButtonStyle}" Content="Prenota" HorizontalAlignment="Left" Margin="556,422,0,0" Width="137" Height="35" VerticalAlignment="Top" Click="btnPrenotaTavolo_Click"/>
+        <Button x:Name="btnInfoTavolo" Style="{StaticResource CustomButtonStyle}" Content="Info tavolo" HorizontalAlignment="Left" Margin="229,421,0,0" Width="137" Height="35" VerticalAlignment="Top" Click="btnInfoTavolo_Click" />
     </Grid>
 </Window>

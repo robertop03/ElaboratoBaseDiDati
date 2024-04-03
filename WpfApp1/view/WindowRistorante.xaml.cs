@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -73,7 +74,7 @@ namespace WpfApp1.view
                     FontSize = 10,
                     Foreground = Brushes.Black
                 };
-                
+
                 Canvas.SetLeft(seatsTextBlock, currentLeft + TableSize - seatsTextBlock.ActualWidth);
                 Canvas.SetTop(seatsTextBlock, currentTop + TableSize - seatsTextBlock.ActualHeight);
                 _ = salaCanvas.Children.Add(seatsTextBlock);
@@ -123,8 +124,26 @@ namespace WpfApp1.view
                     {
                         if (item.IsChecked == true)
                         {
-                            // controller.DisdiciTavolo((int)item.Tag);
-                            image.Source = new BitmapImage(new Uri("../resources/table_icon.png", UriKind.Relative));
+                            int idTavolo = (int)item.Tag;
+                            List<string> prenotazioni = controller.GetPrenotazioniTavolo(idTavolo);
+                            if (prenotazioni.Count != 0)
+                            {
+                                CancelBookingTablesDialog cancelBookingTablesDialog = new CancelBookingTablesDialog(prenotazioni)
+                                {
+                                    IdTavolo = idTavolo
+                                };
+
+                                _ = cancelBookingTablesDialog.ShowDialog();
+                                if (cancelBookingTablesDialog.Result)
+                                {
+                                    controller.DisdiciTavolo(cancelBookingTablesDialog.IdTavolo, cancelBookingTablesDialog.Data, cancelBookingTablesDialog.Pasto);
+                                    image.Source = new BitmapImage(new Uri("../resources/table_icon.png", UriKind.Relative));
+                                }
+                            }
+                            else
+                            {
+                                _ = MessageBox.Show("Non ci sono prenotazioni riguardanti il tavolo selezionato.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            }
                         }
                     }
                     item.IsChecked = false;
@@ -132,7 +151,7 @@ namespace WpfApp1.view
             }
             else
             {
-                _ = MessageBox.Show("Seleziona il tavolo da disdire.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _ = MessageBox.Show("Seleziona l'ombrellone da disdire.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -146,8 +165,41 @@ namespace WpfApp1.view
                     {
                         if (item.IsChecked == true)
                         {
-                            controller.PrenotaTavolo((int)item.Tag);
-                            image.Source = new BitmapImage(new Uri("../resources/table_icon_booked.png", UriKind.Relative));
+                            SelectSingolDate dialog = new SelectSingolDate();
+                            if (dialog.ShowDialog() == true)
+                            {
+                                DateTime data = dialog.Data;
+                                string pasto = dialog.Pasto;
+                                CreationClientDialog creationClientDialog = new CreationClientDialog();
+                                int idTavolo = (int)item.Tag;
+                                if (controller.ControlloTavoloLibero(idTavolo, data, pasto))
+                                {
+                                    _ = creationClientDialog.ShowDialog();
+                                    if (creationClientDialog.Result)
+                                    {
+                                        if (controller.NumeroPostiTavoloAdegueato(idTavolo, creationClientDialog.NumeroPersonePrenotati))
+                                        {
+                                            controller.AggiungiCliente(creationClientDialog.Nome, creationClientDialog.Cognome, creationClientDialog.NumeroTelefono, creationClientDialog.NumeroPersonePrenotati, creationClientDialog.Città,
+                                            creationClientDialog.Via, creationClientDialog.NumeroCivico, creationClientDialog.Email, creationClientDialog.CodiceDocumento, creationClientDialog.CodiceFiscale);
+                                            controller.PrenotaTavolo((int)item.Tag, data, pasto, creationClientDialog.CodiceFiscale);
+                                            image.Source = new BitmapImage(new Uri("../resources/table_icon_booked.png", UriKind.Relative));
+                                            _ = MessageBox.Show("Registrazione avvenuta con successo.", "Registrazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
+                                        }
+                                        else
+                                        {
+                                            _ = MessageBox.Show("Il tavolo non contiene posti sufficienti per il numero di persone.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _ = MessageBox.Show("Registrazione annullata.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                    }
+                                }
+                                else
+                                {
+                                    _ = MessageBox.Show("Il tavolo risulta essere già prenotato in quel periodo.", "Errore", MessageBoxButton.OK, MessageBoxImage.Error);
+                                }
+                            }
                         }
                     }
                     item.IsChecked = false;
@@ -156,6 +208,25 @@ namespace WpfApp1.view
             else
             {
                 _ = MessageBox.Show("Seleziona il tavolo da prenotare.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void btnInfoTavolo_Click(object sender, RoutedEventArgs e)
+        {
+            if (salaCanvas.Children.OfType<CheckBox>().Any(cb => cb.IsChecked == true))
+            {
+                foreach (CheckBox item in salaCanvas.Children.OfType<CheckBox>().Where(cb => cb.IsChecked == true).ToList())
+                {
+                    int idTavolo = (int)item.Tag;
+                    List<string> info = controller.GetPrenotazioniTavolo(idTavolo);
+                    string infoString = string.Join(Environment.NewLine, info);
+                    if (info.Count == 0) { infoString = "Il tavolo non risulta prenotato."; }
+                    _ = MessageBox.Show(infoString, "Informazioni Tavolo " + idTavolo, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            else
+            {
+                _ = MessageBox.Show("Seleziona il tavolo di cui avere le informazioni.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
     }

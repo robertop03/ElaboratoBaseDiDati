@@ -198,7 +198,7 @@ namespace WpfApp1.view
                                             creationClientDialog.Via, creationClientDialog.NumeroCivico, creationClientDialog.Email, creationClientDialog.CodiceDocumento, creationClientDialog.CodiceFiscale);
                                         controller.PrenotaOmbrellone(riga, colonna, dataInizio, dataFine, creationClientDialog.CodiceFiscale);
                                         image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
-                                        _ = MessageBox.Show("Registrazione avvenuta con successo.", "Registrazione completata.", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                        _ = MessageBox.Show("Registrazione avvenuta con successo.", "Registrazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
                                     }
                                     else
                                     {
@@ -255,7 +255,7 @@ namespace WpfApp1.view
                     List<string> info = controller.GetPrenotazioniOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2);
                     string infoString = string.Join(Environment.NewLine, info);
                     if (info.Count == 0) { infoString = "L'ombrellone non risulta prenotato."; }
-                    _ = MessageBox.Show(infoString, "Informazioni Ombrellone fila " + rigaEColonna.Item1 + ", colonna " + rigaEColonna.Item2 + " Prezzo giornaliero: " + controller.GetPrezzoGiornalieroOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2).ToString() + "€", MessageBoxButton.OK, MessageBoxImage.Information);
+                    _ = MessageBox.Show(infoString, "Informazioni Ombrellone F: " + rigaEColonna.Item1 + ", C: " + rigaEColonna.Item2 + " Prezzo giornaliero: " + controller.GetPrezzoGiornalieroOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2).ToString() + "€", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             else

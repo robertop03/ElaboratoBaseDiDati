@@ -1,0 +1,34 @@
+﻿<Window x:Class="WpfApp1.view.SelectSingolDate"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1.view"
+        mc:Ignorable="d"
+        Title="SelectSingolDate" Height="150" Width="250">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Content="Data:"/>
+        <DatePicker x:Name="dtpData" Grid.Row="0" Grid.Column="1"  SelectedDate="{Binding Data}"/>
+
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10">
+            <RadioButton x:Name="radPranzo" Content="Pranzo" GroupName="TipoPrenotazione" Margin="5" IsChecked="True"/>
+            <RadioButton x:Name="radCena" Content="Cena" GroupName="TipoPrenotazione" Margin="5"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="12,0,10,20">
+            <Button x:Name="btnConfermaPrenotazione" Style="{StaticResource CustomButtonStyle}" Content="Conferma" Margin="5" Width="100" Height="30" Click="btnConfermaPrenotazione_Click"/>
+            <Button x:Name="btnAnnullaPrenotazione" Style="{StaticResource CustomButtonStyle}" Content="Annulla" Margin="5" Width="100" Height="30" Click="btnAnnullaPrenotazione_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

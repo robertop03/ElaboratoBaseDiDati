@@ -38,6 +38,14 @@ namespace WpfApp1.view
             }
         }
 
+        public CreationClientDialog()
+        {
+            InitializeComponent();
+            _ = txtCodiceFiscale.Focus();
+            Height -= grbDocumento.Height;
+            grbDocumento.Visibility = Visibility.Collapsed;
+        }
+
         private void btnConfermaCliente_Click(object sender, RoutedEventArgs e)
         {
             try
