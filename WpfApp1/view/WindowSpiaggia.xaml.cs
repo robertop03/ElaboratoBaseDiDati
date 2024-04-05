@@ -56,11 +56,9 @@ namespace WpfApp1.view
                 return; // Esci dal metodo
             }
 
-            ConfirmCreationUmbrella confirmCreationUmbrella = new ConfirmCreationUmbrella();
-            _ = confirmCreationUmbrella.ShowDialog();
+            MessageBoxResult result = MessageBox.Show("Sei sicuro di voler aggiungere un ombrellone?", "Conferma inserimento", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-            // Verifica della risposta dell'utente
-            if (confirmCreationUmbrella.Result && !double.IsNaN(confirmCreationUmbrella.PrezzoGiornaliero))
+            if (result == MessageBoxResult.Yes)
             {
                 // Crea un nuovo ombrellone
 
@@ -97,7 +95,7 @@ namespace WpfApp1.view
                 }
 
                 // Aggiunta dell'ombrellone nella lista di ombrelloni mediante il controller
-                controller.AggiungiOmbrellone(numeroRiga, numeroColonna, confirmCreationUmbrella.PrezzoGiornaliero);
+                controller.AggiungiOmbrellone(numeroRiga, numeroColonna);
                 (int numeroRiga, int numeroColonna) rigaEcolonna = (numeroRiga, numeroColonna);
                 newCheckBox.Tag = rigaEcolonna;
                 _ = spiaggiaCanvas.Children.Add(newCheckBox); // Aggiungi l'ombrello al Canvas
@@ -255,12 +253,23 @@ namespace WpfApp1.view
                     List<string> info = controller.GetPrenotazioniOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2);
                     string infoString = string.Join(Environment.NewLine, info);
                     if (info.Count == 0) { infoString = "L'ombrellone non risulta prenotato."; }
-                    _ = MessageBox.Show(infoString, "Informazioni Ombrellone F: " + rigaEColonna.Item1 + ", C: " + rigaEColonna.Item2 + " Prezzo giornaliero: " + controller.GetPrezzoGiornalieroOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2).ToString() + "€", MessageBoxButton.OK, MessageBoxImage.Information);
+                    _ = MessageBox.Show(infoString, "Informazioni Ombrellone F: " + rigaEColonna.Item1 + ", C: " + rigaEColonna.Item2, MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             else
             {
                 _ = MessageBox.Show("Seleziona l'ombrellone di cui avere le informazioni.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void btnImpostaPrezzi_Click(object sender, RoutedEventArgs e)
+        {
+            //
+            SetPricesDialog setPricesDialog = new SetPricesDialog();
+            _ = setPricesDialog.ShowDialog();
+            if (setPricesDialog.Result)
+            {
+                // TODO: Impostare i valori presi nel database
             }
         }
 

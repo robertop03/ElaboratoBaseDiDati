@@ -28,9 +28,9 @@ namespace WpfApp1.controller.impl
             ListaPrenotazioniTavoli = new ObservableCollection<PrenotazioneTavolo>();
         }
 
-        public void AggiungiOmbrellone(int numeroRiga, int numeroColonna, double prezzoGiornaliero)
+        public void AggiungiOmbrellone(int numeroRiga, int numeroColonna)
         {
-            Ombrellone ombrellone = new Ombrellone(numeroRiga, numeroColonna, prezzoGiornaliero);
+            Ombrellone ombrellone = new Ombrellone(numeroRiga, numeroColonna);
             ListaOmbrelloni.Add(ombrellone);
             AggiuntoOmbrellone?.Invoke(this, EventArgs.Empty);
         }
@@ -55,18 +55,6 @@ namespace WpfApp1.controller.impl
                     break;
                 }
             }
-        }
-
-        public double GetPrezzoGiornalieroOmbrellone(int numeroRiga, int numeroColonna)
-        {
-            for (int i = ListaOmbrelloni.Count - 1; i >= 0; i--)
-            {
-                if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
-                {
-                    return ListaOmbrelloni[i].PrezzoGiornaliero;
-                }
-            }
-            return double.NaN;
         }
 
         public void DisdiciTavolo(int idTavolo, DateTime data, string pasto)

@@ -13,6 +13,8 @@ prenotazioni (non parto da 0 perche per essere registrato come cliente significa
 CLIENTE (1, N) - (1, 1) PRENOTAZIONE_TAVOLO => una prenotazione tavolo può essere fatta da solo un cliente, mentre un cliente può fare da 1 a N 
 prenotazioni
 
+CLIENTE (0, N) - (1, 1) DOCUMENTO => ogni cliente può avere oppure no un documento, mentre un documento si riferisce ad un solo cliente
+
 PRENOTAZIONE_OMBRELLONE (1, 1) -  (1, N) OMBRELLONE => una prenotazione_ombrellone può essere fatta per pronotare da 1 ombrellone
 e se prenoto un ombrellone, esso può far parte anche di più prenotazioni (per periodi di tempo diversi)
 
@@ -30,18 +32,16 @@ ORDINE (0, N) - (0,N) PIATTO => ogni ordine può contenere da 0 a N piatti, ment
 MENU (1, N) - (2, N) PIATTO => un piatto può appartenere a più menu, e un menu contiene
 da 2 a N piatti
 
-
-DOMANDE:
-
-- come gestire le prenotazioni, in modo che ogni ombrellone sia univocamente prenotato in un determinato arco di tempo
-e che un tavolo sia univocamente prenotato in un determinato giorno per un determinato pasto (pranzo o cena)
-
-- ha senso la gerarchia su prenotazione? come gestisco il pasto?
-
-- va bene come ho gestito il fatto che se il cliente fa una prenotazione per la durata >= di un mese, il cliente dovrà fornire un documento
-e quindi la chiave del cliente sarà il cod_documento (come spiegato in pagina 52 del pdf sull'ER)
+OMBRELLONE (1, N) - (1, N) PREZZO 
+SU SCHEMA ER:
+Devo fare che il prezzo dell'ombrellone, varia dal mese in cui avviene la prenotazione => se bassa stagione (giugno, settembre) 
 
 - vanno bene le chiavi sulle prenotazioni?
 
 DA FARE SU PROGRAMMA:
-- gestiere le disdette dei tavoli
+- fare una sola window per mostrare il prezzario, se non ci sono ancora i valori nel db, mostrare un messaggio per indicare che sono da impostare
+poi con un pulsante modifica abilitare le textBox e con conferma attuare i cambiamenti nel database (quando ti confermano er)
+- gestione degli ordini nei tavoli 
+- gestione degli eventi e degli ospiti
+
+

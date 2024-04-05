@@ -5,7 +5,7 @@ namespace WpfApp1.controller.api
 {
     internal interface IController
     {
-        void AggiungiOmbrellone(int numeroRiga, int numeroColonna, double prezzoGiornaliero);
+        void AggiungiOmbrellone(int numeroRiga, int numeroColonna);
 
         void RimuoviOmbrellone(int numeroRiga, int numeroColonna);
 
@@ -18,8 +18,6 @@ namespace WpfApp1.controller.api
         int GetNumeroOmbrelloni();
 
         List<string> GetPrenotazioniOmbrellone(int numeroRiga, int numeroColonna); // ogni elemento della lista è un toString contenente informazioni relative a 1 prenotazione fatta sull'ombrellone
-
-        double GetPrezzoGiornalieroOmbrellone(int numeroRiga, int numeroColonna);
 
         void AggiungiTavolo(int idTavolo, int numeroPosti);
 

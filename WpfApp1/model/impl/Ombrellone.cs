@@ -6,13 +6,11 @@ namespace WpfApp1.model.impl
     {
         public int NumeroRiga { get; set; }
         public int NumeroColonna { get; set; }
-        public double PrezzoGiornaliero { get; set; }
 
-        public Ombrellone(int numeroRiga, int numeroColonna, double prezzoGiornaliero)
+        public Ombrellone(int numeroRiga, int numeroColonna)
         {
             NumeroRiga = numeroRiga;
             NumeroColonna = numeroColonna;
-            PrezzoGiornaliero = prezzoGiornaliero;
         }
 
         public string InfoOmbrellone()

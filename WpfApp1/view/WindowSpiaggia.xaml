@@ -11,10 +11,11 @@
         <Canvas Name="spiaggiaCanvas" Background="#F4A460"  Margin="0,20,0,49" MouseRightButtonDown="spiaggiaCanvas_MouseRightButtonDown">
         </Canvas>
         <Label x:Name="lblNumeroOmbrelloni" Content="Ombrelloni in spiaggia: {Binding Get}" HorizontalAlignment="Left" Margin="10,426,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="btnRimuoviOmbrellone" Style="{StaticResource CustomButtonStyle}" Content="Rimuovi ombrellone" HorizontalAlignment="Left" Margin="708,422,0,0" Width="137" Height="35" VerticalAlignment="Top" Click="btnRimuoviOmbrellone_Click"/>
-        <Button x:Name="btnPrenotaOmbrellone" Style="{StaticResource CustomButtonStyle}" Content="Prenota" HorizontalAlignment="Left" Margin="556,422,0,0" Width="137" Height="35" VerticalAlignment="Top" Click="btnPrenotaOmbrellone_Click"/>
-        <Button x:Name="btnDisdiciOmbrellone" Style="{StaticResource CustomButtonStyle}" Content="Disdici ombrellone" HorizontalAlignment="Left" Margin="414,422,0,0" Width="137" Height="35" VerticalAlignment="Top" Click="btnDisdiciOmbrellone_Click" />
+        <Button x:Name="btnRimuoviOmbrellone" Style="{StaticResource CustomButtonStyle}" Content="Rimuovi" HorizontalAlignment="Left" Margin="481,422,0,0" Width="77" Height="35" VerticalAlignment="Top" Click="btnRimuoviOmbrellone_Click"/>
+        <Button x:Name="btnPrenotaOmbrellone" Style="{StaticResource CustomButtonStyle}" Content="Prenota" HorizontalAlignment="Left" Margin="399,422,0,0" Width="77" Height="35" VerticalAlignment="Top" Click="btnPrenotaOmbrellone_Click"/>
+        <Button x:Name="btnDisdiciOmbrellone" Style="{StaticResource CustomButtonStyle}" Content="Disdici" HorizontalAlignment="Left" Margin="317,422,0,0" Width="77" Height="35" VerticalAlignment="Top" Click="btnDisdiciOmbrellone_Click" />
         <DatePicker x:Name="dtpCalendar" HorizontalAlignment="Left" Margin="10,-4,0,0" VerticalAlignment="Top" SelectedDateChanged="dtpCalendar_SelectedDateChanged"/>
-        <Button x:Name="btnInfoOmbrellone" Style="{StaticResource CustomButtonStyle}" Content="Info ombrellone" HorizontalAlignment="Left" Margin="272,422,0,0" Width="137" Height="35" VerticalAlignment="Top" Click="btnInfoOmbrellone_Click"/>
+        <Button x:Name="btnInfoOmbrellone" Style="{StaticResource CustomButtonStyle}" Content="Info" HorizontalAlignment="Left" Margin="235,422,0,0" Width="77" Height="35" VerticalAlignment="Top" Click="btnInfoOmbrellone_Click"/>
+        <Button x:Name="btnImpostaPrezzi" Style="{StaticResource CustomButtonStyle}" Content="Imposta prezzario" HorizontalAlignment="Left" Margin="734,421,0,0" Width="150" Height="35" VerticalAlignment="Top" Click="btnImpostaPrezzi_Click"/>
     </Grid>
 </Window>

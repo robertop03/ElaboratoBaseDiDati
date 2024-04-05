@@ -74,9 +74,6 @@
     <Compile Include="view\CancelBookingTablesDialog.xaml.cs">
       <DependentUpon>CancelBookingTablesDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="view\ConfirmCreationUmbrella.xaml.cs">
-      <DependentUpon>ConfirmCreationUmbrella.xaml</DependentUpon>
-    </Compile>
     <Compile Include="view\CreationClientDialog.xaml.cs">
       <DependentUpon>CreationClientDialog.xaml</DependentUpon>
     </Compile>
@@ -88,6 +85,9 @@
     </Compile>
     <Compile Include="view\SelectSingolDate.xaml.cs">
       <DependentUpon>SelectSingolDate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="view\SetPricesDialog.xaml.cs">
+      <DependentUpon>SetPricesDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="view\WindowBilanci.xaml.cs">
       <DependentUpon>WindowBilanci.xaml</DependentUpon>
@@ -118,10 +118,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="view\ConfirmCreationUmbrella.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="view\CreationClientDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -135,6 +131,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="view\SelectSingolDate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="view\SetPricesDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -11,9 +11,9 @@
         <Canvas Name="salaCanvas" Background="Wheat"  Margin="0,20,0,49" MouseRightButtonDown="salaCanvas_MouseRightButtonDown">
         </Canvas>
         <Label x:Name="lblNumeroTavoli" Content="Tavoli in sala: {Binding Get}" HorizontalAlignment="Left" Margin="10,426,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="btnRimuoviTavolo" Style="{StaticResource CustomButtonStyle}" Content="Rimuovi tavolo" HorizontalAlignment="Left" Margin="708,422,0,0" Width="137" Height="35" VerticalAlignment="Top" Click="btnRimuoviTavolo_Click"/>
-        <Button x:Name="btnDisdiciTavolo" Style="{StaticResource CustomButtonStyle}" Content="Disdici tavolo" HorizontalAlignment="Left" Margin="390,422,0,0" Width="137" Height="35" VerticalAlignment="Top" Click="btnDisdiciTavolo_Click" />
-        <Button x:Name="btnPrenotaTavolo" Style="{StaticResource CustomButtonStyle}" Content="Prenota" HorizontalAlignment="Left" Margin="556,422,0,0" Width="137" Height="35" VerticalAlignment="Top" Click="btnPrenotaTavolo_Click"/>
-        <Button x:Name="btnInfoTavolo" Style="{StaticResource CustomButtonStyle}" Content="Info tavolo" HorizontalAlignment="Left" Margin="229,421,0,0" Width="137" Height="35" VerticalAlignment="Top" Click="btnInfoTavolo_Click" />
+        <Button x:Name="btnRimuoviTavolo" Style="{StaticResource CustomButtonStyle}" Content="Rimuovi" HorizontalAlignment="Left" Margin="475,422,0,0" Width="77" Height="35" VerticalAlignment="Top" Click="btnRimuoviTavolo_Click"/>
+        <Button x:Name="btnDisdiciTavolo" Style="{StaticResource CustomButtonStyle}" Content="Disdici" HorizontalAlignment="Left" Margin="311,422,0,0" Width="77" Height="35" VerticalAlignment="Top" Click="btnDisdiciTavolo_Click" />
+        <Button x:Name="btnPrenotaTavolo" Style="{StaticResource CustomButtonStyle}" Content="Prenota" HorizontalAlignment="Left" Margin="393,422,0,0" Width="77" Height="35" VerticalAlignment="Top" Click="btnPrenotaTavolo_Click"/>
+        <Button x:Name="btnInfoTavolo" Style="{StaticResource CustomButtonStyle}" Content="Info" HorizontalAlignment="Left" Margin="229,421,0,0" Width="77" Height="35" VerticalAlignment="Top" Click="btnInfoTavolo_Click" />
     </Grid>
 </Window>
