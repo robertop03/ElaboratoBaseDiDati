@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 using WpfApp1.controller.api;
 using WpfApp1.model.impl;
 
@@ -13,11 +14,21 @@ namespace WpfApp1.controller.impl
         public ObservableCollection<PrenotazioneOmbrellone> ListaPrenotazioniOmbrelloni { get; set; }
         public ObservableCollection<PrenotazioneTavolo> ListaPrenotazioniTavoli { get; set; }
         public ObservableCollection<Cliente> ListaClienti { get; set; }
+        public ObservableCollection<Menu> ListaMenu { get; set; }
+        public ObservableCollection<Piatto> ListaPiatti { get; set; }
+        public ObservableCollection<Ordine> ListaOrdini { get; set; }
 
         public event EventHandler AggiuntoOmbrellone;
         public event EventHandler RimossoOmbrellone;
         public event EventHandler AggiuntoTavolo;
         public event EventHandler RimossoTavolo;
+        public event EventHandler AggiuntoPiatto;
+        public event EventHandler RimossoPiatto;
+        public event EventHandler AggiuntoMenu;
+        public event EventHandler RimossoMenu;
+
+        public static int IdMenu = 1;
+        public static int IdOrdine = 1;
 
         public ControllerImpl()
         {
@@ -26,6 +37,9 @@ namespace WpfApp1.controller.impl
             ListaPrenotazioniOmbrelloni = new ObservableCollection<PrenotazioneOmbrellone>();
             ListaClienti = new ObservableCollection<Cliente>();
             ListaPrenotazioniTavoli = new ObservableCollection<PrenotazioneTavolo>();
+            ListaMenu = new ObservableCollection<Menu>();
+            ListaPiatti = new ObservableCollection<Piatto>();
+            ListaOrdini = new ObservableCollection<Ordine>();
         }
 
         public void AggiungiOmbrellone(int numeroRiga, int numeroColonna)
@@ -195,6 +209,20 @@ namespace WpfApp1.controller.impl
             return toReturn;
         }
 
+        public List<int> TavoliPrenotati(DateTime data)
+        {
+            List<int> tavoliPrenotati = new List<int>();
+
+            foreach (PrenotazioneTavolo prenotazione in ListaPrenotazioniTavoli)
+            {
+                if (data.Date == prenotazione.Data.Date)
+                {
+                    tavoliPrenotati.Add(prenotazione.IdTavolo);
+                }
+            }
+            return tavoliPrenotati;
+        }
+
         public bool NumeroPostiTavoloAdegueato(int idTavolo, int numeroOspiti)
         {
             for (int i = ListaTavoli.Count - 1; i >= 0; i--)
@@ -207,6 +235,74 @@ namespace WpfApp1.controller.impl
             return false;
         }
 
+        public void AggiungiPiatto(string nome, double prezzo, string descrizione)
+        {
+            Piatto piatto = new Piatto(nome, prezzo, descrizione);
+            ListaPiatti.Add(piatto);
+            AggiuntoPiatto?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void RimuoviPiatto(string nome)
+        {
+            for (int i = ListaPiatti.Count - 1; i >= 0; i--)
+            {
+                if (ListaPiatti[i].Nome == nome)
+                {
+                    ListaPiatti.RemoveAt(i);
+                }
+            }
+            RimossoPiatto?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void AggiungiMenu(int idMenu, double prezzo, List<string> piatti)
+        {
+            List<Piatto> listaPiatti = new List<Piatto>();
+            Regex regex = new Regex(@"Piatto: (.+?), Prezzo: ([0-9.]+) €, Descrizione: (.+)");
+            for (int i = piatti.Count - 1; i >= 0; i--)
+            {
+                Match match = regex.Match(piatti[i].ToString());
+                string nome = match.Groups[1].Value;
+                double prezzoPiatto = double.Parse(match.Groups[2].Value);
+                string descrizione = match.Groups[3].Value;
+                listaPiatti.Add(new Piatto(nome, prezzoPiatto, descrizione));
+            }
+            Menu menu = new Menu(idMenu, listaPiatti, prezzo);
+            ListaMenu.Add(menu);
+            AggiuntoMenu?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void RimuoviMenu(int idMenu)
+        {
+            for (int i = ListaMenu.Count - 1; i >= 0; i--)
+            {
+                if (ListaMenu[i].IdMenu == idMenu)
+                {
+                    ListaMenu.RemoveAt(i);
+                }
+            }
+            RimossoMenu?.Invoke(this, EventArgs.Empty);
+        }
+
+        public List<string> GetPiatti()
+        {
+            List<string> toReturn = new List<string>();
+            foreach (Piatto piatto in ListaPiatti)
+            {
+                toReturn.Add(piatto.ToString());
+            }
+            return toReturn;
+        }
+
+        public List<string> GetMenu()
+        {
+            List<string> toReturn = new List<string>();
+            foreach (Menu menu in ListaMenu)
+            {
+                toReturn.Add(menu.ToString());
+            }
+            return toReturn;
+        }
+
         public int GetNumeroOmbrelloni()
         {
             return ListaOmbrelloni.Count;
@@ -215,6 +311,11 @@ namespace WpfApp1.controller.impl
         public int GetNumeroTavoli()
         {
             return ListaTavoli.Count;
+        }
+
+        public void AggiungiOrdine(int idOrdine, DateTime data, string pasto, int idTavolo, List<int> idMenuOrdinati, List<string> nomiPiattiOrdinati)
+        {
+
         }
     }
 }

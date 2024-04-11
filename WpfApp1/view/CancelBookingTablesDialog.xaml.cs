@@ -59,5 +59,29 @@ namespace WpfApp1.view
         {
             Title = "Prenotazioni - Tavolo numero " + IdTavolo;
         }
+
+        private void bntConfermaSelezione_Click(object sender, RoutedEventArgs e)
+        {
+            if (lstPrenotazioni.SelectedItem != null)
+            {
+                string prenotazioneSelezionata = (string)lstPrenotazioni.SelectedItem;
+                int startIndex = prenotazioneSelezionata.IndexOf("il ") + "il ".Length;
+                int endIndex = prenotazioneSelezionata.IndexOf(" a ") - 1;
+                string dateString = prenotazioneSelezionata.Substring(startIndex, endIndex - startIndex + 1);
+
+                Data = DateTime.Parse(dateString);
+                int startIndexPasto = prenotazioneSelezionata.IndexOf(" a ") + " a ".Length;
+                string pastoParte = prenotazioneSelezionata.Substring(startIndexPasto);
+                string[] partiPasto = pastoParte.Split(' ');
+                Pasto = partiPasto[0];
+                Result = true;
+                Close();
+            }
+            else
+            {
+                Result = false;
+                _ = MessageBox.Show("Selezionare prima una prenotazione per la quale effettuare l'ordine.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace WpfApp1.view
     public partial class WindowRistorante : Window
     {
         private readonly ControllerImpl controller;
-        private int idTavolo = 1;
+        private int idTavolo = 1; // In realtà qui non parto per forza da 1 ma vado a vedere nel db l'ultimo tavolo che id ha
 
 
         public WindowRistorante()
@@ -28,6 +28,10 @@ namespace WpfApp1.view
             controller.RimossoTavolo += Controller_ModifiedNumberTables;
             lblNumeroTavoli.Content = "Numero tavoli: 0";
 
+            int year = DateTime.Now.Year;
+            dtpCalendar.DisplayDateStart = new DateTime(year, 6, 1);
+            dtpCalendar.DisplayDateEnd = new DateTime(year, 9, 30);
+            dtpCalendar.SelectedDate = dtpCalendar.DisplayDateStart;
         }
 
         private const double MinimumSpacing = 20;
@@ -39,7 +43,7 @@ namespace WpfApp1.view
 
         private void Controller_ModifiedNumberTables(object sender, EventArgs e)
         {
-            // Aggiorna il contenuto della Label ogni volta che viene aggiunto un ombrellone
+            // Aggiorna il contenuto della Label ogni volta che viene aggiunto un tavolo
             lblNumeroTavoli.Content = "Numero tavoli: " + controller.GetNumeroTavoli();
         }
 
@@ -130,8 +134,11 @@ namespace WpfApp1.view
                             {
                                 CancelBookingTablesDialog cancelBookingTablesDialog = new CancelBookingTablesDialog(prenotazioni)
                                 {
-                                    IdTavolo = idTavolo
+                                    IdTavolo = idTavolo  
                                 };
+
+                                cancelBookingTablesDialog.lblConfermaSelezionePerOrdine.Visibility = Visibility.Collapsed;
+                                cancelBookingTablesDialog.btnConfermaSelezione.Visibility = Visibility.Collapsed;
 
                                 _ = cancelBookingTablesDialog.ShowDialog();
                                 if (cancelBookingTablesDialog.Result)
@@ -151,7 +158,7 @@ namespace WpfApp1.view
             }
             else
             {
-                _ = MessageBox.Show("Seleziona l'ombrellone da disdire.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _ = MessageBox.Show("Seleziona il tavolo da disdire.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -165,11 +172,11 @@ namespace WpfApp1.view
                     {
                         if (item.IsChecked == true)
                         {
-                            SelectSingolDate dialog = new SelectSingolDate();
-                            if (dialog.ShowDialog() == true)
+                            SelectSingolDate selectSingolDateDialog = new SelectSingolDate();
+                            if (selectSingolDateDialog.ShowDialog() == true)
                             {
-                                DateTime data = dialog.Data;
-                                string pasto = dialog.Pasto;
+                                DateTime data = selectSingolDateDialog.Data;
+                                string pasto = selectSingolDateDialog.Pasto;
                                 CreationClientDialog creationClientDialog = new CreationClientDialog();
                                 int idTavolo = (int)item.Tag;
                                 if (controller.ControlloTavoloLibero(idTavolo, data, pasto))
@@ -227,6 +234,79 @@ namespace WpfApp1.view
             else
             {
                 _ = MessageBox.Show("Seleziona il tavolo di cui avere le informazioni.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void btnOrdina_Click(object sender, RoutedEventArgs e)
+        {
+            if (salaCanvas.Children.OfType<CheckBox>().Any(cb => cb.IsChecked == true))
+            {
+                foreach (CheckBox item in salaCanvas.Children.OfType<CheckBox>().Where(cb => cb.IsChecked == true).ToList())
+                {
+                    int idTavolo = (int)item.Tag;
+                    List<string> prenotazioni = controller.GetPrenotazioniTavolo(idTavolo);
+                    if (prenotazioni.Count != 0)
+                    {
+                        CancelBookingTablesDialog cancelBookingTablesDialog = new CancelBookingTablesDialog(prenotazioni)
+                        {
+                            IdTavolo = idTavolo
+                        };
+
+                        cancelBookingTablesDialog.lblConfermaSelezionePerCancellazione.Visibility = Visibility.Collapsed;
+                        cancelBookingTablesDialog.btnConfermaDisdetta.Visibility = Visibility.Collapsed;
+
+                        _ = cancelBookingTablesDialog.ShowDialog();
+
+                        OrderDialog orderDialog = new OrderDialog(controller, cancelBookingTablesDialog.Data, cancelBookingTablesDialog.Pasto, cancelBookingTablesDialog.IdTavolo);
+                        orderDialog.btnAggiungiMenu.Visibility = Visibility.Collapsed;
+                        orderDialog.btnRimuoviMenu.Visibility = Visibility.Collapsed;
+                        orderDialog.btnAggiungiPiatto.Visibility = Visibility.Collapsed;
+                        orderDialog.btnRimuoviPiatto.Visibility = Visibility.Collapsed;
+                        _ = orderDialog.ShowDialog();
+                    }
+                    else
+                    {
+                        _ = MessageBox.Show("Non ci sono prenotazioni riguardanti il tavolo selezionato.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+
+                    
+                }
+            }
+            else
+            {
+                _ = MessageBox.Show("Seleziona il tavolo per il quale effettuare l'ordine.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            
+        }
+
+        private void btnManageMenu_Click(object sender, RoutedEventArgs e)
+        {
+            OrderDialog orderDialog = new OrderDialog(controller, null, null, null);
+            orderDialog.btnOrdina.Visibility = Visibility.Collapsed;
+            _ = orderDialog.ShowDialog();
+        }
+
+        private void dtpCalendar_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DateTime dataSelezionata = dtpCalendar.SelectedDate.Value;
+            List<int> tavoliPrenotati = controller.TavoliPrenotati(dataSelezionata);
+            foreach (CheckBox checkBox in salaCanvas.Children.OfType<CheckBox>())
+            {
+                int idTavolo = (int)checkBox.Tag;
+                if (tavoliPrenotati.Contains(idTavolo))
+                {
+                    if (checkBox.Content is Image image)
+                    {
+                        image.Source = new BitmapImage(new Uri("../resources/table_icon_booked.png", UriKind.Relative));
+                    }
+                }
+                else
+                {
+                    if (checkBox.Content is Image image)
+                    {
+                        image.Source = new BitmapImage(new Uri("../resources/table_icon.png", UriKind.Relative));
+                    }
+                }
             }
         }
     }

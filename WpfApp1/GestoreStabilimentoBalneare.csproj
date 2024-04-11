@@ -62,12 +62,21 @@
     <Compile Include="model\impl\Cliente.cs" />
     <Compile Include="model\impl\Documento.cs" />
     <Compile Include="model\impl\Evento.cs" />
+    <Compile Include="model\impl\Menu.cs" />
     <Compile Include="model\impl\Ombrellone.cs" />
+    <Compile Include="model\impl\Ordine.cs" />
     <Compile Include="model\impl\Ospite.cs" />
     <Compile Include="model\impl\Persona.cs" />
+    <Compile Include="model\impl\Piatto.cs" />
     <Compile Include="model\impl\PrenotazioneOmbrellone.cs" />
     <Compile Include="model\impl\PrenotazioneTavolo.cs" />
     <Compile Include="model\impl\Tavolo.cs" />
+    <Compile Include="view\AddMenuDialog.xaml.cs">
+      <DependentUpon>AddMenuDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="view\AddPiattoDialog.xaml.cs">
+      <DependentUpon>AddPiattoDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="view\CancelBookingDialog.xaml.cs">
       <DependentUpon>CancelBookingDialog.xaml</DependentUpon>
     </Compile>
@@ -76,6 +85,9 @@
     </Compile>
     <Compile Include="view\CreationClientDialog.xaml.cs">
       <DependentUpon>CreationClientDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="view\OrderDialog.xaml.cs">
+      <DependentUpon>OrderDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="view\SelectDateDialog.xaml.cs">
       <DependentUpon>SelectDateDialog.xaml</DependentUpon>
@@ -110,6 +122,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="view\AddMenuDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="view\AddPiattoDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="view\CancelBookingDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -119,6 +139,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="view\CreationClientDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="view\OrderDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -187,5 +211,6 @@
   <ItemGroup>
     <Resource Include="resources\table_icon_booked.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

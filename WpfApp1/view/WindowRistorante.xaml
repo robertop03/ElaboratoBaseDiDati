@@ -15,5 +15,8 @@
         <Button x:Name="btnDisdiciTavolo" Style="{StaticResource CustomButtonStyle}" Content="Disdici" HorizontalAlignment="Left" Margin="311,422,0,0" Width="77" Height="35" VerticalAlignment="Top" Click="btnDisdiciTavolo_Click" />
         <Button x:Name="btnPrenotaTavolo" Style="{StaticResource CustomButtonStyle}" Content="Prenota" HorizontalAlignment="Left" Margin="393,422,0,0" Width="77" Height="35" VerticalAlignment="Top" Click="btnPrenotaTavolo_Click"/>
         <Button x:Name="btnInfoTavolo" Style="{StaticResource CustomButtonStyle}" Content="Info" HorizontalAlignment="Left" Margin="229,421,0,0" Width="77" Height="35" VerticalAlignment="Top" Click="btnInfoTavolo_Click" />
+        <Button x:Name="btnOrdina" Style="{StaticResource CustomButtonStyle}" Content="Ordinazione" HorizontalAlignment="Left" Margin="781,425,0,0" Width="103" Height="35" VerticalAlignment="Top" Click="btnOrdina_Click"/>
+        <Button x:Name="btnManageMenu" Style="{StaticResource CustomButtonStyle}" Content="Menu" HorizontalAlignment="Left" Margin="699,425,0,0" Width="77" Height="35" VerticalAlignment="Top" Click="btnManageMenu_Click"/>
+        <DatePicker x:Name="dtpCalendar" HorizontalAlignment="Left" Margin="10,-4,0,0" VerticalAlignment="Top" SelectedDateChanged="dtpCalendar_SelectedDateChanged"/>
     </Grid>
 </Window>

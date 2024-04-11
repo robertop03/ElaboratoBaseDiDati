@@ -9,7 +9,10 @@
         Title="Prenotazioni" Height="425" Width="466" Loaded="Window_Loaded">
     <Grid>
         <ListBox x:Name="lstPrenotazioni" Margin="10,31,10,48" HorizontalContentAlignment="Stretch"/>
-        <Label Content="Seleziona la prenotazione da cancellare e premi su conferma." FontWeight="Bold" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" Width="363"/>
+        <Label x:Name="lblConfermaSelezionePerCancellazione" Content="Seleziona la prenotazione da cancellare e premi su conferma." FontWeight="Bold" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" Width="363"/>
+        
         <Button x:Name="btnConfermaDisdetta" Content="Conferma" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Margin="10,348,0,0" VerticalAlignment="Top" Width="440" Height="38" Click="btnConfermaDisdetta_Click" />
+        <Button x:Name="btnConfermaSelezione" Content="Conferma" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Margin="10,348,0,0" VerticalAlignment="Top" Width="440" Height="38" Click="bntConfermaSelezione_Click" />
+        <Label x:Name="lblConfermaSelezionePerOrdine" Content="Seleziona la prenotazione per cui effettuare l'ordine e premi su conferma." FontWeight="Bold" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" Width="427"/>
     </Grid>
 </Window>

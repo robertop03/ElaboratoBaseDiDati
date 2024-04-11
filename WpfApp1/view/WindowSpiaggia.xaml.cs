@@ -29,6 +29,7 @@ namespace WpfApp1.view
             int year = DateTime.Now.Year;
             dtpCalendar.DisplayDateStart = new DateTime(year, 6, 1);
             dtpCalendar.DisplayDateEnd = new DateTime(year, 9, 30);
+            dtpCalendar.SelectedDate = dtpCalendar.DisplayDateStart;
         }
 
         private const double MinimumSpacing = 17; // Spazio minimo tra gli ombrelloni
@@ -264,7 +265,6 @@ namespace WpfApp1.view
 
         private void btnImpostaPrezzi_Click(object sender, RoutedEventArgs e)
         {
-            //
             SetPricesDialog setPricesDialog = new SetPricesDialog();
             _ = setPricesDialog.ShowDialog();
             if (setPricesDialog.Result)
@@ -289,6 +289,5 @@ namespace WpfApp1.view
                 _ = MessageBox.Show("Seleziona l'ombrellone da rimuovere.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
-
     }
 }

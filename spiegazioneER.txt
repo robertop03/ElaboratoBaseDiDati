@@ -32,13 +32,18 @@ ORDINE (0, N) - (0,N) PIATTO => ogni ordine può contenere da 0 a N piatti, ment
 MENU (1, N) - (2, N) PIATTO => un piatto può appartenere a più menu, e un menu contiene
 da 2 a N piatti
 
-OMBRELLONE (1, N) - (1, N) PREZZO 
-SU SCHEMA ER:
-Devo fare che il prezzo dell'ombrellone, varia dal mese in cui avviene la prenotazione => se bassa stagione (giugno, settembre) 
+OMBRELLONE (1, 1) - (1, N) RIGA => ad ogni riga appartengono da 1 a N ombrelloni, e ogni
+ombrellone appartiene ad 1 riga
+ 
 
-- vanno bene le chiavi sulle prenotazioni?
+RIGA (1, N) - (1, 1) PREZZO => ogni riga ha da 1 a N prezzi (in base al periodo), mentre
+ogni prezzo appartiene ad una sola riga (qui dubbio perchè in teoria dalla 3 fila in poi
+più righe hanno lo stesso prezzo)
+
+- Il fatto che 2 prenotazioni non possono essere fatta nello stesso periodo (sia per l'ombrellone sia per il tavolo) è da gestire nell'applicativo, 
 
 DA FARE SU PROGRAMMA:
+- da gestire il fatto che il nome del piatto deve essere univoco
 - fare una sola window per mostrare il prezzario, se non ci sono ancora i valori nel db, mostrare un messaggio per indicare che sono da impostare
 poi con un pulsante modifica abilitare le textBox e con conferma attuare i cambiamenti nel database (quando ti confermano er)
 - gestione degli ordini nei tavoli 

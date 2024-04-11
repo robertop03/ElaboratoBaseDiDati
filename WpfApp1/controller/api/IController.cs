@@ -19,6 +19,8 @@ namespace WpfApp1.controller.api
 
         List<string> GetPrenotazioniOmbrellone(int numeroRiga, int numeroColonna); // ogni elemento della lista è un toString contenente informazioni relative a 1 prenotazione fatta sull'ombrellone
 
+        List<(int, int)> OmbrelloniPrenotati(DateTime data); // restituisce una lista con gli tutti gli ombrelloni che hanno una prenotazione in una determinata data.
+
         void AggiungiTavolo(int idTavolo, int numeroPosti);
 
         void RimuoviTavolo(int idTavolo);
@@ -33,9 +35,25 @@ namespace WpfApp1.controller.api
 
         List<string> GetPrenotazioniTavolo(int idTavolo);
 
+        List<int> TavoliPrenotati(DateTime data);
+
         bool NumeroPostiTavoloAdegueato(int idTavolo, int numeroOspiti); // restituisce true se il numero di posti del tavolo è sufficente a contenere gli ospiti per il quale si sta prenotando.
 
         void AggiungiCliente(string nome, string cognome, string numeroTelefono, int numeroPersoneOspiti, string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale);
+
+        void AggiungiPiatto(string nome, double prezzo, string descrizione);
+
+        void RimuoviPiatto(string nome);
+
+        void AggiungiMenu(int idMenu, double prezzo, List<string> piatti);
+
+        void RimuoviMenu(int idMenu);
+
+        List<string> GetPiatti(); // restituisce tutti i piatti attuali 
+
+        List<string> GetMenu(); // restituisce tutti i menu attuali
+
+        void AggiungiOrdine(int idOrdine, DateTime data, string pasto, int idTavolo, List<int> idMenuOrdinati, List<string> nomiPiattiOrdinati);
 
         // bool ControlloTavoloLibero();
 
