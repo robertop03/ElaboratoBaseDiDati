@@ -71,8 +71,17 @@
     <Compile Include="model\impl\PrenotazioneOmbrellone.cs" />
     <Compile Include="model\impl\PrenotazioneTavolo.cs" />
     <Compile Include="model\impl\Tavolo.cs" />
+    <Compile Include="view\AddEventoDialog.xaml.cs">
+      <DependentUpon>AddEventoDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="view\AddEvento_Ospite.xaml.cs">
+      <DependentUpon>AddEvento_Ospite.xaml</DependentUpon>
+    </Compile>
     <Compile Include="view\AddMenuDialog.xaml.cs">
       <DependentUpon>AddMenuDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="view\AddOspite.xaml.cs">
+      <DependentUpon>AddOspite.xaml</DependentUpon>
     </Compile>
     <Compile Include="view\AddPiattoDialog.xaml.cs">
       <DependentUpon>AddPiattoDialog.xaml</DependentUpon>
@@ -122,7 +131,19 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="view\AddEventoDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="view\AddEvento_Ospite.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="view\AddMenuDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="view\AddOspite.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

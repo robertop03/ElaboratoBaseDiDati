@@ -8,5 +8,10 @@
         {
             Nickname = nickname;
         }
+
+        public override string ToString()
+        {
+            return $"Nome: {Nome}, Cognome: {Cognome}, CF: {CodiceFiscale}, Numero: {NumeroTelefono} Nickname: {Nickname}";
+        }
     }
 }

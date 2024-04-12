@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WpfApp1.model.impl
 {
@@ -15,21 +12,31 @@ namespace WpfApp1.model.impl
         public List<Ospite> Ospiti { get; set; }
         public double CostoIngresso { get; set; }
 
-        // Costruttore
-        public Evento(string titolo, DateTime data, TimeSpan orario, string descrizione, double costoIngresso)
+        public Evento(string titolo, DateTime data, TimeSpan orario, string descrizione, double costoIngresso, List<Ospite> ospiti)
         {
             Titolo = titolo;
             Data = data;
             Orario = orario;
             Descrizione = descrizione;
-            Ospiti = new List<Ospite>();
+            Ospiti = new List<Ospite>(ospiti);
             CostoIngresso = costoIngresso;
         }
 
-        // Metodo per aggiungere un ospite all'evento
-        public void AggiungiOspite(Ospite ospite)
+        public override string ToString()
         {
-            Ospiti.Add(ospite);
+            string result = $"Evento: {Titolo}, Data: {Data}, Ora: {Orario}, Costo ingresso: {CostoIngresso}";
+            result += $"\nDescrizione: {Descrizione}";
+            result += "\nOspiti:";
+            if (Ospiti.Count == 0)
+            {
+                result += $" nessuno";
+            }
+            foreach (Ospite ospite in Ospiti)
+            {
+                result += $"\n- {ospite}";
+            }
+
+            return result;
         }
     }
 }

@@ -1,5 +1,3 @@
-
-
 CARDINALITA
 OSPITE (0, N) - (0, N) EVENTO => ad ogni evento possono partecipare da 0 a N ospiti e ogni ospite può
 partecipare a 0 o N eventi.
@@ -44,9 +42,6 @@ più righe hanno lo stesso prezzo)
 
 DA FARE SU PROGRAMMA:
 - da gestire il fatto che il nome del piatto deve essere univoco
-- fare una sola window per mostrare il prezzario, se non ci sono ancora i valori nel db, mostrare un messaggio per indicare che sono da impostare
-poi con un pulsante modifica abilitare le textBox e con conferma attuare i cambiamenti nel database (quando ti confermano er)
-- gestione degli ordini nei tavoli 
 - gestione degli eventi e degli ospiti
-
+- gestione dei bilanci
 

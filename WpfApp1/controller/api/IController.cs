@@ -5,6 +5,8 @@ namespace WpfApp1.controller.api
 {
     internal interface IController
     {
+        #region Ombrellone
+
         void AggiungiOmbrellone(int numeroRiga, int numeroColonna);
 
         void RimuoviOmbrellone(int numeroRiga, int numeroColonna);
@@ -20,6 +22,10 @@ namespace WpfApp1.controller.api
         List<string> GetPrenotazioniOmbrellone(int numeroRiga, int numeroColonna); // ogni elemento della lista è un toString contenente informazioni relative a 1 prenotazione fatta sull'ombrellone
 
         List<(int, int)> OmbrelloniPrenotati(DateTime data); // restituisce una lista con gli tutti gli ombrelloni che hanno una prenotazione in una determinata data.
+
+        #endregion
+
+        #region Tavolo
 
         void AggiungiTavolo(int idTavolo, int numeroPosti);
 
@@ -39,7 +45,9 @@ namespace WpfApp1.controller.api
 
         bool NumeroPostiTavoloAdegueato(int idTavolo, int numeroOspiti); // restituisce true se il numero di posti del tavolo è sufficente a contenere gli ospiti per il quale si sta prenotando.
 
-        void AggiungiCliente(string nome, string cognome, string numeroTelefono, int numeroPersoneOspiti, string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale);
+        #endregion
+
+        #region Menu, piatti e ordini
 
         void AggiungiPiatto(string nome, double prezzo, string descrizione);
 
@@ -55,7 +63,24 @@ namespace WpfApp1.controller.api
 
         void AggiungiOrdine(int idOrdine, DateTime data, string pasto, int idTavolo, List<int> idMenuOrdinati, List<string> nomiPiattiOrdinati);
 
-        // bool ControlloTavoloLibero();
+        #endregion
 
+        void AggiungiCliente(string nome, string cognome, string numeroTelefono, int numeroPersoneOspiti, string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale);
+
+        #region Eventi e Ospiti
+
+        void AggiungiEvento(string titolo, DateTime data, TimeSpan orario, string descrizione, double costoIngrezzo, List<string> ospitiEvento);
+
+        void RimuoviEvento(string titolo, DateTime data);
+
+        List<string> GetEvents();
+
+        void AggiungiOspite(string codiceFiscale, string cognome, string nome, string numeroTelefono, string nickname);
+
+        void RimuoviOspite(string codiceFiscale);
+
+        List<string> GetOspiti();
+
+        #endregion
     }
 }

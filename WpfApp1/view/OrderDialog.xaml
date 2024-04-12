@@ -12,11 +12,11 @@
         <Button x:Name="btnAggiungiMenu" Content="Aggiungi Menù" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Margin="10,383,0,0" VerticalAlignment="Top" Width="120" Height="38" Click="btnAggiungiMenu_Click"/>
         <ListBox x:Name="lstMenu" HorizontalAlignment="Left" Height="347" Margin="10,30,0,0" VerticalAlignment="Top" Width="271" SelectionMode="Multiple"/>
         <ListBox x:Name="lstPiatti" HorizontalAlignment="Left" Height="347" Margin="312,30,0,0" VerticalAlignment="Top" Width="281" SelectionMode="Multiple"/>
-        <Button x:Name="btnRimuoviMenu" Content="Rimuovi Menù" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Margin="135,383,0,0" VerticalAlignment="Top" Width="120" Height="38" Click="btnRimuoviMenu_Click"/>
+        <Button x:Name="btnRimuoviMenu" Content="Rimuovi Menù" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Margin="161,383,0,0" VerticalAlignment="Top" Width="120" Height="38" Click="btnRimuoviMenu_Click"/>
         <Button x:Name="btnRimuoviPiatto" Content="Rimuovi Piatto" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Margin="480,383,0,0" VerticalAlignment="Top" Width="113" Height="38" Click="btnRimuoviPiatto_Click"/>
         <Label Content="Menu" HorizontalAlignment="Left" Margin="26,4,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.055,0.724"/>
         <Label Content="Piatti" HorizontalAlignment="Left" Margin="312,4,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.055,0.724"/>
-        <Button x:Name="btnOrdina" Content="Ordina" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Margin="218,383,0,0" VerticalAlignment="Top" Width="146" Height="38" Click="btnOrdina_Click"/>
+        <Button x:Name="btnOrdina" Content="Ordina" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Margin="219,383,0,0" VerticalAlignment="Top" Width="146" Height="38" Click="btnOrdina_Click"/>
 
     </Grid>
 </Window>

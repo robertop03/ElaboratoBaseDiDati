@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using WpfApp1.controller.impl;
 using WpfApp1.view;
 
 namespace WpfApp1
@@ -38,6 +39,14 @@ namespace WpfApp1
             WindowBilanci windowBilanci = new WindowBilanci();
             windowBilanci.Closed += (s, args) => Instance.Show();
             windowBilanci.Show();
+        }
+
+        private void btnEventi_Click(object sender, RoutedEventArgs e)
+        {
+            Instance.Hide();
+            AddEvento_Ospite addEvento_Ospite = new AddEvento_Ospite();
+            addEvento_Ospite.Closed += (s, args) => Instance.Show();
+            addEvento_Ospite.Show();
         }
     }
 }

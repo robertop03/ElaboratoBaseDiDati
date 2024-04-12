@@ -11,13 +11,13 @@ namespace WpfApp1.view
     /// </summary>
     public partial class OrderDialog : Window
     {
-        private ControllerImpl controller;
+        private readonly ControllerImpl controller;
 
-        private int idTavolo;
-        private DateTime data;
-        private string pasto;
+        private readonly int idTavolo;
+        private readonly DateTime data;
+        private readonly string pasto;
 
-        internal OrderDialog(ControllerImpl contollerPassed, DateTime? data, string pasto, int? idTavolo)
+        internal OrderDialog(ControllerImpl controller, DateTime? data, string pasto, int? idTavolo)
         {
             InitializeComponent();
             if (data.HasValue && idTavolo.HasValue)
@@ -27,14 +27,14 @@ namespace WpfApp1.view
             }
 
             this.pasto = pasto;
-            controller = contollerPassed;
-            controller.AggiuntoPiatto += Controller_ModifiedPlates;
-            controller.RimossoPiatto += Controller_ModifiedPlates;
-            controller.AggiuntoMenu += Controller_ModifiedMenus;
-            controller.RimossoMenu += Controller_ModifiedMenus;
+            this.controller = controller;
+            this.controller.AggiuntoPiatto += Controller_ModifiedPlates;
+            this.controller.RimossoPiatto += Controller_ModifiedPlates;
+            this.controller.AggiuntoMenu += Controller_ModifiedMenus;
+            this.controller.RimossoMenu += Controller_ModifiedMenus;
 
-            lstPiatti.ItemsSource = controller.GetPiatti();
-            lstMenu.ItemsSource = controller.GetMenu();
+            lstPiatti.ItemsSource = this.controller.GetPiatti();
+            lstMenu.ItemsSource = this.controller.GetMenu();
         }
 
         private void Controller_ModifiedPlates(object sender, EventArgs e)

@@ -4,7 +4,6 @@ namespace WpfApp1.model.impl
 {
     internal class PrenotazioneOmbrellone
     {
-
         public DateTime DataInizio { get; set; }
         public DateTime DataFine { get; set; }
         public int RigaOmbrellonePrenotato { get; set; }

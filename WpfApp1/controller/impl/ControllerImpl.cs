@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text.RegularExpressions;
 using WpfApp1.controller.api;
 using WpfApp1.model.impl;
@@ -17,6 +18,8 @@ namespace WpfApp1.controller.impl
         public ObservableCollection<Menu> ListaMenu { get; set; }
         public ObservableCollection<Piatto> ListaPiatti { get; set; }
         public ObservableCollection<Ordine> ListaOrdini { get; set; }
+        public ObservableCollection<Evento> ListaEventi { get; set; }
+        public ObservableCollection<Ospite> ListaOspiti { get; set; }
 
         public event EventHandler AggiuntoOmbrellone;
         public event EventHandler RimossoOmbrellone;
@@ -26,6 +29,10 @@ namespace WpfApp1.controller.impl
         public event EventHandler RimossoPiatto;
         public event EventHandler AggiuntoMenu;
         public event EventHandler RimossoMenu;
+        public event EventHandler AggiuntoEvento;
+        public event EventHandler RimossoEvento;
+        public event EventHandler AggiuntoOspite;
+        public event EventHandler RimossoOspite;
 
         public static int IdMenu = 1;
         public static int IdOrdine = 1;
@@ -40,7 +47,11 @@ namespace WpfApp1.controller.impl
             ListaMenu = new ObservableCollection<Menu>();
             ListaPiatti = new ObservableCollection<Piatto>();
             ListaOrdini = new ObservableCollection<Ordine>();
+            ListaEventi = new ObservableCollection<Evento>();
+            ListaOspiti = new ObservableCollection<Ospite>();
         }
+
+        #region Ombrelloni
 
         public void AggiungiOmbrellone(int numeroRiga, int numeroColonna)
         {
@@ -49,11 +60,28 @@ namespace WpfApp1.controller.impl
             AggiuntoOmbrellone?.Invoke(this, EventArgs.Empty);
         }
 
-        public void AggiungiTavolo(int idTavolo, int numeroPosti)
+        public void RimuoviOmbrellone(int numeroRiga, int numeroColonna)
         {
-            Tavolo tavolo = new Tavolo(idTavolo, numeroPosti);
-            ListaTavoli.Add(tavolo);
-            AggiuntoTavolo?.Invoke(this, EventArgs.Empty);
+            for (int i = ListaOmbrelloni.Count - 1; i >= 0; i--)
+            {
+                if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
+                {
+                    ListaOmbrelloni.RemoveAt(i);
+                }
+            }
+            RimossoOmbrellone?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void PrenotaOmbrellone(int numeroRiga, int numeroColonna, DateTime dataInzio, DateTime dataFine, string codiceFiscalePrenotante)
+        {
+            for (int i = ListaOmbrelloni.Count - 1; i >= 0; i--)
+            {
+                if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
+                {
+                    PrenotazioneOmbrellone prenotazione = new PrenotazioneOmbrellone(dataInzio, dataFine, numeroRiga, numeroColonna, codiceFiscalePrenotante);
+                    ListaPrenotazioniOmbrelloni.Add(prenotazione);
+                }
+            }
         }
 
         public void DisdiciOmbrellone(DateTime dataInizio, DateTime dataFine, int numeroRiga, int numeroColonna)
@@ -67,32 +95,6 @@ namespace WpfApp1.controller.impl
                 {
                     _ = ListaPrenotazioniOmbrelloni.Remove(prenotazione);
                     break;
-                }
-            }
-        }
-
-        public void DisdiciTavolo(int idTavolo, DateTime data, string pasto)
-        {
-            foreach (PrenotazioneTavolo prenotazione in ListaPrenotazioniTavoli)
-            {
-                if (prenotazione.Data == data &&
-                    prenotazione.IdTavolo == idTavolo &&
-                    prenotazione.Pasto.ToString() == pasto)
-                {
-                    _ = ListaPrenotazioniTavoli.Remove(prenotazione);
-                    break;
-                }
-            }
-        }
-
-        public void PrenotaOmbrellone(int numeroRiga, int numeroColonna, DateTime dataInzio, DateTime dataFine, string codiceFiscalePrenotante)
-        {
-            for (int i = ListaOmbrelloni.Count - 1; i >= 0; i--)
-            {
-                if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
-                {
-                    PrenotazioneOmbrellone prenotazione = new PrenotazioneOmbrellone(dataInzio, dataFine, numeroRiga, numeroColonna, codiceFiscalePrenotante);
-                    ListaPrenotazioniOmbrelloni.Add(prenotazione);
                 }
             }
         }
@@ -113,53 +115,23 @@ namespace WpfApp1.controller.impl
             return true;
         }
 
-        public bool ControlloTavoloLibero(int idTavolo, DateTime data, string pasto)
+        public int GetNumeroOmbrelloni()
         {
-            for (int i = ListaPrenotazioniTavoli.Count - 1; i >= 0; i--)
-            {
-                if (ListaPrenotazioniTavoli[i].IdTavolo == idTavolo && ListaPrenotazioniTavoli[i].Data == data && ListaPrenotazioniTavoli[i].Pasto.ToString() == pasto)
-                {
-                    return false;
-                }
-            }
-            return true;
+            return ListaOmbrelloni.Count;
         }
 
-        public void PrenotaTavolo(int idTavolo, DateTime data, string pasto, string codiceFiscalePrenotante)
+        public List<string> GetPrenotazioniOmbrellone(int numeroRiga, int numeroColonna)
         {
-            for (int i = ListaTavoli.Count - 1; i >= 0; i--)
+            List<string> toReturn = new List<string>();
+            foreach (PrenotazioneOmbrellone prenotazione in ListaPrenotazioniOmbrelloni)
             {
-                if (ListaTavoli[i].IdTavolo == idTavolo)
+                if (prenotazione.RigaOmbrellonePrenotato == numeroRiga &&
+                    prenotazione.ColonnaOmbrellonePrenotato == numeroColonna)
                 {
-                    Pasto pastoEnum = (Pasto)Enum.Parse(typeof(Pasto), pasto);
-                    PrenotazioneTavolo prenotazione = new PrenotazioneTavolo(data, pastoEnum, idTavolo, codiceFiscalePrenotante);
-                    ListaPrenotazioniTavoli.Add(prenotazione);
+                    toReturn.Add("Pren. da " + prenotazione.DataInizio.ToString("dd/MM/yyyy") + " a " + prenotazione.DataFine.ToString("dd/MM/yyyy") + " da " + prenotazione.CodiceFiscalePrenotante);
                 }
             }
-        }
-
-        public void RimuoviOmbrellone(int numeroRiga, int numeroColonna)
-        {
-            for (int i = ListaOmbrelloni.Count - 1; i >= 0; i--)
-            {
-                if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
-                {
-                    ListaOmbrelloni.RemoveAt(i);
-                }
-            }
-            RimossoOmbrellone?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void RimuoviTavolo(int idTavolo)
-        {
-            for (int i = ListaTavoli.Count - 1; i >= 0; i--)
-            {
-                if (ListaTavoli[i].IdTavolo == idTavolo)
-                {
-                    ListaTavoli.RemoveAt(i);
-                }
-            }
-            RimossoTavolo?.Invoke(this, EventArgs.Empty);
+            return toReturn;
         }
 
         public List<(int, int)> OmbrelloniPrenotati(DateTime data)
@@ -176,24 +148,71 @@ namespace WpfApp1.controller.impl
             return ombrelloniPrenotati;
         }
 
-        public void AggiungiCliente(string nome, string cognome, string numeroTelefono, int numeroPersoneOspiti, string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale)
+        #endregion
+
+        #region Tavoli
+
+        public void AggiungiTavolo(int idTavolo, int numeroPosti)
         {
-            Cliente cliente = new Cliente(numeroPersoneOspiti, città, via, civico, email, codiceDocumento, codiceFiscale, nome, cognome, numeroTelefono);
-            ListaClienti.Add(cliente);
+            Tavolo tavolo = new Tavolo(idTavolo, numeroPosti);
+            ListaTavoli.Add(tavolo);
+            AggiuntoTavolo?.Invoke(this, EventArgs.Empty);
         }
 
-        public List<string> GetPrenotazioniOmbrellone(int numeroRiga, int numeroColonna)
+        public void RimuoviTavolo(int idTavolo)
         {
-            List<string> toReturn = new List<string>();
-            foreach (PrenotazioneOmbrellone prenotazione in ListaPrenotazioniOmbrelloni)
+            for (int i = ListaTavoli.Count - 1; i >= 0; i--)
             {
-                if (prenotazione.RigaOmbrellonePrenotato == numeroRiga &&
-                    prenotazione.ColonnaOmbrellonePrenotato == numeroColonna)
+                if (ListaTavoli[i].IdTavolo == idTavolo)
                 {
-                    toReturn.Add("Pren. da " + prenotazione.DataInizio.ToString("dd/MM/yyyy") + " a " + prenotazione.DataFine.ToString("dd/MM/yyyy") + " da " + prenotazione.CodiceFiscalePrenotante);
+                    ListaTavoli.RemoveAt(i);
                 }
             }
-            return toReturn;
+            RimossoTavolo?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void PrenotaTavolo(int idTavolo, DateTime data, string pasto, string codiceFiscalePrenotante)
+        {
+            for (int i = ListaTavoli.Count - 1; i >= 0; i--)
+            {
+                if (ListaTavoli[i].IdTavolo == idTavolo)
+                {
+                    Pasto pastoEnum = (Pasto)Enum.Parse(typeof(Pasto), pasto);
+                    PrenotazioneTavolo prenotazione = new PrenotazioneTavolo(data, pastoEnum, idTavolo, codiceFiscalePrenotante);
+                    ListaPrenotazioniTavoli.Add(prenotazione);
+                }
+            }
+        }
+
+        public void DisdiciTavolo(int idTavolo, DateTime data, string pasto)
+        {
+            foreach (PrenotazioneTavolo prenotazione in ListaPrenotazioniTavoli)
+            {
+                if (prenotazione.Data == data &&
+                    prenotazione.IdTavolo == idTavolo &&
+                    prenotazione.Pasto.ToString() == pasto)
+                {
+                    _ = ListaPrenotazioniTavoli.Remove(prenotazione);
+                    break;
+                }
+            }
+        }
+
+        public bool ControlloTavoloLibero(int idTavolo, DateTime data, string pasto)
+        {
+            for (int i = ListaPrenotazioniTavoli.Count - 1; i >= 0; i--)
+            {
+                if (ListaPrenotazioniTavoli[i].IdTavolo == idTavolo && ListaPrenotazioniTavoli[i].Data == data && ListaPrenotazioniTavoli[i].Pasto.ToString() == pasto)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public int GetNumeroTavoli()
+        {
+            return ListaTavoli.Count;
         }
 
         public List<string> GetPrenotazioniTavolo(int idTavolo)
@@ -234,6 +253,10 @@ namespace WpfApp1.controller.impl
             }
             return false;
         }
+
+        #endregion
+
+        #region Menu, piatti e ordini
 
         public void AggiungiPiatto(string nome, double prezzo, string descrizione)
         {
@@ -303,19 +326,128 @@ namespace WpfApp1.controller.impl
             return toReturn;
         }
 
-        public int GetNumeroOmbrelloni()
-        {
-            return ListaOmbrelloni.Count;
-        }
-
-        public int GetNumeroTavoli()
-        {
-            return ListaTavoli.Count;
-        }
-
         public void AggiungiOrdine(int idOrdine, DateTime data, string pasto, int idTavolo, List<int> idMenuOrdinati, List<string> nomiPiattiOrdinati)
         {
+            List<Piatto> piatti = new List<Piatto>();
+            List<Menu> menu = new List<Menu>();
+            int indexPrenotazioneTavolo = 0;
+            for (int i = idMenuOrdinati.Count - 1; i >= 0; i--)
+            {
+                for (int j = ListaMenu.Count - 1; j >= 0; j--)
+                {
+                    if (idMenuOrdinati[i] == ListaMenu[j].IdMenu)
+                    {
+                        menu.Add(ListaMenu[j]);
+                    }
+                }
+            }
 
+            for (int i = nomiPiattiOrdinati.Count - 1; i >= 0; i--)
+            {
+                for (int j = ListaPiatti.Count - 1; j >= 0; j--)
+                {
+                    if (nomiPiattiOrdinati[i] == ListaPiatti[j].Nome)
+                    {
+                        piatti.Add(ListaPiatti[j]);
+                    }
+                }
+            }
+            for (int i = ListaPrenotazioniTavoli.Count - 1; i >= 0; i--)
+            {
+                if (ListaPrenotazioniTavoli[i].Data == data && ListaPrenotazioniTavoli[i].IdTavolo == idTavolo && ListaPrenotazioniTavoli[i].Pasto.ToString() == pasto)
+                {
+                    indexPrenotazioneTavolo = i;
+                }
+            }
+            Ordine ordine = new Ordine(idOrdine, ListaPrenotazioniTavoli[indexPrenotazioneTavolo], piatti, menu);
+            ListaOrdini.Add(ordine);
         }
+        #endregion
+
+        public void AggiungiCliente(string nome, string cognome, string numeroTelefono, int numeroPersoneOspiti, string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale)
+        {
+            Cliente cliente = new Cliente(numeroPersoneOspiti, città, via, civico, email, codiceDocumento, codiceFiscale, nome, cognome, numeroTelefono);
+            ListaClienti.Add(cliente);
+        }
+
+        #region Eventi e Ospiti
+
+        public void AggiungiEvento(string titolo, DateTime data, TimeSpan orario, string descrizione, double costoIngrezzo, List<string> ospitiStr)
+        {
+            List<Ospite> ospiti = new List<Ospite>();
+            foreach (string ospiteStr in ospitiStr)
+            {
+                Regex regex = new Regex(@"CF: (?<cf>[^,]+)");
+                Match match = regex.Match(ospiteStr);
+
+                if (match.Success)
+                {
+                    string codiceFiscale = match.Groups["cf"].Value.Trim();
+                    Ospite ospiteCorrente = ListaOspiti.FirstOrDefault(ospite => ospite.CodiceFiscale.Equals(codiceFiscale));
+
+                    if (ospiteCorrente != null)
+                    {
+                        ospiti.Add(ospiteCorrente);
+                    }
+                }
+            }
+
+            Evento evento = new Evento(titolo, data, orario, descrizione, costoIngrezzo, ospiti);
+            ListaEventi.Add(evento);
+            AggiuntoEvento?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void RimuoviEvento(string titolo, DateTime data)
+        {
+            for (int i = ListaEventi.Count - 1; i >= 0; i--)
+            {
+                if (ListaEventi[i].Titolo == titolo && ListaEventi[i].Data == data)
+                {
+                    ListaEventi.RemoveAt(i);
+                }
+            }
+            RimossoEvento?.Invoke(this, EventArgs.Empty);
+        }
+
+        public List<string> GetEvents()
+        {
+            List<string> toReturn = new List<string>();
+            foreach (Evento evento in ListaEventi)
+            {
+                toReturn.Add(evento.ToString());
+            }
+            return toReturn;
+        }
+
+        public void AggiungiOspite(string codiceFiscale, string cognome, string nome, string numeroTelefono, string nickname)
+        {
+            Ospite ospite = new Ospite(codiceFiscale, cognome, nome, numeroTelefono, nickname);
+            ListaOspiti.Add(ospite);
+            AggiuntoOspite?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void RimuoviOspite(string codiceFiscale)
+        {
+            for (int i = ListaOspiti.Count - 1; i >= 0; i--)
+            {
+                if (ListaOspiti[i].CodiceFiscale == codiceFiscale)
+                {
+                    ListaOspiti.RemoveAt(i);
+                }
+            }
+            RimossoOspite?.Invoke(this, EventArgs.Empty);
+        }
+
+        public List<string> GetOspiti()
+        {
+            List<string> toReturn = new List<string>();
+            foreach (Ospite ospiti in ListaOspiti)
+            {
+                toReturn.Add(ospiti.ToString());
+            }
+            return toReturn;
+        }
+
+        #endregion
     }
 }

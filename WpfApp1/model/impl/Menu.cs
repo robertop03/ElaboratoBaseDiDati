@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace WpfApp1.model.impl
 {
@@ -21,7 +17,7 @@ namespace WpfApp1.model.impl
 
         public override string ToString()
         {
-            string result = $"Menù n°: {IdMenu}\nPrezzo: {Prezzo}\n";
+            string result = $"Menù n°: {IdMenu}\nPrezzo: {Prezzo}€\n";
 
             foreach (Piatto piatto in ListaPiatti)
             {
