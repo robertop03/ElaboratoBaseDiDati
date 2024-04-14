@@ -11,6 +11,5 @@ namespace WpfApp1.view
         {
             InitializeComponent();
         }
-
     }
 }

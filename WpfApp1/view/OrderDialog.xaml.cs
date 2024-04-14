@@ -62,8 +62,15 @@ namespace WpfApp1.view
                     {
                         piatti.Add(selectedItem.ToString());
                     }
-                    controller.AggiungiMenu(ControllerImpl.IdMenu++, addMenuDialog.Prezzo, piatti);
-                    _ = MessageBox.Show("il menù è stato aggiunto con successo.", "Menù aggiunto.", MessageBoxButton.OK, MessageBoxImage.Information);
+                    try
+                    {
+                        controller.AggiungiMenu(ControllerImpl.IdMenu++, addMenuDialog.Prezzo, piatti);
+                        _ = MessageBox.Show("il menù è stato aggiunto con successo.", "Menù aggiunto.", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        _ = MessageBox.Show(ex.Message, "Errore", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
 
                 }
             }

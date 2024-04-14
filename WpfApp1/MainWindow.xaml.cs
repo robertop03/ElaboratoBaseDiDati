@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using WpfApp1.controller.impl;
 using WpfApp1.view;
 
 namespace WpfApp1

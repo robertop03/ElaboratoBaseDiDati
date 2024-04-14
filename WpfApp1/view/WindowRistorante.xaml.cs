@@ -134,7 +134,7 @@ namespace WpfApp1.view
                             {
                                 CancelBookingTablesDialog cancelBookingTablesDialog = new CancelBookingTablesDialog(prenotazioni)
                                 {
-                                    IdTavolo = idTavolo  
+                                    IdTavolo = idTavolo
                                 };
 
                                 cancelBookingTablesDialog.lblConfermaSelezionePerOrdine.Visibility = Visibility.Collapsed;
@@ -269,14 +269,14 @@ namespace WpfApp1.view
                         _ = MessageBox.Show("Non ci sono prenotazioni riguardanti il tavolo selezionato.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
 
-                    
+
                 }
             }
             else
             {
                 _ = MessageBox.Show("Seleziona il tavolo per il quale effettuare l'ordine.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-            
+
         }
 
         private void btnManageMenu_Click(object sender, RoutedEventArgs e)

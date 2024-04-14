@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfApp1.view"
         mc:Ignorable="d"
         ResizeMode="NoResize"
-        Title="Menù e piatti" Height="460" Width="610">
+        Title="Menù e piatti" Height="460" Width="622">
     <Grid>
         <Button x:Name="btnAggiungiPiatto" Content="Aggiungi Piatto" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Margin="312,383,0,0" VerticalAlignment="Top" Width="113" Height="38" Click="btnAggiungiPiatto_Click"/>
         <Button x:Name="btnAggiungiMenu" Content="Aggiungi Menù" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" Margin="10,383,0,0" VerticalAlignment="Top" Width="120" Height="38" Click="btnAggiungiMenu_Click"/>

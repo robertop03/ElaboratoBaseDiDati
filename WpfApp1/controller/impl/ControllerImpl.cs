@@ -281,17 +281,30 @@ namespace WpfApp1.controller.impl
         {
             List<Piatto> listaPiatti = new List<Piatto>();
             Regex regex = new Regex(@"Piatto: (.+?), Prezzo: ([0-9.]+) €, Descrizione: (.+)");
+            double totalePrezzoPiatti = 0;
             for (int i = piatti.Count - 1; i >= 0; i--)
             {
                 Match match = regex.Match(piatti[i].ToString());
                 string nome = match.Groups[1].Value;
                 double prezzoPiatto = double.Parse(match.Groups[2].Value);
-                string descrizione = match.Groups[3].Value;
-                listaPiatti.Add(new Piatto(nome, prezzoPiatto, descrizione));
+                Piatto piattoCorrispondente = ListaPiatti.FirstOrDefault(p => p.Nome == nome);
+                if (piattoCorrispondente != null)
+                {
+                    totalePrezzoPiatti += prezzoPiatto;
+                    listaPiatti.Add(piattoCorrispondente);
+                }
             }
-            Menu menu = new Menu(idMenu, listaPiatti, prezzo);
-            ListaMenu.Add(menu);
-            AggiuntoMenu?.Invoke(this, EventArgs.Empty);
+            if (prezzo < totalePrezzoPiatti)
+            {
+                Menu menu = new Menu(idMenu, listaPiatti, prezzo);
+                ListaMenu.Add(menu);
+                AggiuntoMenu?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                throw new Exception("Il prezzo del menù deve essere inferiore del totale del prezzo dei piatti che contiene.");
+            }
+            
         }
 
         public void RimuoviMenu(int idMenu)
