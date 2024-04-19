@@ -193,9 +193,9 @@ namespace WpfApp1.view
                                     _ = creationClientDialog.ShowDialog();
                                     if (creationClientDialog.Result)
                                     {
-                                        controller.AggiungiCliente(creationClientDialog.Nome, creationClientDialog.Cognome, creationClientDialog.NumeroTelefono, creationClientDialog.NumeroPersonePrenotati, creationClientDialog.Città,
+                                        controller.AggiungiCliente(creationClientDialog.Nome, creationClientDialog.Cognome, creationClientDialog.NumeroTelefono, creationClientDialog.Città,
                                             creationClientDialog.Via, creationClientDialog.NumeroCivico, creationClientDialog.Email, creationClientDialog.CodiceDocumento, creationClientDialog.CodiceFiscale);
-                                        controller.PrenotaOmbrellone(riga, colonna, dataInizio, dataFine, creationClientDialog.CodiceFiscale);
+                                        controller.PrenotaOmbrellone(riga, colonna, dataInizio, dataFine, creationClientDialog.CodiceFiscale, dialog.NumeroLettiniAggiunti);
                                         image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
                                         _ = MessageBox.Show("Registrazione avvenuta con successo.", "Registrazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
                                     }

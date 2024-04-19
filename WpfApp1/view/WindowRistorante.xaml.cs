@@ -179,32 +179,32 @@ namespace WpfApp1.view
                                 string pasto = selectSingolDateDialog.Pasto;
                                 CreationClientDialog creationClientDialog = new CreationClientDialog();
                                 int idTavolo = (int)item.Tag;
-                                if (controller.ControlloTavoloLibero(idTavolo, data, pasto))
+                                if (controller.NumeroPostiTavoloAdegueato(idTavolo, selectSingolDateDialog.NumeroPersonePrenotanti))
                                 {
-                                    _ = creationClientDialog.ShowDialog();
-                                    if (creationClientDialog.Result)
+                                    if (controller.ControlloTavoloLibero(idTavolo, data, pasto))
                                     {
-                                        if (controller.NumeroPostiTavoloAdegueato(idTavolo, creationClientDialog.NumeroPersonePrenotati))
+                                        _ = creationClientDialog.ShowDialog();
+                                        if (creationClientDialog.Result)
                                         {
-                                            controller.AggiungiCliente(creationClientDialog.Nome, creationClientDialog.Cognome, creationClientDialog.NumeroTelefono, creationClientDialog.NumeroPersonePrenotati, creationClientDialog.Città,
+                                            controller.AggiungiCliente(creationClientDialog.Nome, creationClientDialog.Cognome, creationClientDialog.NumeroTelefono, creationClientDialog.Città,
                                             creationClientDialog.Via, creationClientDialog.NumeroCivico, creationClientDialog.Email, creationClientDialog.CodiceDocumento, creationClientDialog.CodiceFiscale);
-                                            controller.PrenotaTavolo((int)item.Tag, data, pasto, creationClientDialog.CodiceFiscale);
+                                            controller.PrenotaTavolo((int)item.Tag, data, pasto, creationClientDialog.CodiceFiscale, selectSingolDateDialog.NumeroPersonePrenotanti);
                                             image.Source = new BitmapImage(new Uri("../resources/table_icon_booked.png", UriKind.Relative));
                                             _ = MessageBox.Show("Registrazione avvenuta con successo.", "Registrazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
                                         }
                                         else
                                         {
-                                            _ = MessageBox.Show("Il tavolo non contiene posti sufficienti per il numero di persone.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                            _ = MessageBox.Show("Registrazione annullata.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
                                         }
                                     }
                                     else
                                     {
-                                        _ = MessageBox.Show("Registrazione annullata.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                        _ = MessageBox.Show("Il tavolo risulta essere già prenotato in quel periodo.", "Errore", MessageBoxButton.OK, MessageBoxImage.Error);
                                     }
                                 }
                                 else
                                 {
-                                    _ = MessageBox.Show("Il tavolo risulta essere già prenotato in quel periodo.", "Errore", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    _ = MessageBox.Show("Il tavolo non contiene posti sufficienti per il numero di persone.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
                                 }
                             }
                         }

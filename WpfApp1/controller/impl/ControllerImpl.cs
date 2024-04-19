@@ -72,13 +72,13 @@ namespace WpfApp1.controller.impl
             RimossoOmbrellone?.Invoke(this, EventArgs.Empty);
         }
 
-        public void PrenotaOmbrellone(int numeroRiga, int numeroColonna, DateTime dataInzio, DateTime dataFine, string codiceFiscalePrenotante)
+        public void PrenotaOmbrellone(int numeroRiga, int numeroColonna, DateTime dataInzio, DateTime dataFine, string codiceFiscalePrenotante, int numeroLettiniAggiuntivi)
         {
             for (int i = ListaOmbrelloni.Count - 1; i >= 0; i--)
             {
                 if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
                 {
-                    PrenotazioneOmbrellone prenotazione = new PrenotazioneOmbrellone(dataInzio, dataFine, numeroRiga, numeroColonna, codiceFiscalePrenotante);
+                    PrenotazioneOmbrellone prenotazione = new PrenotazioneOmbrellone(dataInzio, dataFine, numeroRiga, numeroColonna, codiceFiscalePrenotante, numeroLettiniAggiuntivi);
                     ListaPrenotazioniOmbrelloni.Add(prenotazione);
                 }
             }
@@ -128,7 +128,8 @@ namespace WpfApp1.controller.impl
                 if (prenotazione.RigaOmbrellonePrenotato == numeroRiga &&
                     prenotazione.ColonnaOmbrellonePrenotato == numeroColonna)
                 {
-                    toReturn.Add("Pren. da " + prenotazione.DataInizio.ToString("dd/MM/yyyy") + " a " + prenotazione.DataFine.ToString("dd/MM/yyyy") + " da " + prenotazione.CodiceFiscalePrenotante);
+                    toReturn.Add("Pren. da " + prenotazione.DataInizio.ToString("dd/MM/yyyy") + " a " + prenotazione.DataFine.ToString("dd/MM/yyyy")
+                        + " da " + prenotazione.CodiceFiscalePrenotante + ", lettini aggiunti: " + prenotazione.NumeroLettiniAggiuntivi);
                 }
             }
             return toReturn;
@@ -171,14 +172,14 @@ namespace WpfApp1.controller.impl
             RimossoTavolo?.Invoke(this, EventArgs.Empty);
         }
 
-        public void PrenotaTavolo(int idTavolo, DateTime data, string pasto, string codiceFiscalePrenotante)
+        public void PrenotaTavolo(int idTavolo, DateTime data, string pasto, string codiceFiscalePrenotante, int numeroPersonePrenotanti)
         {
             for (int i = ListaTavoli.Count - 1; i >= 0; i--)
             {
                 if (ListaTavoli[i].IdTavolo == idTavolo)
                 {
                     Pasto pastoEnum = (Pasto)Enum.Parse(typeof(Pasto), pasto);
-                    PrenotazioneTavolo prenotazione = new PrenotazioneTavolo(data, pastoEnum, idTavolo, codiceFiscalePrenotante);
+                    PrenotazioneTavolo prenotazione = new PrenotazioneTavolo(data, pastoEnum, idTavolo, codiceFiscalePrenotante, numeroPersonePrenotanti);
                     ListaPrenotazioniTavoli.Add(prenotazione);
                 }
             }
@@ -304,7 +305,6 @@ namespace WpfApp1.controller.impl
             {
                 throw new Exception("Il prezzo del menù deve essere inferiore del totale del prezzo dei piatti che contiene.");
             }
-            
         }
 
         public void RimuoviMenu(int idMenu)
@@ -377,9 +377,9 @@ namespace WpfApp1.controller.impl
         }
         #endregion
 
-        public void AggiungiCliente(string nome, string cognome, string numeroTelefono, int numeroPersoneOspiti, string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale)
+        public void AggiungiCliente(string nome, string cognome, string numeroTelefono, string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale)
         {
-            Cliente cliente = new Cliente(numeroPersoneOspiti, città, via, civico, email, codiceDocumento, codiceFiscale, nome, cognome, numeroTelefono);
+            Cliente cliente = new Cliente(città, via, civico, email, codiceDocumento, codiceFiscale, nome, cognome, numeroTelefono);
             ListaClienti.Add(cliente);
         }
 
@@ -462,5 +462,18 @@ namespace WpfApp1.controller.impl
         }
 
         #endregion
+
+        public List<string> GetEmails()
+        {
+            List<string> toReturn = new List<string>();
+            foreach (Cliente cliente in ListaClienti)
+            {
+                if (cliente.Email != "")
+                {
+                    toReturn.Add(cliente.Email);
+                }
+            }
+            return toReturn;
+        }
     }
 }

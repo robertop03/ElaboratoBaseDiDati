@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfApp1.view"
         mc:Ignorable="d"
         ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
-        Title="Cliente" Height="613" Width="429">
+        Title="Cliente" Height="640" Width="440">
     <Grid>
         <DockPanel VerticalAlignment="Bottom" HorizontalAlignment="Center">
             <Button x:Name="btnConfermaCliente" Content="Conferma" Style="{StaticResource CustomButtonStyle}" Width="100" Height="36" DockPanel.Dock="Left" Margin="10" Click="btnConfermaCliente_Click"/>
@@ -102,15 +102,6 @@
                 <TextBox x:Name="txtCodiceDocumento" Margin="49,9,49,8" Width="140" Height="20" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center"/>
             </Grid>
         </GroupBox>
-        <DockPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,61">
-            <Label Content="" Width="10" />
-            <StackPanel Orientation="Horizontal">
-                <Label Content="Numero di persone per il quale si prenota:" VerticalAlignment="Center"/>
-                <Slider x:Name="sldNumeroPersone" Minimum="1" Maximum="8" TickFrequency="1" IsSnapToTickEnabled="True" Width="150" Margin="5"/>
-                <TextBlock Text="{Binding Value, ElementName=sldNumeroPersone}" Margin="5"/>
-            </StackPanel>
-            <Label Content="" Width="10" />
-        </DockPanel>
         <Button Content="test" HorizontalAlignment="Left" Margin="14,0,0,10" VerticalAlignment="Bottom" Width="76" Click="Button_Click"/>
 
     </Grid>

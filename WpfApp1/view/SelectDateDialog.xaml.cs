@@ -8,8 +8,9 @@ namespace WpfApp1.view
     /// </summary>
     public partial class SelectDateDialog : Window
     {
-        public DateTime DataInizio { get; set; }
-        public DateTime DataFine { get; set; }
+        public DateTime DataInizio { get; private set; }
+        public DateTime DataFine { get; private set; }
+        public int NumeroLettiniAggiunti { get; private set; }
 
         public SelectDateDialog()
         {
@@ -19,6 +20,8 @@ namespace WpfApp1.view
             dtpInizio.DisplayDateEnd = new DateTime(year, 9, 30);
             dtpFine.DisplayDateStart = new DateTime(year, 6, 1);
             dtpFine.DisplayDateEnd = new DateTime(year, 9, 30);
+            dtpInizio.SelectedDate = dtpInizio.DisplayDateStart;
+            dtpFine.SelectedDate = dtpFine.DisplayDateStart;
         }
 
         private void btnConferma_Click(object sender, RoutedEventArgs e)
@@ -27,9 +30,19 @@ namespace WpfApp1.view
             {
                 if (dtpInizio.SelectedDate <= dtpFine.SelectedDate)
                 {
+                    int numeroLettiniAggiunti = 0;
                     DataInizio = dtpInizio.SelectedDate.Value;
                     DataFine = dtpFine.SelectedDate.Value;
-                    DialogResult = true; // Imposta il risultato della finestra di dialogo su "True" per confermare la selezione
+                    if (rdnUno.IsChecked == true)
+                    {
+                        numeroLettiniAggiunti = 1;
+                    }
+                    else if (rdnDue.IsChecked == true)
+                    {
+                        numeroLettiniAggiunti = 2;
+                    }
+                    NumeroLettiniAggiunti = numeroLettiniAggiunti;
+                    DialogResult = true;
                 }
                 else
                 {

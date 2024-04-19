@@ -20,7 +20,6 @@ namespace WpfApp1.view
         public string Email { get; private set; }
         public string CodiceDocumento { get; private set; }
         public string TipoDocumento { get; private set; }
-        public int NumeroPersonePrenotati { get; private set; }
 
         public CreationClientDialog(DateTime dataInizio, DateTime dataFine)
         {
@@ -58,7 +57,6 @@ namespace WpfApp1.view
                 string via = txtVia.Text.Trim();
                 string numeroCivico = txtNumeroCivico.Text.Trim();
                 string email = txtEmail.Text.Trim();
-                int numeroPersonePrenotati = (int)sldNumeroPersone.Value;
                 string codiceDocumento = "", tipoDocumento = "";
                 if (string.IsNullOrEmpty(codiceFiscale))
                 {
@@ -215,8 +213,6 @@ namespace WpfApp1.view
                 Email = email;
                 CodiceDocumento = codiceDocumento;
                 TipoDocumento = tipoDocumento;
-                NumeroPersonePrenotati = numeroPersonePrenotati;
-
                 Result = true;
                 Close();
             }

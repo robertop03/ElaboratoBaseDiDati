@@ -48,8 +48,12 @@ namespace WpfApp1.view
             if (addEventoDialog.Result)
             {
                 controller.AggiungiEvento(addEventoDialog.Titolo, addEventoDialog.Data, addEventoDialog.Orario, addEventoDialog.Descrizione, addEventoDialog.CostoIngresso, ospiti);
+                List<string> emails = controller.GetEmails();
+                foreach (string email in emails)
+                {
 
-                _ = MessageBox.Show("L'evento è stato aggiunto con successo.", "Evento aggiunto.", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                _ = MessageBox.Show("L'evento è stato aggiunto con successo e comunicato agli iscritti in newsletter.", "Evento aggiunto.", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 

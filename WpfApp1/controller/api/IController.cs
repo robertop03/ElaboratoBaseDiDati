@@ -11,7 +11,7 @@ namespace WpfApp1.controller.api
 
         void RimuoviOmbrellone(int numeroRiga, int numeroColonna);
 
-        void PrenotaOmbrellone(int numeroRiga, int numeroColonna, DateTime dataInzio, DateTime dataFine, string codiceFiscalePrenotante);
+        void PrenotaOmbrellone(int numeroRiga, int numeroColonna, DateTime dataInzio, DateTime dataFine, string codiceFiscalePrenotante, int numeroLettiniAggiuntivi);
 
         void DisdiciOmbrellone(DateTime dataInzio, DateTime dataFine, int numeroRiga, int numeroColonna);
 
@@ -31,7 +31,7 @@ namespace WpfApp1.controller.api
 
         void RimuoviTavolo(int idTavolo);
 
-        void PrenotaTavolo(int idTavolo, DateTime data, string pasto, string codiceFiscalePrenotante);
+        void PrenotaTavolo(int idTavolo, DateTime data, string pasto, string codiceFiscalePrenotante, int numeroPersonePrenotanti);
 
         void DisdiciTavolo(int idTavolo, DateTime data, string pasto);
 
@@ -65,7 +65,7 @@ namespace WpfApp1.controller.api
 
         #endregion
 
-        void AggiungiCliente(string nome, string cognome, string numeroTelefono, int numeroPersoneOspiti, string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale);
+        void AggiungiCliente(string nome, string cognome, string numeroTelefono, string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale);
 
         #region Eventi e Ospiti
 
@@ -82,5 +82,7 @@ namespace WpfApp1.controller.api
         List<string> GetOspiti();
 
         #endregion
+
+        List<string> GetEmails();
     }
 }

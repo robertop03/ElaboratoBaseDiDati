@@ -12,6 +12,7 @@ namespace WpfApp1.view
         public AddOspite()
         {
             InitializeComponent();
+            _ = txtCodiceFiscale.Focus();
         }
 
         public bool Result { get; private set; }

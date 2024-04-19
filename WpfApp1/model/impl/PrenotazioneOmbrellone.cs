@@ -9,14 +9,16 @@ namespace WpfApp1.model.impl
         public int RigaOmbrellonePrenotato { get; set; }
         public int ColonnaOmbrellonePrenotato { get; set; }
         public string CodiceFiscalePrenotante { get; set; }
+        public int NumeroLettiniAggiuntivi { get; set; }
 
-        public PrenotazioneOmbrellone(DateTime dataInizio, DateTime dataFine, int rigaOmbrellone, int colonnaOmbrellone, string codiceFiscalePrenotante)
+        public PrenotazioneOmbrellone(DateTime dataInizio, DateTime dataFine, int rigaOmbrellone, int colonnaOmbrellone, string codiceFiscalePrenotante, int numeroLettiniAggiuntivi)
         {
             DataInizio = dataInizio;
             DataFine = dataFine;
             RigaOmbrellonePrenotato = rigaOmbrellone;
             ColonnaOmbrellonePrenotato = colonnaOmbrellone;
             CodiceFiscalePrenotante = codiceFiscalePrenotante;
+            NumeroLettiniAggiuntivi = numeroLettiniAggiuntivi;
         }
     }
 }
