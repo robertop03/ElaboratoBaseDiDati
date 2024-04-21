@@ -177,25 +177,43 @@ namespace WpfApp1.view
                             {
                                 DateTime data = selectSingolDateDialog.Data;
                                 string pasto = selectSingolDateDialog.Pasto;
+                                List<string> clienti = controller.GetClienti();
+                                SelectExistentClientDialog selectExistentClientDialog = new SelectExistentClientDialog(clienti);
                                 CreationClientDialog creationClientDialog = new CreationClientDialog();
                                 int idTavolo = (int)item.Tag;
                                 if (controller.NumeroPostiTavoloAdegueato(idTavolo, selectSingolDateDialog.NumeroPersonePrenotanti))
                                 {
                                     if (controller.ControlloTavoloLibero(idTavolo, data, pasto))
                                     {
-                                        _ = creationClientDialog.ShowDialog();
-                                        if (creationClientDialog.Result)
+                                        bool existAClient = false;
+                                        if (clienti.Count > 0)
                                         {
-                                            controller.AggiungiCliente(creationClientDialog.Nome, creationClientDialog.Cognome, creationClientDialog.NumeroTelefono, creationClientDialog.Città,
-                                            creationClientDialog.Via, creationClientDialog.NumeroCivico, creationClientDialog.Email, creationClientDialog.CodiceDocumento, creationClientDialog.CodiceFiscale);
-                                            controller.PrenotaTavolo((int)item.Tag, data, pasto, creationClientDialog.CodiceFiscale, selectSingolDateDialog.NumeroPersonePrenotanti);
+                                            existAClient = true;
+                                            _ = selectExistentClientDialog.ShowDialog();
+                                        }
+                                        if (selectExistentClientDialog.Result && existAClient)
+                                        {
+                                            controller.PrenotaTavolo((int)item.Tag, data, pasto, selectExistentClientDialog.CodiceFiscale, selectSingolDateDialog.NumeroPersonePrenotanti);
                                             image.Source = new BitmapImage(new Uri("../resources/table_icon_booked.png", UriKind.Relative));
-                                            _ = MessageBox.Show("Registrazione avvenuta con successo.", "Registrazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
+                                            _ = MessageBox.Show("Prenotazione avvenuta con successo.", "Prenotazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
                                         }
                                         else
                                         {
-                                            _ = MessageBox.Show("Registrazione annullata.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                            _ = creationClientDialog.ShowDialog();
+                                            if (creationClientDialog.Result)
+                                            {
+                                                controller.AggiungiCliente(creationClientDialog.Nome, creationClientDialog.Cognome, creationClientDialog.NumeroTelefono, creationClientDialog.Città,
+                                                creationClientDialog.Via, creationClientDialog.NumeroCivico, creationClientDialog.Email, creationClientDialog.CodiceDocumento, creationClientDialog.CodiceFiscale);
+                                                controller.PrenotaTavolo((int)item.Tag, data, pasto, creationClientDialog.CodiceFiscale, selectSingolDateDialog.NumeroPersonePrenotanti);
+                                                image.Source = new BitmapImage(new Uri("../resources/table_icon_booked.png", UriKind.Relative));
+                                                _ = MessageBox.Show("Registrazione avvenuta con successo.", "Registrazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
+                                            }
+                                            else
+                                            {
+                                                _ = MessageBox.Show("Registrazione annullata.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                            }
                                         }
+
                                     }
                                     else
                                     {

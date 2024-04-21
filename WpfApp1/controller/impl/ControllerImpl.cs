@@ -377,11 +377,23 @@ namespace WpfApp1.controller.impl
         }
         #endregion
 
+        #region Cliente
         public void AggiungiCliente(string nome, string cognome, string numeroTelefono, string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale)
         {
             Cliente cliente = new Cliente(città, via, civico, email, codiceDocumento, codiceFiscale, nome, cognome, numeroTelefono);
             ListaClienti.Add(cliente);
         }
+
+        public List<string> GetClienti()
+        {
+            List<string> toReturn = new List<string>();
+            foreach (Cliente cliente in ListaClienti)
+            {
+                toReturn.Add(cliente.ToString());
+            }
+            return toReturn;
+        }
+        #endregion
 
         #region Eventi e Ospiti
 

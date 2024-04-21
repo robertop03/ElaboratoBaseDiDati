@@ -14,5 +14,10 @@
             Cognome = cognome;
             NumeroTelefono = numeroTelefono;
         }
+
+        public override string ToString()
+        {
+            return $"Codice Fiscale: {CodiceFiscale}, Nome: {Nome}, Cognome: {Cognome}, Numero di Telefono: {NumeroTelefono}";
+        }
     }
 }

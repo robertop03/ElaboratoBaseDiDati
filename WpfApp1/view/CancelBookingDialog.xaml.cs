@@ -54,7 +54,6 @@ namespace WpfApp1.view
             {
                 _ = MessageBox.Show("Selezionare prima una prenotazione da disdire", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
-            
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

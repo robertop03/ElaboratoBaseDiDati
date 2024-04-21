@@ -101,6 +101,9 @@
     <Compile Include="view\SelectDateDialog.xaml.cs">
       <DependentUpon>SelectDateDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="view\SelectExistentClientDialog.xaml.cs">
+      <DependentUpon>SelectExistentClientDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="view\SelectSeatsDialog.xaml.cs">
       <DependentUpon>SelectSeatsDialog.xaml</DependentUpon>
     </Compile>
@@ -168,6 +171,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="view\SelectDateDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="view\SelectExistentClientDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

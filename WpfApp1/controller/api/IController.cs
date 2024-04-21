@@ -67,6 +67,8 @@ namespace WpfApp1.controller.api
 
         void AggiungiCliente(string nome, string cognome, string numeroTelefono, string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale);
 
+        List<string> GetClienti();
+
         #region Eventi e Ospiti
 
         void AggiungiEvento(string titolo, DateTime data, TimeSpan orario, string descrizione, double costoIngrezzo, List<string> ospitiEvento);
