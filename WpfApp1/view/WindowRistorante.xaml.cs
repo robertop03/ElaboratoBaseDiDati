@@ -108,6 +108,7 @@ namespace WpfApp1.view
                     {
                         salaCanvas.Children.Remove(textBlock);
                     }
+                    controller.RimuoviTuttePrenotazioniTavolo((int)item.Tag);
                     controller.RimuoviTavolo((int)item.Tag);
                     salaCanvas.Children.Remove(item);
                 }

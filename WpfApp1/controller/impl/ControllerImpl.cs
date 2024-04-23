@@ -149,6 +149,15 @@ namespace WpfApp1.controller.impl
             return ombrelloniPrenotati;
         }
 
+        public void RimuoviTuttePrenotazioniOmbrellone(int numeroRiga, int numeroColonna)
+        {
+            List<PrenotazioneOmbrellone> prenotazioniDaRimuovere = ListaPrenotazioniOmbrelloni.Where(prenotazione => prenotazione.RigaOmbrellonePrenotato == numeroRiga && prenotazione.ColonnaOmbrellonePrenotato == numeroColonna).ToList();
+            foreach (PrenotazioneOmbrellone prenotazione in prenotazioniDaRimuovere)
+            {
+                _ = ListaPrenotazioniOmbrelloni.Remove(prenotazione);
+            }
+        }
+
         #endregion
 
         #region Tavoli
@@ -253,6 +262,15 @@ namespace WpfApp1.controller.impl
                 }
             }
             return false;
+        }
+
+        public void RimuoviTuttePrenotazioniTavolo(int idTavolo)
+        {
+            List<PrenotazioneTavolo> prenotazioniDaRimuovere = ListaPrenotazioniTavoli.Where(prenotazione => prenotazione.IdTavolo == idTavolo).ToList();
+            foreach (PrenotazioneTavolo prenotazione in prenotazioniDaRimuovere)
+            {
+                _ = ListaPrenotazioniTavoli.Remove(prenotazione);
+            }
         }
 
         #endregion

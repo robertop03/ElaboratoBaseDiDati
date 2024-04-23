@@ -182,7 +182,8 @@ namespace WpfApp1.view
                             int riga = rigaEColonna.Item1;
                             int colonna = rigaEColonna.Item2;
                             SelectDateDialog dialog = new SelectDateDialog();
-
+                            List<string> clienti = controller.GetClienti();
+                            SelectExistentClientDialog selectExistentClientDialog = new SelectExistentClientDialog(clienti);
                             if (dialog.ShowDialog() == true)
                             {
                                 DateTime dataInizio = dialog.DataInizio;
@@ -190,18 +191,33 @@ namespace WpfApp1.view
                                 CreationClientDialog creationClientDialog = new CreationClientDialog(dataInizio, dataFine);
                                 if (controller.ControlloOmbrelloneLibero(riga, colonna, dataInizio, dataFine))
                                 {
-                                    _ = creationClientDialog.ShowDialog();
-                                    if (creationClientDialog.Result)
+                                    bool existAClient = false;
+                                    if (clienti.Count > 0)
                                     {
-                                        controller.AggiungiCliente(creationClientDialog.Nome, creationClientDialog.Cognome, creationClientDialog.NumeroTelefono, creationClientDialog.Città,
-                                            creationClientDialog.Via, creationClientDialog.NumeroCivico, creationClientDialog.Email, creationClientDialog.CodiceDocumento, creationClientDialog.CodiceFiscale);
-                                        controller.PrenotaOmbrellone(riga, colonna, dataInizio, dataFine, creationClientDialog.CodiceFiscale, dialog.NumeroLettiniAggiunti);
+                                        existAClient = true;
+                                        _ = selectExistentClientDialog.ShowDialog();
+                                    }
+                                    if (selectExistentClientDialog.Result && existAClient)
+                                    {
+                                        controller.PrenotaOmbrellone(riga, colonna, dataInizio, dataFine, selectExistentClientDialog.CodiceFiscale, dialog.NumeroLettiniAggiunti);
                                         image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
-                                        _ = MessageBox.Show("Registrazione avvenuta con successo.", "Registrazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
+                                        _ = MessageBox.Show("Prenotazione avvenuta con successo.", "Prenotazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
                                     }
                                     else
                                     {
-                                        _ = MessageBox.Show("Registrazione annullata.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                        _ = creationClientDialog.ShowDialog();
+                                        if (creationClientDialog.Result)
+                                        {
+                                            controller.AggiungiCliente(creationClientDialog.Nome, creationClientDialog.Cognome, creationClientDialog.NumeroTelefono, creationClientDialog.Città,
+                                                creationClientDialog.Via, creationClientDialog.NumeroCivico, creationClientDialog.Email, creationClientDialog.CodiceDocumento, creationClientDialog.CodiceFiscale);
+                                            controller.PrenotaOmbrellone(riga, colonna, dataInizio, dataFine, creationClientDialog.CodiceFiscale, dialog.NumeroLettiniAggiunti);
+                                            image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
+                                            _ = MessageBox.Show("Registrazione avvenuta con successo.", "Registrazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
+                                        }
+                                        else
+                                        {
+                                            _ = MessageBox.Show("Registrazione annullata.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                        }
                                     }
                                 }
                                 else
@@ -280,6 +296,7 @@ namespace WpfApp1.view
                 foreach (CheckBox item in spiaggiaCanvas.Children.OfType<CheckBox>().Where(cb => cb.IsChecked == true).ToList())
                 {
                     (int, int) rigaEColonna = (ValueTuple<int, int>)item.Tag;
+                    controller.RimuoviTuttePrenotazioniOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2);
                     controller.RimuoviOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2);
                     spiaggiaCanvas.Children.Remove(item);
                 }

@@ -23,6 +23,8 @@ namespace WpfApp1.controller.api
 
         List<(int, int)> OmbrelloniPrenotati(DateTime data); // restituisce una lista con gli tutti gli ombrelloni che hanno una prenotazione in una determinata data.
 
+        void RimuoviTuttePrenotazioniOmbrellone(int numeroRiga, int numeroColonna);
+
         #endregion
 
         #region Tavolo
@@ -44,6 +46,8 @@ namespace WpfApp1.controller.api
         List<int> TavoliPrenotati(DateTime data);
 
         bool NumeroPostiTavoloAdegueato(int idTavolo, int numeroOspiti); // restituisce true se il numero di posti del tavolo è sufficente a contenere gli ospiti per il quale si sta prenotando.
+
+        void RimuoviTuttePrenotazioniTavolo(int idTavolo);
 
         #endregion
 
