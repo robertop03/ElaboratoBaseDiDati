@@ -17,5 +17,6 @@
         <DatePicker x:Name="dtpCalendar" HorizontalAlignment="Left" Margin="10,-4,0,0" VerticalAlignment="Top" SelectedDateChanged="dtpCalendar_SelectedDateChanged"/>
         <Button x:Name="btnInfoOmbrellone" Style="{StaticResource CustomButtonStyle}" Content="Info" HorizontalAlignment="Left" Margin="235,422,0,0" Width="77" Height="35" VerticalAlignment="Top" Click="btnInfoOmbrellone_Click"/>
         <Button x:Name="btnImpostaPrezzi" Style="{StaticResource CustomButtonStyle}" Content="Imposta prezzario" HorizontalAlignment="Left" Margin="734,421,0,0" Width="150" Height="35" VerticalAlignment="Top" Click="btnImpostaPrezzi_Click"/>
+        <Button x:Name="btnSconti" Style="{StaticResource CustomButtonStyle}" Content="Sconti" HorizontalAlignment="Left" Margin="652,421,0,0" Width="77" Height="35" VerticalAlignment="Top" Click="btnSconti_Click"/>
     </Grid>
 </Window>

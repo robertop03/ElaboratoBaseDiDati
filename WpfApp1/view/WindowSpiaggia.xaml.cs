@@ -350,6 +350,12 @@ namespace WpfApp1.view
             }
         }
 
+        private void btnSconti_Click(object sender, RoutedEventArgs e)
+        {
+            ScontiDialog setSconti = new ScontiDialog();
+            _ = setSconti.ShowDialog();
+        }
+
         private void btnRimuoviOmbrellone_Click(object sender, RoutedEventArgs e)
         {
             if (spiaggiaCanvas.Children.OfType<CheckBox>().Any(cb => cb.IsChecked == true))

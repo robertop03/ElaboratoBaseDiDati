@@ -124,6 +124,7 @@
     <Compile Include="model\impl\Piatto.cs" />
     <Compile Include="model\impl\PrenotazioneOmbrellone.cs" />
     <Compile Include="model\impl\PrenotazioneTavolo.cs" />
+    <Compile Include="model\impl\ScontoOmbrellone.cs" />
     <Compile Include="model\impl\Tavolo.cs" />
     <Compile Include="view\AddEventoDialog.xaml.cs">
       <DependentUpon>AddEventoDialog.xaml</DependentUpon>
@@ -140,6 +141,9 @@
     <Compile Include="view\AddPiattoDialog.xaml.cs">
       <DependentUpon>AddPiattoDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="view\AddSconto.xaml.cs">
+      <DependentUpon>AddSconto.xaml</DependentUpon>
+    </Compile>
     <Compile Include="view\CancelBookingDialog.xaml.cs">
       <DependentUpon>CancelBookingDialog.xaml</DependentUpon>
     </Compile>
@@ -151,6 +155,9 @@
     </Compile>
     <Compile Include="view\OrderDialog.xaml.cs">
       <DependentUpon>OrderDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="view\ScontiDialog.xaml.cs">
+      <DependentUpon>ScontiDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="view\SelectDateDialog.xaml.cs">
       <DependentUpon>SelectDateDialog.xaml</DependentUpon>
@@ -208,6 +215,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="view\AddSconto.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="view\CancelBookingDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -221,6 +232,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="view\OrderDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="view\ScontiDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

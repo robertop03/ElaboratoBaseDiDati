@@ -22,6 +22,7 @@ namespace WpfApp1.controller.impl
         public ObservableCollection<Ordine> ListaOrdini { get; set; }
         public ObservableCollection<Evento> ListaEventi { get; set; }
         public ObservableCollection<Ospite> ListaOspiti { get; set; }
+        public ObservableCollection<ScontoOmbrellone> ListaScontiOmbrellone { get; set; }
 
         public event EventHandler AggiuntoOmbrellone;
         public event EventHandler RimossoOmbrellone;
@@ -35,6 +36,8 @@ namespace WpfApp1.controller.impl
         public event EventHandler RimossoEvento;
         public event EventHandler AggiuntoOspite;
         public event EventHandler RimossoOspite;
+        public event EventHandler AggiuntoSconto;
+        public event EventHandler RimossoSconto;
 
         public static int IdMenu = 1;
         public static int IdOrdine = 1;
@@ -51,6 +54,7 @@ namespace WpfApp1.controller.impl
             ListaOrdini = new ObservableCollection<Ordine>();
             ListaEventi = new ObservableCollection<Evento>();
             ListaOspiti = new ObservableCollection<Ospite>();
+            ListaScontiOmbrellone = new ObservableCollection<ScontoOmbrellone>();
         }
 
         #region Ombrelloni
@@ -597,6 +601,43 @@ namespace WpfApp1.controller.impl
             }
             return toReturn;
         }
+
+        #endregion
+
+        #region Sconti
+
+        public void AggiungiSconto(int numeroGiorni, double percentualeSconto)
+        {
+            ScontoOmbrellone scontoOmbrellone = new ScontoOmbrellone(numeroGiorni, percentualeSconto);
+            ListaScontiOmbrellone.Add(scontoOmbrellone);
+            string query = $"INSERT INTO sconto_ombrelloni (Numero_giorni, Sconto_corrispondente) VALUES ({numeroGiorni}, {percentualeSconto})";
+            DBConnect dbConnect = new DBConnect();
+            dbConnect.Insert(query);
+            AggiuntoSconto?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void RimuoviSconto(int numeroGiorni)
+        {
+            for (int i = ListaScontiOmbrellone.Count - 1; i >= 0; i--)
+            {
+                if (ListaScontiOmbrellone[i].NumeroGiorni == numeroGiorni)
+                {
+                    ListaScontiOmbrellone.RemoveAt(i);
+                }
+            }
+            RimossoSconto?.Invoke(this, EventArgs.Empty);
+        }
+
+        public List<string> GetSconti()
+        {
+            List<string> toReturn = new List<string>();
+            foreach (ScontoOmbrellone scontoOmbrellone in ListaScontiOmbrellone)
+            {
+                toReturn.Add(scontoOmbrellone.ToString());
+            }
+            return toReturn;
+        }
+
 
         #endregion
 

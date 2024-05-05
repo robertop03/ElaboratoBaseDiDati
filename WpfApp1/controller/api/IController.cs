@@ -99,6 +99,12 @@ namespace WpfApp1.controller.api
 
         #endregion
 
+        #region Sconti
+
+        void AggiungiSconto(int numeroGiorni, double percentualeSconto);
+
+        #endregion
+
         List<string> GetEmails();
     }
 }
