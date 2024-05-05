@@ -25,6 +25,10 @@ namespace WpfApp1.controller.api
 
         void RimuoviTuttePrenotazioniOmbrellone(int numeroRiga, int numeroColonna);
 
+        void LoadOmbrelloniFromDB();
+
+        List<(int, int)> GetOmbrelloni();
+
         #endregion
 
         #region Tavolo
@@ -41,6 +45,8 @@ namespace WpfApp1.controller.api
 
         int GetNumeroTavoli();
 
+        int GetNumeroPostiTavolo(int idTavolo);
+
         List<string> GetPrenotazioniTavolo(int idTavolo);
 
         List<int> TavoliPrenotati(DateTime data);
@@ -48,6 +54,10 @@ namespace WpfApp1.controller.api
         bool NumeroPostiTavoloAdegueato(int idTavolo, int numeroOspiti); // restituisce true se il numero di posti del tavolo è sufficente a contenere gli ospiti per il quale si sta prenotando.
 
         void RimuoviTuttePrenotazioniTavolo(int idTavolo);
+
+        void LoadTavoliFromDB();
+
+        int GetLastIdTavolo();
 
         #endregion
 

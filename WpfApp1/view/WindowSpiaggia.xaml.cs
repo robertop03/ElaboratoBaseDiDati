@@ -15,6 +15,7 @@ namespace WpfApp1.view
     public partial class WindowSpiaggia : Window
     {
         private readonly ControllerImpl controller;
+        private readonly Dictionary<(int, int), Point> umbrellasPositions = new Dictionary<(int, int), Point>();
         private int numeroRiga = 1, numeroColonna = 1;
 
         public WindowSpiaggia()
@@ -24,12 +25,23 @@ namespace WpfApp1.view
             DataContext = controller;
             controller.AggiuntoOmbrellone += Controller_ModifiedNumberOmbrellas;
             controller.RimossoOmbrellone += Controller_ModifiedNumberOmbrellas;
-            lblNumeroOmbrelloni.Content = "Numero ombrelloni: 0";
+            lblNumeroOmbrelloni.Content = $"Numero ombrelloni: {controller.GetNumeroOmbrelloni()}";
 
             int year = DateTime.Now.Year;
             dtpCalendar.DisplayDateStart = new DateTime(year, 6, 1);
             dtpCalendar.DisplayDateEnd = new DateTime(year, 9, 30);
             dtpCalendar.SelectedDate = dtpCalendar.DisplayDateStart;
+            controller.LoadOmbrelloniFromDB();
+            foreach ((int, int) ombrellone in controller.GetOmbrelloni())
+            {
+                AggiungiOmbrelloneAlCanvas(ombrellone.Item1, ombrellone.Item2);
+            }
+            if (controller.GetOmbrelloni().Count > 0)
+            {
+                (int, int) numeroRigaEColonna = controller.RigaEColonna();
+                numeroRiga = numeroRigaEColonna.Item1;
+                numeroColonna = numeroRigaEColonna.Item2 + 1;
+            }
         }
 
         private const double MinimumSpacing = 17; // Spazio minimo tra gli ombrelloni
@@ -42,7 +54,55 @@ namespace WpfApp1.view
         private void Controller_ModifiedNumberOmbrellas(object sender, EventArgs e)
         {
             // Aggiorna il contenuto della Label ogni volta che viene aggiunto un ombrellone
-            lblNumeroOmbrelloni.Content = "Numero ombrelloni: " + controller.GetNumeroOmbrelloni();
+            lblNumeroOmbrelloni.Content = $"Numero ombrelloni: {controller.GetNumeroOmbrelloni()}";
+        }
+
+        private Point GetNewUmbrellaPosition()
+        {
+            // Calcola la posizione corrente dell'ultimo ombrellone aggiunto
+            double currentLeft = EdgeSpacing + (numeroColonna - 1) * (UmbrellaSize + MinimumSpacing);
+            double currentTop = EdgeSpacing + (numeroRiga - 1) * (UmbrellaSize + MinimumSpacing);
+
+            // Verifica se l'ultima posizione è già occupata da un ombrellone
+            while (umbrellasPositions.ContainsValue(new Point(currentLeft, currentTop)))
+            {
+                // Sposta la posizione verso destra
+                currentLeft += UmbrellaSize + MinimumSpacing;
+                if (currentLeft + UmbrellaSize + MinimumSpacing > spiaggiaCanvas.ActualWidth - EdgeSpacing)
+                {
+                    // Passa alla riga successiva
+                    currentLeft = EdgeSpacing;
+                    currentTop += UmbrellaSize + MinimumSpacing;
+                }
+            }
+
+            // Memorizza la nuova posizione nella mappa
+            umbrellasPositions[(numeroRiga, numeroColonna)] = new Point(currentLeft, currentTop);
+
+            return new Point(currentLeft, currentTop);
+        }
+
+        private void AggiungiOmbrelloneAlCanvas(int riga, int colonna)
+        {
+            CheckBox newCheckBox = new CheckBox();
+            Image newUmbrella = new Image
+            {
+                Source = new BitmapImage(new Uri("../resources/umbrella_icon.png", UriKind.Relative)),
+                Width = 50,
+                Height = 50
+            };
+            newCheckBox.Content = newUmbrella;
+            // Imposta la posizione dell'ombrello
+            double leftPosition = EdgeSpacing + (colonna - 1) * (UmbrellaSize + MinimumSpacing);
+            double topPosition = EdgeSpacing + (riga - 1) * (UmbrellaSize + MinimumSpacing);
+            Canvas.SetLeft(newCheckBox, leftPosition);
+            Canvas.SetTop(newCheckBox, topPosition);
+
+            (int numeroRiga, int numeroColonna) rigaEcolonna = (riga, colonna);
+            newCheckBox.Tag = rigaEcolonna;
+            _ = spiaggiaCanvas.Children.Add(newCheckBox); // Aggiungi l'ombrello al Canvas
+
+            umbrellasPositions[(riga, colonna)] = new Point(leftPosition, topPosition);
         }
 
         private void spiaggiaCanvas_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -72,8 +132,9 @@ namespace WpfApp1.view
                 };
                 newCheckBox.Content = newUmbrella;
                 // Imposta la posizione dell'ombrello
-                Canvas.SetLeft(newCheckBox, currentLeft);
-                Canvas.SetTop(newCheckBox, currentTop);
+                Point newPosition = GetNewUmbrellaPosition();
+                Canvas.SetLeft(newCheckBox, newPosition.X);
+                Canvas.SetTop(newCheckBox, newPosition.Y);
 
                 if (currentLeft + UmbrellaSize + MinimumSpacing > spiaggiaCanvas.ActualWidth - EdgeSpacing)
                 {
@@ -296,7 +357,7 @@ namespace WpfApp1.view
                 foreach (CheckBox item in spiaggiaCanvas.Children.OfType<CheckBox>().Where(cb => cb.IsChecked == true).ToList())
                 {
                     (int, int) rigaEColonna = (ValueTuple<int, int>)item.Tag;
-                    controller.RimuoviTuttePrenotazioniOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2);
+                    // controller.RimuoviTuttePrenotazioniOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2);
                     controller.RimuoviOmbrellone(rigaEColonna.Item1, rigaEColonna.Item2);
                     spiaggiaCanvas.Children.Remove(item);
                 }

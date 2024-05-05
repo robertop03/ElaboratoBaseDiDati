@@ -26,13 +26,21 @@ namespace WpfApp1.view
             DataContext = controller;
             controller.AggiuntoTavolo += Controller_ModifiedNumberTables;
             controller.RimossoTavolo += Controller_ModifiedNumberTables;
-            lblNumeroTavoli.Content = "Numero tavoli: 0";
+            lblNumeroTavoli.Content = $"Numero tavoli: {controller.GetNumeroTavoli()}";
+            if (controller.GetNumeroTavoli() > 0)
+            {
+                idTavolo = controller.GetLastIdTavolo() + 1;
+            }
 
             int year = DateTime.Now.Year;
             dtpCalendar.DisplayDateStart = new DateTime(year, 6, 1);
             dtpCalendar.DisplayDateEnd = new DateTime(year, 9, 30);
             dtpCalendar.SelectedDate = dtpCalendar.DisplayDateStart;
+
+            controller.LoadTavoliFromDB();
+            salaCanvas.Loaded += SalaCanvas_Loaded;
         }
+
 
         private const double MinimumSpacing = 20;
         private const double EdgeSpacing = 20; // Spazio minimo dai bordi del Canvas
@@ -41,11 +49,67 @@ namespace WpfApp1.view
         private double currentLeft = EdgeSpacing; // Posizione corrente sull'asse X
         private double currentTop = EdgeSpacing; // Posizione corrente sull'asse Y
 
+        private void SalaCanvas_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Il canvas è stato completamente caricato, puoi ora ottenere le sue dimensioni
+            foreach (int tavolo in controller.GetTavoli())
+            {
+                AggiungiTavoloAlCanvas(tavolo);
+            }
+        }
+
         private void Controller_ModifiedNumberTables(object sender, EventArgs e)
         {
             // Aggiorna il contenuto della Label ogni volta che viene aggiunto un tavolo
             lblNumeroTavoli.Content = "Numero tavoli: " + controller.GetNumeroTavoli();
         }
+
+        private void AggiungiTavoloAlCanvas(int idTavolo)
+        {
+            CheckBox newCheckBox = new CheckBox();
+            Image newTable = new Image
+            {
+                Source = new BitmapImage(new Uri("../resources/table_icon.png", UriKind.Relative)),
+                Width = 50,
+                Height = 50
+            };
+            newCheckBox.Content = newTable;
+
+            // Imposta la posizione del tavolo basata sulla dimensione del canvas e sulla posizione corrente
+
+            // Aggiungi il tavolo al canvas
+            Canvas.SetLeft(newCheckBox, currentLeft);
+            Canvas.SetTop(newCheckBox, currentTop);
+            _ = salaCanvas.Children.Add(newCheckBox);
+
+            TextBlock seatsTextBlock = new TextBlock
+            {
+                Text = controller.GetNumeroPostiTavolo(idTavolo).ToString(),
+                FontSize = 10,
+                Foreground = Brushes.Black
+            };
+
+            // Imposta la posizione del blocco di testo per i posti
+            Canvas.SetLeft(seatsTextBlock, currentLeft + TableSize - seatsTextBlock.ActualWidth);
+            Canvas.SetTop(seatsTextBlock, currentTop + TableSize - seatsTextBlock.ActualHeight);
+            _ = salaCanvas.Children.Add(seatsTextBlock);
+
+            newCheckBox.Tag = idTavolo;
+            seatsTextBlock.Tag = idTavolo;
+
+            // Aggiorna la posizione corrente per il prossimo tavolo
+            currentLeft += TableSize + MinimumSpacing;
+
+            // Controlla se il tavolo è l'ultimo nella riga corrente
+            if (currentLeft + TableSize + MinimumSpacing > salaCanvas.ActualWidth - EdgeSpacing)
+            {
+                // Se è l'ultimo nella riga, sposta il prossimo tavolo nella riga successiva
+                currentLeft = EdgeSpacing;
+                currentTop += TableSize + MinimumSpacing;
+            }
+        }
+
+
 
         private void salaCanvas_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -93,7 +157,6 @@ namespace WpfApp1.view
                     currentLeft = EdgeSpacing;
                     currentTop += TableSize + MinimumSpacing;
                 }
-
             }
         }
 
@@ -108,7 +171,7 @@ namespace WpfApp1.view
                     {
                         salaCanvas.Children.Remove(textBlock);
                     }
-                    controller.RimuoviTuttePrenotazioniTavolo((int)item.Tag);
+                    // controller.RimuoviTuttePrenotazioniTavolo((int)item.Tag); NON TOGLIERE IL COMMENTO, SE RIMUOVO UN OMBRELLONE VOGLIO COMUNQUE CALCOLARE I GUARDAGNI
                     controller.RimuoviTavolo((int)item.Tag);
                     salaCanvas.Children.Remove(item);
                 }

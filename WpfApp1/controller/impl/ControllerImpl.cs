@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using WpfApp1.controller.api;
+using WpfApp1.model.DB;
 using WpfApp1.model.impl;
 
 namespace WpfApp1.controller.impl
@@ -57,6 +59,9 @@ namespace WpfApp1.controller.impl
         {
             Ombrellone ombrellone = new Ombrellone(numeroRiga, numeroColonna);
             ListaOmbrelloni.Add(ombrellone);
+            string query = $"INSERT INTO Ombrellone (Numero_riga, Numero_colonna) VALUES ({numeroRiga}, {numeroColonna})";
+            DBConnect dbConnect = new DBConnect();
+            dbConnect.Insert(query);
             AggiuntoOmbrellone?.Invoke(this, EventArgs.Empty);
         }
 
@@ -117,7 +122,16 @@ namespace WpfApp1.controller.impl
 
         public int GetNumeroOmbrelloni()
         {
-            return ListaOmbrelloni.Count;
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT COUNT(DISTINCT CONCAT(numero_riga, '-', numero_colonna)) AS numero_ombrelloni FROM ombrellone;";
+            DataTable dataTable = dbConnect.Select(query);
+            if (dataTable.Rows.Count > 0)
+            {
+                DataRow row = dataTable.Rows[0];
+                int nOmbrelloni = int.Parse(row["numero_ombrelloni"].ToString());
+                return nOmbrelloni;
+            }
+            return 0;
         }
 
         public List<string> GetPrenotazioniOmbrellone(int numeroRiga, int numeroColonna)
@@ -158,6 +172,44 @@ namespace WpfApp1.controller.impl
             }
         }
 
+        public void LoadOmbrelloniFromDB()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT * FROM ombrellone;";
+            DataTable dataTable = dbConnect.Select(query);
+            foreach (DataRow row in dataTable.Rows)
+            {
+                int nRiga = int.Parse(row["Numero_riga"].ToString());
+                int nColonna = int.Parse(row["Numero_colonna"].ToString());
+                ListaOmbrelloni.Add(new Ombrellone(nRiga, nColonna));
+            }
+        }
+
+        public List<(int, int)> GetOmbrelloni()
+        {
+            List<(int, int)> toReturn = new List<(int, int)>();
+            foreach (Ombrellone ombrellone in ListaOmbrelloni)
+            {
+                toReturn.Add((ombrellone.NumeroRiga, ombrellone.NumeroColonna));
+            }
+            return toReturn;
+        }
+
+        public (int, int) RigaEColonna()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT numero_riga, numero_colonna FROM Ombrellone ORDER BY numero_riga DESC, numero_colonna DESC LIMIT 1;";
+            DataTable dataTable = dbConnect.Select(query);
+            if (dataTable.Rows.Count > 0)
+            {
+                DataRow row = dataTable.Rows[0];
+                int nRiga = int.Parse(row["Numero_riga"].ToString());
+                int nColonna = int.Parse(row["Numero_colonna"].ToString());
+                return (nRiga, nColonna);
+            }
+            return (0, 0);
+        }
+
         #endregion
 
         #region Tavoli
@@ -166,6 +218,9 @@ namespace WpfApp1.controller.impl
         {
             Tavolo tavolo = new Tavolo(idTavolo, numeroPosti);
             ListaTavoli.Add(tavolo);
+            string query = $"INSERT INTO Tavolo (Id_tavolo, Numero_posti) VALUES ({idTavolo}, {numeroPosti})";
+            DBConnect dbConnect = new DBConnect();
+            dbConnect.Insert(query);
             AggiuntoTavolo?.Invoke(this, EventArgs.Empty);
         }
 
@@ -222,7 +277,16 @@ namespace WpfApp1.controller.impl
 
         public int GetNumeroTavoli()
         {
-            return ListaTavoli.Count;
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT COUNT(Id_tavolo) AS numero_tavoli FROM tavolo;";
+            DataTable dataTable = dbConnect.Select(query);
+            if (dataTable.Rows.Count > 0)
+            {
+                DataRow row = dataTable.Rows[0];
+                int nTavoli = int.Parse(row["numero_tavoli"].ToString());
+                return nTavoli;
+            }
+            return 0;
         }
 
         public List<string> GetPrenotazioniTavolo(int idTavolo)
@@ -271,6 +335,49 @@ namespace WpfApp1.controller.impl
             {
                 _ = ListaPrenotazioniTavoli.Remove(prenotazione);
             }
+        }
+
+        public List<int> GetTavoli()
+        {
+            List<int> toReturn = new List<int>();
+            foreach (Tavolo tavolo in ListaTavoli)
+            {
+                toReturn.Add(tavolo.IdTavolo);
+            }
+            return toReturn;
+        }
+
+        public int GetNumeroPostiTavolo(int idTavolo)
+        {
+            Tavolo tavolo = ListaTavoli.FirstOrDefault(t => t.IdTavolo == idTavolo);
+            return tavolo != null ? tavolo.NumeroPosti : 0;
+        }
+
+        public void LoadTavoliFromDB()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT * FROM tavolo;";
+            DataTable dataTable = dbConnect.Select(query);
+            foreach (DataRow row in dataTable.Rows)
+            {
+                int idTavolo = int.Parse(row["Id_tavolo"].ToString());
+                int nPosti = int.Parse(row["Numero_posti"].ToString());
+                ListaTavoli.Add(new Tavolo(idTavolo, nPosti));
+            }
+        }
+
+        public int GetLastIdTavolo()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT MAX(Id_tavolo) AS MaxId FROM tavolo;";
+            DataTable dataTable = dbConnect.Select(query);
+            if (dataTable.Rows.Count > 0)
+            {
+                DataRow row = dataTable.Rows[0];
+                int idMax = int.Parse(row["MaxId"].ToString());
+                return idMax;
+            }
+            return 0;
         }
 
         #endregion
