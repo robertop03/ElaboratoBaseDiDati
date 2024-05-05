@@ -103,6 +103,12 @@ namespace WpfApp1.controller.api
 
         void AggiungiSconto(int numeroGiorni, double percentualeSconto);
 
+        void RimuoviSconto(int numeroGiorni);
+
+        List<string> GetSconti();
+
+        void LoadScontiFromDB();
+
         #endregion
 
         List<string> GetEmails();

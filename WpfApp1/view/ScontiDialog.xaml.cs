@@ -29,6 +29,7 @@ namespace WpfApp1.view
             controller = new ControllerImpl();
             controller.AggiuntoSconto += Controller_ModifiedSconti;
             controller.RimossoSconto += Controller_ModifiedSconti;
+            controller.LoadScontiFromDB();
             lstSconti.ItemsSource = controller.GetSconti();
         }
 

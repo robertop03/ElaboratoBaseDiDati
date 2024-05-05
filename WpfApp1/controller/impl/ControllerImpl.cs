@@ -75,6 +75,9 @@ namespace WpfApp1.controller.impl
             {
                 if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
                 {
+                    string query = $"DELETE FROM ombrellone WHERE Numero_riga = {numeroRiga} AND Numero_colonna = {numeroColonna}";
+                    DBConnect dbConnect = new DBConnect();
+                    dbConnect.Delete(query);
                     ListaOmbrelloni.RemoveAt(i);
                 }
             }
@@ -234,6 +237,9 @@ namespace WpfApp1.controller.impl
             {
                 if (ListaTavoli[i].IdTavolo == idTavolo)
                 {
+                    string query = $"DELETE FROM tavolo WHERE Id_tavolo = {idTavolo}";
+                    DBConnect dbConnect = new DBConnect();
+                    dbConnect.Delete(query);
                     ListaTavoli.RemoveAt(i);
                 }
             }
@@ -622,6 +628,9 @@ namespace WpfApp1.controller.impl
             {
                 if (ListaScontiOmbrellone[i].NumeroGiorni == numeroGiorni)
                 {
+                    string query = $"DELETE FROM sconto_ombrelloni WHERE Numero_giorni = {numeroGiorni}";
+                    DBConnect dbConnect = new DBConnect();
+                    dbConnect.Delete(query);
                     ListaScontiOmbrellone.RemoveAt(i);
                 }
             }
@@ -638,7 +647,18 @@ namespace WpfApp1.controller.impl
             return toReturn;
         }
 
-
+        public void LoadScontiFromDB()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT * FROM sconto_ombrelloni;";
+            DataTable dataTable = dbConnect.Select(query);
+            foreach (DataRow row in dataTable.Rows)
+            {
+                int nGiorni = int.Parse(row["Numero_giorni"].ToString());
+                double percentualeSconto = int.Parse(row["Sconto_corrispondente"].ToString());
+                ListaScontiOmbrellone.Add(new ScontoOmbrellone(nGiorni, percentualeSconto));
+            }
+        }
         #endregion
 
         public List<string> GetEmails()

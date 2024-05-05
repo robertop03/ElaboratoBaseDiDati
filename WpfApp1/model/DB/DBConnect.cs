@@ -84,6 +84,16 @@ namespace WpfApp1.model.DB
             }
         }
 
+        public void Delete(string query)
+        {
+            if (OpenConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                _ = cmd.ExecuteNonQuery();
+                CloseConnection();
+            }
+        }
+
         public DataTable Select(string query)
         {
             DataTable dataTable = new DataTable();
