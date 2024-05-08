@@ -25,7 +25,7 @@ namespace WpfApp1.view
         {
             InitializeComponent();
             // carico i prezzi dal database sulle textbox
-            prezziFromDb = controller.GetPrezziOmbrelloni();
+            prezziFromDb = controller.GetPrezziLettini();
 
             txtPrezzoPrimaFilaBassaStagione.Text = prezziFromDb[0];
             txtPrezzoPrimaFilaAltaStagione.Text = prezziFromDb[1];

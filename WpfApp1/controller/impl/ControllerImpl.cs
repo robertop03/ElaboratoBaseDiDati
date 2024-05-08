@@ -1217,5 +1217,10 @@ namespace WpfApp1.controller.impl
 
             return toReturn;
         }
+
+        public static void CreateDatabaseAndTables()
+        {
+            DBConnect dbConnect = new DBConnect();
+        }
     }
 }
