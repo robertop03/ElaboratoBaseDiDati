@@ -93,7 +93,7 @@
 
                 <Label Content="Tipo di Documento:" Margin="5,6,5,5" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
                 <ComboBox x:Name="cmbTipoDocumento" Margin="49,8,49,9" Width="140" Height="20" Grid.Column="2" VerticalAlignment="Center" SelectedIndex="0">
-                    <ComboBoxItem Content="Carta di identità" />
+                    <ComboBoxItem Content="CartaIdentità" />
                     <ComboBoxItem Content="Passaporto" />
                     <ComboBoxItem Content="Patente" />
                 </ComboBox>

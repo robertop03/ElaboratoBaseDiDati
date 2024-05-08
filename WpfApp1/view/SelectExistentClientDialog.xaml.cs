@@ -11,6 +11,7 @@ namespace WpfApp1.view
     {
         public bool Result { get; private set; }
         public string CodiceFiscale { get; private set; }
+        public bool UtenteChiudeScheda { get; private set; } = true;
 
         public SelectExistentClientDialog(List<string> clienti)
         {
@@ -28,6 +29,7 @@ namespace WpfApp1.view
                 Match match = Regex.Match(clienteSelezionato, pattern);
                 CodiceFiscale = match.Groups[1].Value;
                 Result = true;
+                UtenteChiudeScheda = true;
                 Close();
             }
             else
@@ -39,6 +41,7 @@ namespace WpfApp1.view
         private void btnCreaNuovoCliente_Click(object sender, RoutedEventArgs e)
         {
             Result = false;
+            UtenteChiudeScheda = false;
             Close();
         }
     }

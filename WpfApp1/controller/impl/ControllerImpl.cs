@@ -23,6 +23,7 @@ namespace WpfApp1.controller.impl
         public ObservableCollection<Evento> ListaEventi { get; set; }
         public ObservableCollection<Ospite> ListaOspiti { get; set; }
         public ObservableCollection<ScontoOmbrellone> ListaScontiOmbrellone { get; set; }
+        public ObservableCollection<Documento> ListaDocumenti { get; set; }
 
         public event EventHandler AggiuntoOmbrellone;
         public event EventHandler RimossoOmbrellone;
@@ -55,6 +56,15 @@ namespace WpfApp1.controller.impl
             ListaEventi = new ObservableCollection<Evento>();
             ListaOspiti = new ObservableCollection<Ospite>();
             ListaScontiOmbrellone = new ObservableCollection<ScontoOmbrellone>();
+            ListaDocumenti = new ObservableCollection<Documento>();
+            LoadClientiFromDB();
+            LoadPiattiFromDB();
+            LoadOspitiFromDB();
+            LoadMenuFromDB();
+            LoadEventiFromDB();
+            LoadPrenotazioniTavoloFromDB();
+            LoadPrenotazioniOmbrelloneFromDB();
+            SetRighe();
         }
 
         #region Ombrelloni
@@ -65,7 +75,25 @@ namespace WpfApp1.controller.impl
             ListaOmbrelloni.Add(ombrellone);
             string query = $"INSERT INTO Ombrellone (Numero_riga, Numero_colonna) VALUES ({numeroRiga}, {numeroColonna})";
             DBConnect dbConnect = new DBConnect();
-            dbConnect.Insert(query);
+            _ = dbConnect.Insert(query);
+            bool isRigaPresente = false;
+            DBConnect dbConnect2 = new DBConnect();
+            string query2 = "SELECT Numero_riga FROM riga;";
+            DataTable dataTable2 = dbConnect2.Select(query2);
+            foreach (DataRow row in dataTable2.Rows)
+            {
+                int nRiga = int.Parse(row["Numero_riga"].ToString());
+                if (nRiga == numeroRiga)
+                {
+                    isRigaPresente = true;
+                }
+            }
+            if (!isRigaPresente)
+            {
+                DBConnect dbConnect3 = new DBConnect();
+                string query3 = $"INSERT INTO Riga VALUES({numeroRiga});";
+                _ = dbConnect3.Insert(query3);
+            }
             AggiuntoOmbrellone?.Invoke(this, EventArgs.Empty);
         }
 
@@ -92,6 +120,9 @@ namespace WpfApp1.controller.impl
                 {
                     PrenotazioneOmbrellone prenotazione = new PrenotazioneOmbrellone(dataInzio, dataFine, numeroRiga, numeroColonna, codiceFiscalePrenotante, numeroLettiniAggiuntivi);
                     ListaPrenotazioniOmbrelloni.Add(prenotazione);
+                    string query = $"INSERT INTO prenotazione_ombrellone (Data_inzio, Data_fine, Numero_lettini_aggiuntivi, Codice_fiscale, Numero_riga, Numero_colonna) VALUES ('{dataInzio:yyyy-MM-dd}', '{dataFine:yyyy-MM-dd}', {numeroLettiniAggiuntivi}, '{codiceFiscalePrenotante}', {numeroRiga}, {numeroColonna})";
+                    DBConnect dbConnect = new DBConnect();
+                    _ = dbConnect.Insert(query);
                 }
             }
         }
@@ -106,6 +137,9 @@ namespace WpfApp1.controller.impl
                     prenotazione.ColonnaOmbrellonePrenotato == numeroColonna)
                 {
                     _ = ListaPrenotazioniOmbrelloni.Remove(prenotazione);
+                    string query = $"DELETE FROM prenotazione_ombrellone WHERE Data_inzio = '{dataInizio}' AND Numero_riga = {numeroRiga} AND Numero_colonna = {numeroColonna}'";
+                    DBConnect dbConnect = new DBConnect();
+                    dbConnect.Delete(query);
                     break;
                 }
             }
@@ -170,15 +204,6 @@ namespace WpfApp1.controller.impl
             return ombrelloniPrenotati;
         }
 
-        public void RimuoviTuttePrenotazioniOmbrellone(int numeroRiga, int numeroColonna)
-        {
-            List<PrenotazioneOmbrellone> prenotazioniDaRimuovere = ListaPrenotazioniOmbrelloni.Where(prenotazione => prenotazione.RigaOmbrellonePrenotato == numeroRiga && prenotazione.ColonnaOmbrellonePrenotato == numeroColonna).ToList();
-            foreach (PrenotazioneOmbrellone prenotazione in prenotazioniDaRimuovere)
-            {
-                _ = ListaPrenotazioniOmbrelloni.Remove(prenotazione);
-            }
-        }
-
         public void LoadOmbrelloniFromDB()
         {
             DBConnect dbConnect = new DBConnect();
@@ -189,6 +214,24 @@ namespace WpfApp1.controller.impl
                 int nRiga = int.Parse(row["Numero_riga"].ToString());
                 int nColonna = int.Parse(row["Numero_colonna"].ToString());
                 ListaOmbrelloni.Add(new Ombrellone(nRiga, nColonna));
+            }
+        }
+
+        public void LoadPrenotazioniOmbrelloneFromDB()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT * FROM prenotazione_ombrellone;";
+            DataTable dataTable = dbConnect.Select(query);
+            foreach (DataRow row in dataTable.Rows)
+            {
+                DateTime dataInizio = DateTime.Parse(row["Data_inzio"].ToString());
+                DateTime dataFine = DateTime.Parse(row["Data_fine"].ToString());
+                int nLettiniAggiuntivi = int.Parse(row["Numero_lettini_aggiuntivi"].ToString());
+                string cf = row["Codice_fiscale"].ToString();
+                int nRiga = int.Parse(row["Numero_riga"].ToString());
+                int nColonna = int.Parse(row["Numero_colonna"].ToString());
+                PrenotazioneOmbrellone prenotazioneOmbrellone = new PrenotazioneOmbrellone(dataInizio, dataFine, nRiga, nColonna, cf, nLettiniAggiuntivi);
+                ListaPrenotazioniOmbrelloni.Add(prenotazioneOmbrellone);
             }
         }
 
@@ -217,6 +260,32 @@ namespace WpfApp1.controller.impl
             return (0, 0);
         }
 
+        public void LoadDocumentiFromDB()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT * FROM documento;";
+            DataTable dataTable = dbConnect.Select(query);
+            foreach (DataRow row in dataTable.Rows)
+            {
+                string codiceDocumento = row["Codice_documento"].ToString();
+                string cf = row["Codice_fiscale"].ToString();
+                string tipo = row["Tipo"].ToString();
+                TipoDocumento tipoDocumento = (TipoDocumento)Enum.Parse(typeof(TipoDocumento), tipo);
+                ListaDocumenti.Add(new Documento(codiceDocumento, cf, tipoDocumento));
+            }
+        }
+
+        public List<string> GetDocumenti()
+        {
+            LoadDocumentiFromDB();
+            List<string> toReturn = new List<string>();
+            foreach (Documento documento in ListaDocumenti)
+            {
+                toReturn.Add(documento.ToString());
+            }
+            return toReturn;
+        }
+
         #endregion
 
         #region Tavoli
@@ -227,7 +296,7 @@ namespace WpfApp1.controller.impl
             ListaTavoli.Add(tavolo);
             string query = $"INSERT INTO Tavolo (Id_tavolo, Numero_posti) VALUES ({idTavolo}, {numeroPosti})";
             DBConnect dbConnect = new DBConnect();
-            dbConnect.Insert(query);
+            _ = dbConnect.Insert(query);
             AggiuntoTavolo?.Invoke(this, EventArgs.Empty);
         }
 
@@ -255,7 +324,27 @@ namespace WpfApp1.controller.impl
                     Pasto pastoEnum = (Pasto)Enum.Parse(typeof(Pasto), pasto);
                     PrenotazioneTavolo prenotazione = new PrenotazioneTavolo(data, pastoEnum, idTavolo, codiceFiscalePrenotante, numeroPersonePrenotanti);
                     ListaPrenotazioniTavoli.Add(prenotazione);
+                    string query = $"INSERT INTO prenotazione_tavolo (Id_tavolo, Data, Pasto, Numero_persone_prenotanti, Codice_fiscale) VALUES ({idTavolo}, '{data:yyyy-MM-dd}', '{pasto}', {numeroPersonePrenotanti}, '{codiceFiscalePrenotante}')";
+                    DBConnect dbConnect = new DBConnect();
+                    _ = dbConnect.Insert(query);
                 }
+            }
+        }
+
+        public void LoadPrenotazioniTavoloFromDB()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT * FROM prenotazione_tavolo;";
+            DataTable dataTable = dbConnect.Select(query);
+            foreach (DataRow row in dataTable.Rows)
+            {
+                int idTavolo = int.Parse(row["Id_tavolo"].ToString());
+                DateTime data = DateTime.Parse(row["Data"].ToString());
+                string pasto = row["Pasto"].ToString();
+                int numeroPersonePrenotanti = int.Parse(row["Numero_persone_prenotanti"].ToString());
+                string cf = row["Codice_fiscale"].ToString();
+                PrenotazioneTavolo prenotazioneTavolo = new PrenotazioneTavolo(data, (Pasto)Enum.Parse(typeof(Pasto), pasto), idTavolo, cf, numeroPersonePrenotanti);
+                ListaPrenotazioniTavoli.Add(prenotazioneTavolo);
             }
         }
 
@@ -268,6 +357,9 @@ namespace WpfApp1.controller.impl
                     prenotazione.Pasto.ToString() == pasto)
                 {
                     _ = ListaPrenotazioniTavoli.Remove(prenotazione);
+                    string query = $"DELETE FROM prenotazione_tavolo WHERE Id_tavolo = {idTavolo} AND Data = {data:yyyy-MM-dd} AND Pasto = '{pasto}'";
+                    DBConnect dbConnect = new DBConnect();
+                    dbConnect.Delete(query);
                     break;
                 }
             }
@@ -398,7 +490,25 @@ namespace WpfApp1.controller.impl
         {
             Piatto piatto = new Piatto(nome, prezzo, descrizione);
             ListaPiatti.Add(piatto);
+            string query = $"INSERT INTO Piatto (Nome, Prezzo, Descrizione) SELECT * FROM(SELECT '{nome}', {prezzo}, '{descrizione}') AS piatto_nuovo WHERE NOT EXISTS(SELECT 1 FROM Piatto WHERE Nome = '{nome}');";
+            DBConnect dbConnect = new DBConnect();
+            int rowsAffected = dbConnect.Insert(query);
+            if (rowsAffected == 0)
+            {
+                throw new InvalidOperationException("Il piatto non è stato inserito perché già esistente un piatto con lo stesso nome");
+            }
             AggiuntoPiatto?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void AggiungiPiattoInElencoPiatti(int idMenu, string nome)
+        {
+            string query = $"INSERT INTO elencoPiatti (Nome, Id_Menu) SELECT * FROM(SELECT '{nome}', {idMenu}) AS piatto_in_menu WHERE NOT EXISTS(SELECT 1 FROM elencoPiatti WHERE Nome = '{nome}' AND Id_menu = '{idMenu}');";
+            DBConnect dbConnect = new DBConnect();
+            int rowsAffected = dbConnect.Insert(query);
+            if (rowsAffected == 0)
+            {
+                throw new InvalidOperationException($"Il menù {idMenu} contiene già il piatto {nome}");
+            }
         }
 
         public void RimuoviPiatto(string nome)
@@ -407,10 +517,27 @@ namespace WpfApp1.controller.impl
             {
                 if (ListaPiatti[i].Nome == nome)
                 {
+                    string query = $"DELETE FROM piatto WHERE Nome = '{nome}'";
+                    DBConnect dbConnect = new DBConnect();
+                    dbConnect.Delete(query);
                     ListaPiatti.RemoveAt(i);
                 }
             }
             RimossoPiatto?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void LoadPiattiFromDB()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT * FROM piatto;";
+            DataTable dataTable = dbConnect.Select(query);
+            foreach (DataRow row in dataTable.Rows)
+            {
+                string nome = row["Nome"].ToString();
+                double prezzo = double.Parse(row["Prezzo"].ToString());
+                string descrizione = row["Descrizione"].ToString();
+                ListaPiatti.Add(new Piatto(nome, prezzo, descrizione));
+            }
         }
 
         public void AggiungiMenu(int idMenu, double prezzo, List<string> piatti)
@@ -434,6 +561,17 @@ namespace WpfApp1.controller.impl
             {
                 Menu menu = new Menu(idMenu, listaPiatti, prezzo);
                 ListaMenu.Add(menu);
+                string query = $"INSERT INTO Menu (Id_menu, Prezzo) SELECT * FROM(SELECT '{idMenu}', {prezzo}) AS menu_nuovo WHERE NOT EXISTS(SELECT 1 FROM Menu WHERE Id_menu = '{idMenu}');";
+                DBConnect dbConnect = new DBConnect();
+                int rowsAffected = dbConnect.Insert(query);
+                if (rowsAffected == 0)
+                {
+                    throw new InvalidOperationException("Il menù non è stato inserito perché già esistente un menù con lo stesso id");
+                }
+                foreach (Piatto piatto in listaPiatti)
+                {
+                    AggiungiPiattoInElencoPiatti(idMenu, piatto.Nome);
+                }
                 AggiuntoMenu?.Invoke(this, EventArgs.Empty);
             }
             else
@@ -448,10 +586,49 @@ namespace WpfApp1.controller.impl
             {
                 if (ListaMenu[i].IdMenu == idMenu)
                 {
+                    string query = $"DELETE FROM menu WHERE Id_menu = '{idMenu}'";
+                    DBConnect dbConnect = new DBConnect();
+                    dbConnect.Delete(query);
+                    string query2 = $"DELETE FROM elencoPiatti WHERE Id_menu = '{idMenu}'";
+                    DBConnect dbConnect2 = new DBConnect();
+                    dbConnect2.Delete(query2);
                     ListaMenu.RemoveAt(i);
                 }
             }
             RimossoMenu?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void LoadMenuFromDB()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT * FROM menu;";
+            DataTable dataTable = dbConnect.Select(query);
+            foreach (DataRow row in dataTable.Rows)
+            {
+                int id_menu = int.Parse(row["Id_menu"].ToString());
+                double prezzo = double.Parse(row["Prezzo"].ToString());
+                List<Piatto> elencoPiatti = new List<Piatto>();
+                DBConnect dbConnect2 = new DBConnect();
+                string query2 = $"SELECT * FROM elencoPiatti WHERE Id_menu = {id_menu};";
+                DataTable dataTable2 = dbConnect2.Select(query2);
+                foreach (DataRow row2 in dataTable2.Rows)
+                {
+                    int id_menuElencoPiatti = int.Parse(row2["Id_menu"].ToString());
+                    string nomePiatto = row2["Nome"].ToString();
+                    DBConnect dbConnect3 = new DBConnect();
+                    string query3 = $"SELECT * FROM Piatto WHERE Nome = '{nomePiatto}';";
+                    DataTable dataTable3 = dbConnect3.Select(query3);
+                    if (dataTable3.Rows.Count > 0)
+                    {
+                        DataRow row3 = dataTable3.Rows[0];
+                        string nome = row3["Nome"].ToString();
+                        double prezzoPiatto = double.Parse(row3["Prezzo"].ToString());
+                        string descrizione = row3["Descrizione"].ToString();
+                        elencoPiatti.Add(new Piatto(nome, prezzoPiatto, descrizione));
+                    }
+                }
+                ListaMenu.Add(new Menu(id_menu, elencoPiatti, prezzo));
+            }
         }
 
         public List<string> GetPiatti()
@@ -474,10 +651,20 @@ namespace WpfApp1.controller.impl
             return toReturn;
         }
 
+        public int GetLastMenuId()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT MAX(Id_menu) AS max_id FROM menu;";
+            DataTable dataTable = dbConnect.Select(query);
+            return dataTable.Rows.Count > 0 && dataTable.Rows[0]["max_id"] != DBNull.Value
+                ? int.TryParse(dataTable.Rows[0]["max_id"].ToString(), out int maxId) ? maxId : 0
+                : 0;
+        }
+
         public void AggiungiOrdine(int idOrdine, DateTime data, string pasto, int idTavolo, List<int> idMenuOrdinati, List<string> nomiPiattiOrdinati)
         {
             List<Piatto> piatti = new List<Piatto>();
-            List<Menu> menu = new List<Menu>();
+            List<Menu> menus = new List<Menu>();
             int indexPrenotazioneTavolo = 0;
             for (int i = idMenuOrdinati.Count - 1; i >= 0; i--)
             {
@@ -485,7 +672,7 @@ namespace WpfApp1.controller.impl
                 {
                     if (idMenuOrdinati[i] == ListaMenu[j].IdMenu)
                     {
-                        menu.Add(ListaMenu[j]);
+                        menus.Add(ListaMenu[j]);
                     }
                 }
             }
@@ -507,16 +694,79 @@ namespace WpfApp1.controller.impl
                     indexPrenotazioneTavolo = i;
                 }
             }
-            Ordine ordine = new Ordine(idOrdine, ListaPrenotazioniTavoli[indexPrenotazioneTavolo], piatti, menu);
+            Ordine ordine = new Ordine(idOrdine, ListaPrenotazioniTavoli[indexPrenotazioneTavolo], piatti, menus);
+            string query = $"INSERT INTO ordine (Id_ordine, Id_tavolo, Data, Pasto) SELECT * FROM(SELECT {idOrdine}, {idTavolo}, '{data:yyyy-MM-dd}', '{pasto}') AS ordine_nuovo WHERE NOT EXISTS(SELECT 1 FROM ordine WHERE Id_ordine = '{idOrdine}');";
+            DBConnect dbConnect = new DBConnect();
+            int rowsAffected = dbConnect.Insert(query);
+            if (rowsAffected == 0)
+            {
+                throw new InvalidOperationException($"Esiste già un ordine con questo id: {idOrdine}");
+            }
             ListaOrdini.Add(ordine);
         }
+
+        public void AggiungiMenuInContenenzaMenu(int idMenu, int idOrdine, int quantita)
+        {
+            string query = $"INSERT INTO contenenza_menu (Id_menu, Id_ordine, quantità) VALUES({idMenu}, {idOrdine}, {quantita});";
+            DBConnect dbConnect = new DBConnect();
+            int rowsAffected = dbConnect.Insert(query);
+            if (rowsAffected == 0)
+            {
+                throw new InvalidOperationException($"Il menù {idMenu} è già contenuto nell'ordine {idOrdine}");
+            }
+        }
+
+        public void AggiungiPiattiInContenenzaPiatti(string nome, int idOrdine, int quantita)
+        {
+            string query = $"INSERT INTO contenenza_piatti (Nome, Id_ordine, quantità) VALUES('{nome}', {idOrdine}, {quantita});";
+            DBConnect dbConnect = new DBConnect();
+            int rowsAffected = dbConnect.Insert(query);
+            if (rowsAffected == 0)
+            {
+                throw new InvalidOperationException($"Il piatto {nome} è già contenuto nell'ordine {idOrdine}");
+            }
+        }
+
+        public int GetNumeroOrdini()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT COUNT(Id_ordine) AS numero_ordini FROM ordine;";
+            DataTable dataTable = dbConnect.Select(query);
+            if (dataTable.Rows.Count > 0)
+            {
+                DataRow row = dataTable.Rows[0];
+                int nTavoli = int.Parse(row["numero_ordini"].ToString());
+                return nTavoli;
+            }
+            return 0;
+        }
+
+        public int GetLastIdOrdine()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT MAX(Id_ordine) AS max_id FROM ordine;";
+            DataTable dataTable = dbConnect.Select(query);
+            return dataTable.Rows.Count > 0 && dataTable.Rows[0]["max_id"] != DBNull.Value
+                ? int.TryParse(dataTable.Rows[0]["max_id"].ToString(), out int maxId) ? maxId : 0
+                : 0;
+        }
+
         #endregion
 
         #region Cliente
-        public void AggiungiCliente(string nome, string cognome, string numeroTelefono, string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale)
+        public void AggiungiCliente(string nome, string cognome, string numeroTelefono, string città, string via, int civico, string email, string codiceFiscale)
         {
-            Cliente cliente = new Cliente(città, via, civico, email, codiceDocumento, codiceFiscale, nome, cognome, numeroTelefono);
+            Cliente cliente = new Cliente(città, via, civico, email, codiceFiscale, nome, cognome, numeroTelefono);
             ListaClienti.Add(cliente);
+            string query = $"INSERT INTO Cliente (Codice_fiscale, Nome, Cognome, Numero_telefono, Ind_Citta, Ind_Via, Ind_Civico, Email) SELECT * FROM(SELECT '{codiceFiscale}', '{nome}', '{cognome}', '{numeroTelefono}', '{città}', '{via}', { civico}, '{email}' ) AS cliente_nuovo " +
+                $"WHERE NOT EXISTS(SELECT 1 FROM Cliente WHERE Codice_fiscale = '{codiceFiscale}');";
+            DBConnect dbConnect = new DBConnect();
+            int rowsAffected = dbConnect.Insert(query);
+
+            if (rowsAffected == 0)
+            {
+                throw new InvalidOperationException("Il cliente non è stato inserito perché già esistente");
+            }
         }
 
         public List<string> GetClienti()
@@ -527,6 +777,21 @@ namespace WpfApp1.controller.impl
                 toReturn.Add(cliente.ToString());
             }
             return toReturn;
+        }
+
+        public void AggiungiDocumento(string codiceDocumento, string codiceFiscale, string tipo)
+        {
+            TipoDocumento tipoDocumento = (TipoDocumento)Enum.Parse(typeof(TipoDocumento), tipo);
+            Documento documento = new Documento(codiceDocumento, codiceFiscale, tipoDocumento);
+            ListaDocumenti.Add(documento);
+            string query = $"INSERT INTO Documento (Codice_documento, Codice_fiscale, Tipo) SELECT '{codiceDocumento}', '{codiceFiscale}', '{tipoDocumento}'" +
+                $" WHERE NOT EXISTS (SELECT * FROM Documento WHERE Codice_documento = '{codiceDocumento}' AND Codice_fiscale = '{codiceFiscale}')";
+            DBConnect dbConnect = new DBConnect();
+            int rowsAffected = dbConnect.Insert(query);
+            if (rowsAffected == 0)
+            {
+                throw new InvalidOperationException("Il documento non è stato inserito perché già esistente");
+            }
         }
         #endregion
 
@@ -551,10 +816,34 @@ namespace WpfApp1.controller.impl
                     }
                 }
             }
-
             Evento evento = new Evento(titolo, data, orario, descrizione, costoIngrezzo, ospiti);
+            string orarioMySQL = orario.ToString(@"hh\:mm\:ss");
+            string query = $"INSERT INTO Evento (Titolo, Data, Orario_inizio, Descrizione, Costo_ingresso) SELECT * FROM(SELECT '{titolo}', '{data:yyyy-MM-dd}', '{orarioMySQL}', '{descrizione}', '{costoIngrezzo}') AS evento_nuovo WHERE NOT EXISTS(SELECT 1 FROM Evento WHERE Titolo = '{titolo}' AND Data = '{data:yyyy-MM-dd}');";
+            DBConnect dbConnect = new DBConnect();
+            int rowsAffected = dbConnect.Insert(query);
+            if (rowsAffected == 0)
+            {
+                throw new InvalidOperationException("Evento non inserito perché già presente evento con quella data e titolo");
+            }
+            foreach (Ospite ospite in ospiti)
+            {
+                AggiungiInConvocazione(titolo, data, ospite.CodiceFiscale);
+                AggiungiInAvviso(titolo, data, ospite.CodiceFiscale);
+            }
             ListaEventi.Add(evento);
             AggiuntoEvento?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void AggiungiInAvviso(string titolo, DateTime data, string cf)
+        {
+            string query = $"INSERT INTO avviso (Titolo, Data, Codice_fiscale) SELECT * FROM (SELECT '{titolo}', '{data:yyyy-MM-dd}', '{cf}')" +
+           $" AS nuova_convocazione WHERE NOT EXISTS(SELECT 1 FROM convocazione WHERE Titolo = '{titolo}' AND Data = '{data:yyyy-MM-dd}' AND Codice_fiscale = '{cf}');";
+            DBConnect dbConnect = new DBConnect();
+            int rowsAffected = dbConnect.Insert(query);
+            if (rowsAffected == 0)
+            {
+                throw new InvalidOperationException($"Esiste già la convocazione dell'evento '{titolo}' alla data '{data:yyyy-MM-dd}' di '{cf}'");
+            }
         }
 
         public void RimuoviEvento(string titolo, DateTime data)
@@ -563,10 +852,73 @@ namespace WpfApp1.controller.impl
             {
                 if (ListaEventi[i].Titolo == titolo && ListaEventi[i].Data == data)
                 {
+                    string query = $"DELETE FROM evento WHERE Titolo = '{titolo}' AND Data = '{data:yyyy-MM-dd}'";
+                    RimuoviDaConvocazione(titolo, data);
+                    DBConnect dbConnect = new DBConnect();
+                    dbConnect.Delete(query);
                     ListaEventi.RemoveAt(i);
                 }
             }
             RimossoEvento?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void RimuoviDaConvocazione(string titolo, DateTime data)
+        {
+            string query = $"DELETE FROM convocazione WHERE Titolo = '{titolo}' AND Data = '{data:yyyy-MM-dd}'";
+            DBConnect dbConnect = new DBConnect();
+            dbConnect.Delete(query);
+        }
+
+        public void LoadEventiFromDB()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT * FROM evento;";
+            DataTable dataTable = dbConnect.Select(query);
+            foreach (DataRow row in dataTable.Rows)
+            {
+                string titolo = row["Titolo"].ToString();
+                DateTime data = DateTime.Parse(row["Data"].ToString());
+                TimeSpan orarioInizio = TimeSpan.Parse(row["Orario_inizio"].ToString());
+                string descrizione = row["Descrizione"].ToString();
+                double costoIngresso = double.Parse(row["Costo_ingresso"].ToString());
+                List<Ospite> ospiti = new List<Ospite>();
+                DBConnect dbConnect2 = new DBConnect();
+                string query2 = $"SELECT * FROM convocazione WHERE Titolo = '{titolo}' AND Data = '{data:yyyy-MM-dd}';";
+                DataTable dataTable2 = dbConnect2.Select(query2);
+                foreach (DataRow row2 in dataTable2.Rows)
+                {
+                    string cf = row2["Codice_fiscale"].ToString();
+                    DBConnect dbConnect3 = new DBConnect();
+                    string query3 = $"SELECT * FROM Ospite WHERE Codice_fiscale = '{cf}';";
+                    DataTable dataTable3 = dbConnect3.Select(query3);
+                    if (dataTable3.Rows.Count > 0)
+                    {
+                        DataRow row3 = dataTable3.Rows[0];
+                        string nome = row3["Nome"].ToString();
+                        string cognome = row3["Cognome"].ToString();
+                        string numeroTelefono = row3["Numero_telefono"].ToString();
+                        string nickname = row3["Nickname"].ToString();
+                        ospiti.Add(new Ospite(cf, nome, cognome, numeroTelefono, nickname));
+                    }
+                }
+                ListaEventi.Add(new Evento(titolo, data, orarioInizio, descrizione, costoIngresso, ospiti));
+            }
+        }
+
+        public void LoadOspitiFromDB()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT * FROM ospite;";
+            DataTable dataTable = dbConnect.Select(query);
+            foreach (DataRow row in dataTable.Rows)
+            {
+                string cf = row["Codice_fiscale"].ToString();
+                string nome = row["Nome"].ToString();
+                string cognome = row["Cognome"].ToString();
+                string numeroTelefono = row["Numero_telefono"].ToString();
+                string nickname = row["Nickname"].ToString();
+                ListaOspiti.Add(new Ospite(cf, nome, cognome, numeroTelefono, nickname));
+            }
         }
 
         public List<string> GetEvents()
@@ -582,6 +934,13 @@ namespace WpfApp1.controller.impl
         public void AggiungiOspite(string codiceFiscale, string cognome, string nome, string numeroTelefono, string nickname)
         {
             Ospite ospite = new Ospite(codiceFiscale, cognome, nome, numeroTelefono, nickname);
+            string query = $"INSERT INTO Ospite (Codice_fiscale, Nome, Cognome, Numero_telefono, Nickname) SELECT * FROM(SELECT '{codiceFiscale}', '{nome}', '{cognome}', '{numeroTelefono}', '{nickname}') AS ospite_nuovo WHERE NOT EXISTS(SELECT 1 FROM Ospite WHERE Codice_fiscale = '{codiceFiscale}');";
+            DBConnect dbConnect = new DBConnect();
+            int rowsAffected = dbConnect.Insert(query);
+            if (rowsAffected == 0)
+            {
+                throw new InvalidOperationException("Ospite non inserito perché già presente un ospite con lo stesso codice fiscale");
+            }
             ListaOspiti.Add(ospite);
             AggiuntoOspite?.Invoke(this, EventArgs.Empty);
         }
@@ -592,6 +951,9 @@ namespace WpfApp1.controller.impl
             {
                 if (ListaOspiti[i].CodiceFiscale == codiceFiscale)
                 {
+                    string query = $"DELETE FROM Ospite WHERE Codice_fiscale = '{codiceFiscale}'";
+                    DBConnect dbConnect = new DBConnect();
+                    dbConnect.Delete(query);
                     ListaOspiti.RemoveAt(i);
                 }
             }
@@ -608,6 +970,37 @@ namespace WpfApp1.controller.impl
             return toReturn;
         }
 
+        public void LoadClientiFromDB()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT * FROM cliente;";
+            DataTable dataTable = dbConnect.Select(query);
+            foreach (DataRow row in dataTable.Rows)
+            {
+                string cf = row["Codice_fiscale"].ToString();
+                string nome = row["Nome"].ToString();
+                string cognome = row["Cognome"].ToString();
+                string numeroTelefono = row["Numero_telefono"].ToString();
+                string citta = row["Ind_Citta"].ToString();
+                string via = row["Ind_Via"].ToString();
+                int civico = int.Parse(row["Ind_Civico"].ToString());
+                string email = row["Email"].ToString();
+                ListaClienti.Add(new Cliente(citta, via, civico, email, cf, nome, cognome, numeroTelefono));
+            }
+        }
+
+        private void AggiungiInConvocazione(string titolo, DateTime data, string codiceFiscale)
+        {
+            string query = $"INSERT INTO convocazione (Titolo, Data, Codice_fiscale) SELECT * FROM (SELECT '{titolo}', '{data:yyyy-MM-dd}', '{codiceFiscale}')" +
+                $" AS nuova_convocazione WHERE NOT EXISTS(SELECT 1 FROM convocazione WHERE Titolo = '{titolo}' AND Data = '{data:yyyy-MM-dd}' AND Codice_fiscale = '{codiceFiscale}');";
+            DBConnect dbConnect = new DBConnect();
+            int rowsAffected = dbConnect.Insert(query);
+            if (rowsAffected == 0)
+            {
+                throw new InvalidOperationException($"Esiste già la convocazione dell'evento {titolo} alla data {data:yyyy-MM-dd} di {codiceFiscale}");
+            }
+        }
+
         #endregion
 
         #region Sconti
@@ -616,9 +1009,13 @@ namespace WpfApp1.controller.impl
         {
             ScontoOmbrellone scontoOmbrellone = new ScontoOmbrellone(numeroGiorni, percentualeSconto);
             ListaScontiOmbrellone.Add(scontoOmbrellone);
-            string query = $"INSERT INTO sconto_ombrelloni (Numero_giorni, Sconto_corrispondente) VALUES ({numeroGiorni}, {percentualeSconto})";
+            string query = $"INSERT INTO sconto_ombrelloni (Numero_giorni, Sconto_corrispondente) SELECT {numeroGiorni}, {percentualeSconto} WHERE NOT EXISTS (SELECT * FROM sconto_ombrelloni WHERE Numero_giorni = {numeroGiorni})";
             DBConnect dbConnect = new DBConnect();
-            dbConnect.Insert(query);
+            int rowsAffected = dbConnect.Insert(query);
+            if (rowsAffected == 0)
+            {
+                throw new InvalidOperationException("Esiste già uno sconto per questo numero di giorni");
+            }
             AggiuntoSconto?.Invoke(this, EventArgs.Empty);
         }
 
@@ -655,7 +1052,7 @@ namespace WpfApp1.controller.impl
             foreach (DataRow row in dataTable.Rows)
             {
                 int nGiorni = int.Parse(row["Numero_giorni"].ToString());
-                double percentualeSconto = int.Parse(row["Sconto_corrispondente"].ToString());
+                double percentualeSconto = double.Parse(row["Sconto_corrispondente"].ToString());
                 ListaScontiOmbrellone.Add(new ScontoOmbrellone(nGiorni, percentualeSconto));
             }
         }
@@ -671,6 +1068,153 @@ namespace WpfApp1.controller.impl
                     toReturn.Add(cliente.Email);
                 }
             }
+            return toReturn;
+        }
+
+        public int GetNumeroRighe()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT COUNT(Numero_riga) AS nRighe FROM riga;";
+            DataTable dataTable = dbConnect.Select(query);
+            if (dataTable.Rows.Count > 0)
+            {
+                DataRow row = dataTable.Rows[0];
+                int nRighe = int.Parse(row["nRighe"].ToString());
+                return nRighe;
+            }
+            return 0;
+        }
+
+        public void SetRighe()
+        {
+            string query = $"INSERT INTO Riga (numero_riga) SELECT DISTINCT Numero_riga FROM ombrellone AS o WHERE NOT EXISTS( SELECT 1 FROM Riga AS r WHERE r.numero_riga = o.Numero_riga) ORDER BY Numero_riga DESC;";
+            DBConnect dbConnect = new DBConnect();
+            _ = dbConnect.Insert(query);
+        }
+
+        public void AggiungiPrezziOmbrelloni(int nRiga, string periodo, double prezzo)
+        {
+            string query = $"INSERT INTO prezzo_ombrellone (Numero_riga, Periodo, Prezzo_giornaliero) VALUES ({nRiga}, '{periodo}', {prezzo}) ON DUPLICATE KEY UPDATE Prezzo_giornaliero = VALUES(Prezzo_giornaliero); ";
+            DBConnect dbConnect = new DBConnect();
+            _ = dbConnect.Insert(query);
+        }
+
+        public void AggiungiPrezziLettini(int nRiga, string periodo, double prezzo)
+        {
+            string query = $"INSERT INTO prezzo_lettino (Periodo, Prezzo_giornaliero, Numero_riga) VALUES ('{periodo}', {prezzo}, {nRiga}) ON DUPLICATE KEY UPDATE Prezzo_giornaliero = VALUES(Prezzo_giornaliero); ";
+            DBConnect dbConnect = new DBConnect();
+            _ = dbConnect.Insert(query);
+        }
+
+        public List<string> GetPrezziOmbrelloni()
+        {
+            List<string> toReturn = new List<string>();
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT Prezzo_giornaliero FROM prezzo_ombrellone WHERE Periodo = 'BassaStagione' AND Numero_riga = 1;";
+            DataTable dataTable = dbConnect.Select(query);
+            if (dataTable.Rows.Count > 0)
+            {
+                DataRow row = dataTable.Rows[0];
+                string prezzo = row["Prezzo_giornaliero"].ToString();
+                toReturn.Add(prezzo);
+            }
+            string query2 = "SELECT Prezzo_giornaliero FROM prezzo_ombrellone WHERE Periodo = 'AltaStagione' AND Numero_riga = 1;";
+            DataTable dataTable2 = dbConnect.Select(query2);
+            if (dataTable2.Rows.Count > 0)
+            {
+                DataRow row = dataTable2.Rows[0];
+                string prezzo = row["Prezzo_giornaliero"].ToString();
+                toReturn.Add(prezzo);
+            }
+            string query3 = "SELECT Prezzo_giornaliero FROM prezzo_ombrellone WHERE Periodo = 'BassaStagione' AND Numero_riga = 2;";
+            DataTable dataTable3 = dbConnect.Select(query3);
+            if (dataTable3.Rows.Count > 0)
+            {
+                DataRow row = dataTable3.Rows[0];
+                string prezzo = row["Prezzo_giornaliero"].ToString();
+                toReturn.Add(prezzo);
+            }
+            string query4 = "SELECT Prezzo_giornaliero FROM prezzo_ombrellone WHERE Periodo = 'AltaStagione' AND Numero_riga = 2;";
+            DataTable dataTable4 = dbConnect.Select(query4);
+            if (dataTable4.Rows.Count > 0)
+            {
+                DataRow row = dataTable4.Rows[0];
+                string prezzo = row["Prezzo_giornaliero"].ToString();
+                toReturn.Add(prezzo);
+            }
+            string query5 = "SELECT Prezzo_giornaliero FROM prezzo_ombrellone WHERE Periodo = 'BassaStagione' AND Numero_riga = 3;";
+            DataTable dataTable5 = dbConnect.Select(query5);
+            if (dataTable5.Rows.Count > 0)
+            {
+                DataRow row = dataTable5.Rows[0];
+                string prezzo = row["Prezzo_giornaliero"].ToString();
+                toReturn.Add(prezzo);
+            }
+            string query6 = "SELECT Prezzo_giornaliero FROM prezzo_ombrellone WHERE Periodo = 'AltaStagione' AND Numero_riga = 3;";
+            DataTable dataTable6 = dbConnect.Select(query6);
+            if (dataTable6.Rows.Count > 0)
+            {
+                DataRow row = dataTable6.Rows[0];
+                string prezzo = row["Prezzo_giornaliero"].ToString();
+                toReturn.Add(prezzo);
+            }
+
+            return toReturn;
+        }
+
+        public List<string> GetPrezziLettini()
+        {
+            List<string> toReturn = new List<string>();
+            DBConnect dbConnect = new DBConnect();
+            string query = "SELECT Prezzo_giornaliero FROM prezzo_lettino WHERE Periodo = 'BassaStagione' AND Numero_riga = 1;";
+            DataTable dataTable = dbConnect.Select(query);
+            if (dataTable.Rows.Count > 0)
+            {
+                DataRow row = dataTable.Rows[0];
+                string prezzo = row["Prezzo_giornaliero"].ToString();
+                toReturn.Add(prezzo);
+            }
+            string query2 = "SELECT Prezzo_giornaliero FROM prezzo_lettino WHERE Periodo = 'AltaStagione' AND Numero_riga = 1;";
+            DataTable dataTable2 = dbConnect.Select(query2);
+            if (dataTable2.Rows.Count > 0)
+            {
+                DataRow row = dataTable2.Rows[0];
+                string prezzo = row["Prezzo_giornaliero"].ToString();
+                toReturn.Add(prezzo);
+            }
+            string query3 = "SELECT Prezzo_giornaliero FROM prezzo_lettino WHERE Periodo = 'BassaStagione' AND Numero_riga = 2;";
+            DataTable dataTable3 = dbConnect.Select(query3);
+            if (dataTable3.Rows.Count > 0)
+            {
+                DataRow row = dataTable3.Rows[0];
+                string prezzo = row["Prezzo_giornaliero"].ToString();
+                toReturn.Add(prezzo);
+            }
+            string query4 = "SELECT Prezzo_giornaliero FROM prezzo_lettino WHERE Periodo = 'AltaStagione' AND Numero_riga = 2;";
+            DataTable dataTable4 = dbConnect.Select(query4);
+            if (dataTable4.Rows.Count > 0)
+            {
+                DataRow row = dataTable4.Rows[0];
+                string prezzo = row["Prezzo_giornaliero"].ToString();
+                toReturn.Add(prezzo);
+            }
+            string query5 = "SELECT Prezzo_giornaliero FROM prezzo_lettino WHERE Periodo = 'BassaStagione' AND Numero_riga = 3;";
+            DataTable dataTable5 = dbConnect.Select(query5);
+            if (dataTable5.Rows.Count > 0)
+            {
+                DataRow row = dataTable5.Rows[0];
+                string prezzo = row["Prezzo_giornaliero"].ToString();
+                toReturn.Add(prezzo);
+            }
+            string query6 = "SELECT Prezzo_giornaliero FROM prezzo_lettino WHERE Periodo = 'AltaStagione' AND Numero_riga = 3;";
+            DataTable dataTable6 = dbConnect.Select(query6);
+            if (dataTable6.Rows.Count > 0)
+            {
+                DataRow row = dataTable6.Rows[0];
+                string prezzo = row["Prezzo_giornaliero"].ToString();
+                toReturn.Add(prezzo);
+            }
+
             return toReturn;
         }
     }

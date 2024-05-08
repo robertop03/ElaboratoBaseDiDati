@@ -23,8 +23,6 @@ namespace WpfApp1.controller.api
 
         List<(int, int)> OmbrelloniPrenotati(DateTime data); // restituisce una lista con gli tutti gli ombrelloni che hanno una prenotazione in una determinata data.
 
-        void RimuoviTuttePrenotazioniOmbrellone(int numeroRiga, int numeroColonna);
-
         void LoadOmbrelloniFromDB();
 
         List<(int, int)> GetOmbrelloni();
@@ -79,7 +77,7 @@ namespace WpfApp1.controller.api
 
         #endregion
 
-        void AggiungiCliente(string nome, string cognome, string numeroTelefono, string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale);
+        void AggiungiCliente(string nome, string cognome, string numeroTelefono, string città, string via, int civico, string email, string codiceFiscale);
 
         List<string> GetClienti();
 

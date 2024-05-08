@@ -20,11 +20,23 @@ namespace WpfApp1.view
         public AddEventoDialog()
         {
             InitializeComponent();
+            InitializeTimeSlider();
             _ = txtTitoloEvento.Focus();
             int year = DateTime.Now.Year;
             dtpDataEvento.DisplayDateStart = new DateTime(year, 6, 1);
             dtpDataEvento.DisplayDateEnd = new DateTime(year, 9, 30);
             dtpDataEvento.SelectedDate = dtpDataEvento.DisplayDateStart;
+        }
+
+        public void InitializeTimeSlider()
+        {
+            const int totalMinutesInDay = 24 * 60;
+            slrTime.Minimum = 0;
+            slrTime.Maximum = totalMinutesInDay;
+
+            slrTime.TickFrequency = 30;
+
+            slrTime.ValueChanged += slrTime_ValueChanged;
         }
 
         private void btnConfermaCreazioneEvento_Click(object sender, RoutedEventArgs e)
@@ -34,7 +46,7 @@ namespace WpfApp1.view
                 string titolo = txtTitoloEvento.Text.Trim();
                 string descrizione = txtDescrizioneEvento.Text.Trim();
                 DateTime data;
-                string orarioStringa = txtOrarioInizioEvento.Text.Trim();
+                string orarioStringa = lblTime.Content.ToString();
                 string costoIngresso = txtCostoIngressoEvento.Text.Trim();
 
                 data = dtpDataEvento.SelectedDate ?? throw new Exception("Inserire una data per l'evento.");
@@ -62,18 +74,7 @@ namespace WpfApp1.view
                     txtDescrizioneEvento.SelectAll();
                     throw new Exception("La descrizione evento deve avere almeno 5 caratteri.");
                 }
-
-                if (string.IsNullOrEmpty(orarioStringa))
-                {
-                    _ = txtOrarioInizioEvento.Focus();
-                    throw new ArgumentNullException("Orario evento non inserito.");
-                }
-                if (!TimeSpan.TryParse(orarioStringa, out TimeSpan orario))
-                {
-                    _ = txtOrarioInizioEvento.Focus();
-                    txtOrarioInizioEvento.SelectAll();
-                    throw new Exception("Formato dell'orario non valido.");
-                }
+                TimeSpan orario = TimeSpan.Parse(orarioStringa);
 
 
                 if (string.IsNullOrEmpty(costoIngresso))
@@ -112,6 +113,12 @@ namespace WpfApp1.view
         private bool IsStringAllNumericAndBetweenRange(string str)
         {
             return double.TryParse(str, out double numericValue) && numericValue >= 0 && numericValue <= 1000;
+        }
+
+        private void slrTime_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            TimeSpan time = TimeSpan.FromMinutes(slrTime.Value);
+            lblTime.Content = time.ToString(@"hh\:mm");
         }
     }
 }

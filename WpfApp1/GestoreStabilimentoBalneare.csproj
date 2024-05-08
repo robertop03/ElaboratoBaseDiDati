@@ -126,6 +126,9 @@
     <Compile Include="model\impl\PrenotazioneTavolo.cs" />
     <Compile Include="model\impl\ScontoOmbrellone.cs" />
     <Compile Include="model\impl\Tavolo.cs" />
+    <Compile Include="view\AddDocument.xaml.cs">
+      <DependentUpon>AddDocument.xaml</DependentUpon>
+    </Compile>
     <Compile Include="view\AddEventoDialog.xaml.cs">
       <DependentUpon>AddEventoDialog.xaml</DependentUpon>
     </Compile>
@@ -144,6 +147,9 @@
     <Compile Include="view\AddSconto.xaml.cs">
       <DependentUpon>AddSconto.xaml</DependentUpon>
     </Compile>
+    <Compile Include="view\AllDocuments.xaml.cs">
+      <DependentUpon>AllDocuments.xaml</DependentUpon>
+    </Compile>
     <Compile Include="view\CancelBookingDialog.xaml.cs">
       <DependentUpon>CancelBookingDialog.xaml</DependentUpon>
     </Compile>
@@ -155,6 +161,9 @@
     </Compile>
     <Compile Include="view\OrderDialog.xaml.cs">
       <DependentUpon>OrderDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="view\PrezziOmbrelloniLettini.xaml.cs">
+      <DependentUpon>PrezziOmbrelloniLettini.xaml</DependentUpon>
     </Compile>
     <Compile Include="view\ScontiDialog.xaml.cs">
       <DependentUpon>ScontiDialog.xaml</DependentUpon>
@@ -173,6 +182,9 @@
     </Compile>
     <Compile Include="view\SetPricesDialog.xaml.cs">
       <DependentUpon>SetPricesDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="view\SetPricesLettiniDialog.xaml.cs">
+      <DependentUpon>SetPricesLettiniDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="view\WindowBilanci.xaml.cs">
       <DependentUpon>WindowBilanci.xaml</DependentUpon>
@@ -195,6 +207,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="view\AddDocument.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="view\AddEventoDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -219,6 +235,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="view\AllDocuments.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="view\CancelBookingDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -232,6 +252,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="view\OrderDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="view\PrezziOmbrelloniLettini.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -256,6 +280,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="view\SetPricesDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="view\SetPricesLettiniDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

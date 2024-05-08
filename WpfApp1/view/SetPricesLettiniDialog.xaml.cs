@@ -3,17 +3,14 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using WpfApp1.controller.impl;
-using System.Linq;
-using System.Windows.Media;
 
 namespace WpfApp1.view
 {
     /// <summary>
-    /// Logica di interazione per SetPricesDialog.xaml
+    /// Logica di interazione per SetPricesLettiniDialog.xaml
     /// </summary>
-    public partial class SetPricesDialog : Window
+    public partial class SetPricesLettiniDialog : Window
     {
-
         public bool Result { get; private set; }
         public double PrimaBassa { get; private set; }
         public double PrimaAlta { get; private set; }
@@ -24,9 +21,10 @@ namespace WpfApp1.view
 
         private List<string> prezziFromDb = new List<string>();
 
-        internal SetPricesDialog(ControllerImpl controller)
+        internal SetPricesLettiniDialog(ControllerImpl controller)
         {
             InitializeComponent();
+            // carico i prezzi dal database sulle textbox
             prezziFromDb = controller.GetPrezziOmbrelloni();
 
             txtPrezzoPrimaFilaBassaStagione.Text = prezziFromDb[0];

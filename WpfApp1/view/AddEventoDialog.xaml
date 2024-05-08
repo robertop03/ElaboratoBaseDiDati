@@ -14,12 +14,14 @@
         <Label Content="Data:" HorizontalAlignment="Left" Margin="10,47,0,0" VerticalAlignment="Top"/>
         <DatePicker x:Name="dtpDataEvento" HorizontalAlignment="Left" Margin="118,50,0,0" VerticalAlignment="Top" Width="142" Height="23"/>
         <Label Content="Orario di inizio:" HorizontalAlignment="Left" Margin="10,95,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtOrarioInizioEvento" HorizontalAlignment="Left" Height="23" Margin="118,95,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="142"/>
+
         <Label Content="Descrizione:" HorizontalAlignment="Left" Margin="10,142,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="txtDescrizioneEvento" HorizontalAlignment="Left" Height="61" Margin="118,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="142"/>
         <Label Content="Costo ingresso:" HorizontalAlignment="Left" Margin="10,224,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="txtCostoIngressoEvento" HorizontalAlignment="Left" Height="23" Margin="118,224,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="142"/>
         <Button x:Name="btnAnnullaCreazioneEvento" Content="Annulla" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="91" Margin="164,274,0,0" RenderTransformOrigin="-0.365,-0.5" Height="33" Click="btnAnnullaCreazioneEvento_Click"/>
+        <Slider x:Name="slrTime" HorizontalAlignment="Left" Margin="118,95,0,0" VerticalAlignment="Top" Width="137" Minimum="0" Maximum="47" IsSnapToTickEnabled="True" ValueChanged="slrTime_ValueChanged"/>
+        <Label x:Name="lblTime" HorizontalAlignment="Left" Margin="207,113,0,0" VerticalAlignment="Top" Content="00:00" Width="53" Height="24"/>
 
     </Grid>
 </Window>

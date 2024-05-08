@@ -21,5 +21,18 @@ namespace WpfApp1.model.impl
                     ? value
                     : throw new ArgumentOutOfRangeException("Il numero del documento deve avere una lunghezza compresa tra tra 5 e 20.");
         }
+        public string CodiceFiscaleCliente { get; set; }
+
+        public Documento(string codiceDocumento, string codiceFiscaleCliente, TipoDocumento tipo)
+        {
+            Tipo = tipo;
+            CodiceDocumento = codiceDocumento;
+            CodiceFiscaleCliente = codiceFiscaleCliente;
+        }
+
+        public override string ToString()
+        {
+            return $"Tipo: {Tipo}, Codice documento: {CodiceDocumento}, Cf cliente: {CodiceFiscaleCliente}";
+        }
     }
 }

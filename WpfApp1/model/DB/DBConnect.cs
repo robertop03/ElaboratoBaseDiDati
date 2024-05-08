@@ -69,19 +69,20 @@ namespace WpfApp1.model.DB
         }
         #endregion
 
-        public void Insert(string query)
+        public int Insert(string query)
         {
-
+            int rowsAffected = 0;
             if (OpenConnection())
             {
                 //create command and assign the query and connection from the constructor
                 MySqlCommand cmd = new MySqlCommand(query, connection);
 
                 //Execute command
-                _ = cmd.ExecuteNonQuery();
+                rowsAffected = cmd.ExecuteNonQuery();
 
                 CloseConnection();
             }
+            return rowsAffected;
         }
 
         public void Delete(string query)

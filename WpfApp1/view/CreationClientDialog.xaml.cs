@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace WpfApp1.view
 {
@@ -9,6 +10,7 @@ namespace WpfApp1.view
     /// </summary>
     public partial class CreationClientDialog : Window
     {
+        private TimeSpan durata;
         public bool Result { get; private set; }
         public string CodiceFiscale { get; private set; }
         public string Nome { get; private set; }
@@ -25,7 +27,7 @@ namespace WpfApp1.view
         {
             InitializeComponent();
             _ = txtCodiceFiscale.Focus();
-            TimeSpan durata = dataFine - dataInizio;
+            durata = dataFine - dataInizio;
             if (durata.Days >= 30)
             {
                 grbDocumento.Visibility = Visibility.Visible;
@@ -196,9 +198,11 @@ namespace WpfApp1.view
                 if (grbDocumento.Visibility == Visibility.Visible)
                 {
                     codiceDocumento = txtCodiceDocumento.Text.Trim();
-                    tipoDocumento = cmbTipoDocumento.SelectedItem.ToString();
+                    ComboBoxItem selectedItem = cmbTipoDocumento.SelectedItem as ComboBoxItem;
+                    tipoDocumento = selectedItem.Content.ToString();
                     if (string.IsNullOrEmpty(codiceDocumento))
                     {
+                        _ = txtCodiceDocumento.Focus();
                         throw new ArgumentNullException("Codice documento non inserito.");
                     }
                 }
@@ -211,8 +215,11 @@ namespace WpfApp1.view
                 Via = via;
                 NumeroCivico = int.Parse(numeroCivico);
                 Email = email;
-                CodiceDocumento = codiceDocumento;
-                TipoDocumento = tipoDocumento;
+                if (durata.Days >= 30)
+                {
+                    CodiceDocumento = codiceDocumento;
+                    TipoDocumento = tipoDocumento;
+                }
                 Result = true;
                 Close();
             }

@@ -12,7 +12,7 @@
 
         public Documento Documento { get; set; } = null;
 
-        public Cliente(string città, string via, int civico, string email, string codiceDocumento, string codiceFiscale, string nome, string cognome, string numeroTelefono)
+        public Cliente(string città, string via, int civico, string email, string codiceFiscale, string nome, string cognome, string numeroTelefono)
             : base(codiceFiscale, nome, cognome, numeroTelefono)
         {
             Città = città;

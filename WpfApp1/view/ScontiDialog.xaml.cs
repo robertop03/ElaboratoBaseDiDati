@@ -58,7 +58,14 @@ namespace WpfApp1.view
             _ = addSconto.ShowDialog();
             if (addSconto.Result)
             {
-                controller.AggiungiSconto(addSconto.NumeroGiorni, addSconto.ScontoPercentuale);
+                try
+                {
+                    controller.AggiungiSconto(addSconto.NumeroGiorni, addSconto.ScontoPercentuale);
+                }
+                catch (Exception ex)
+                {
+                    _ = MessageBox.Show($"Attenzione: {ex.Message}", "Operazione annullata", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
             else
             {

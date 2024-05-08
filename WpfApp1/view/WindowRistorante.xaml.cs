@@ -261,21 +261,32 @@ namespace WpfApp1.view
                                             image.Source = new BitmapImage(new Uri("../resources/table_icon_booked.png", UriKind.Relative));
                                             _ = MessageBox.Show("Prenotazione avvenuta con successo.", "Prenotazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
                                         }
-                                        else
+                                        else if (!selectExistentClientDialog.UtenteChiudeScheda)
                                         {
                                             _ = creationClientDialog.ShowDialog();
                                             if (creationClientDialog.Result)
                                             {
-                                                controller.AggiungiCliente(creationClientDialog.Nome, creationClientDialog.Cognome, creationClientDialog.NumeroTelefono, creationClientDialog.Città,
-                                                creationClientDialog.Via, creationClientDialog.NumeroCivico, creationClientDialog.Email, creationClientDialog.CodiceDocumento, creationClientDialog.CodiceFiscale);
-                                                controller.PrenotaTavolo((int)item.Tag, data, pasto, creationClientDialog.CodiceFiscale, selectSingolDateDialog.NumeroPersonePrenotanti);
-                                                image.Source = new BitmapImage(new Uri("../resources/table_icon_booked.png", UriKind.Relative));
-                                                _ = MessageBox.Show("Registrazione avvenuta con successo.", "Registrazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
+                                                try
+                                                {
+                                                    controller.AggiungiCliente(creationClientDialog.Nome, creationClientDialog.Cognome, creationClientDialog.NumeroTelefono, creationClientDialog.Città,
+                                                        creationClientDialog.Via, creationClientDialog.NumeroCivico, creationClientDialog.Email, creationClientDialog.CodiceFiscale);
+                                                    controller.PrenotaTavolo((int)item.Tag, data, pasto, creationClientDialog.CodiceFiscale, selectSingolDateDialog.NumeroPersonePrenotanti);
+                                                    image.Source = new BitmapImage(new Uri("../resources/table_icon_booked.png", UriKind.Relative));
+                                                    _ = MessageBox.Show("Registrazione avvenuta con successo.", "Registrazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    _ = MessageBox.Show($"Attenzione: {ex.Message}.", "Cliente non creato", MessageBoxButton.OK, MessageBoxImage.Error);
+                                                }
                                             }
                                             else
                                             {
                                                 _ = MessageBox.Show("Registrazione annullata.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
                                             }
+                                        }
+                                        else
+                                        {
+                                            _ = MessageBox.Show("Registrazione annullata.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
                                         }
 
                                     }
@@ -364,7 +375,8 @@ namespace WpfApp1.view
         private void btnManageMenu_Click(object sender, RoutedEventArgs e)
         {
             OrderDialog orderDialog = new OrderDialog(controller, null, null, null);
-            orderDialog.btnOrdina.Visibility = Visibility.Collapsed;
+            orderDialog.btnAggiungiAOrdine.Visibility = Visibility.Collapsed;
+            orderDialog.btnInviaOrdine.Visibility = Visibility.Collapsed;
             _ = orderDialog.ShowDialog();
         }
 

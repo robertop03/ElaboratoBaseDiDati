@@ -17,6 +17,7 @@ namespace WpfApp1.view
         private readonly DateTime data;
         private readonly string pasto;
 
+
         internal OrderDialog(ControllerImpl controller, DateTime? data, string pasto, int? idTavolo)
         {
             InitializeComponent();
@@ -32,9 +33,10 @@ namespace WpfApp1.view
             this.controller.RimossoPiatto += Controller_ModifiedPlates;
             this.controller.AggiuntoMenu += Controller_ModifiedMenus;
             this.controller.RimossoMenu += Controller_ModifiedMenus;
-
             lstPiatti.ItemsSource = this.controller.GetPiatti();
             lstMenu.ItemsSource = this.controller.GetMenu();
+            ControllerImpl.IdMenu = controller.GetLastMenuId() + 1;
+            ControllerImpl.IdOrdine = controller.GetLastIdOrdine() + 1;
         }
 
         private void Controller_ModifiedPlates(object sender, EventArgs e)
@@ -86,8 +88,15 @@ namespace WpfApp1.view
             _ = addPiattoDialog.ShowDialog();
             if (addPiattoDialog.Result)
             {
-                controller.AggiungiPiatto(addPiattoDialog.Nome, addPiattoDialog.Prezzo, addPiattoDialog.Descrizione);
-                _ = MessageBox.Show("il piatto è stato aggiunto con successo.", "Piatto aggiunto.", MessageBoxButton.OK, MessageBoxImage.Information);
+                try
+                {
+                    controller.AggiungiPiatto(addPiattoDialog.Nome, addPiattoDialog.Prezzo, addPiattoDialog.Descrizione);
+                    _ = MessageBox.Show("il piatto è stato aggiunto con successo.", "Piatto aggiunto.", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    _ = MessageBox.Show($"Attenzione: {ex.Message}", "Piatto non aggiunto.", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
         }
 
@@ -123,10 +132,12 @@ namespace WpfApp1.view
             }
         }
 
-        private void btnOrdina_Click(object sender, RoutedEventArgs e)
+        private Dictionary<int, int> quantitaMenu = new Dictionary<int, int>();
+        private Dictionary<string, int> quantitaPiatti = new Dictionary<string, int>();
+
+        private void btnAggiungiAOrdine_Click(object sender, RoutedEventArgs e)
         {
-            List<int> menuOrdinati = new List<int>();
-            List<string> piattiOrdinati = new List<string>();
+
             if (lstMenu.SelectedItem != null || lstPiatti.SelectedItem != null)
             {
                 foreach (object selectedItem in lstMenu.SelectedItems)
@@ -135,26 +146,63 @@ namespace WpfApp1.view
                     Regex regex = new Regex(@"Menù n°: (\d+)");
                     Match match = regex.Match(menuSelezionato);
                     int idMenu = int.Parse(match.Groups[1].Value);
-                    menuOrdinati.Add(idMenu);
+
+                    if (quantitaMenu.ContainsKey(idMenu))
+                    {
+                        quantitaMenu[idMenu]++;
+                    }
+                    else
+                    {
+                        quantitaMenu[idMenu] = 1;
+                    }
                 }
+
                 foreach (object selectedItem in lstPiatti.SelectedItems)
                 {
                     string piattoSelezionato = (string)selectedItem;
                     Regex regex = new Regex(@"Piatto: (.+?),");
                     Match match = regex.Match(piattoSelezionato);
                     string nome = match.Groups[1].Value;
-                    piattiOrdinati.Add(nome);
+
+                    if (quantitaPiatti.ContainsKey(nome))
+                    {
+                        quantitaPiatti[nome]++;
+                    }
+                    else
+                    {
+                        quantitaPiatti[nome] = 1;
+                    }
                 }
-
-
-                controller.AggiungiOrdine(ControllerImpl.IdOrdine++, data, pasto, idTavolo, menuOrdinati, piattiOrdinati);
-                _ = MessageBox.Show("Ordine creato con successo.", "Ordine mandato.", MessageBoxButton.OK, MessageBoxImage.Information);
-                Close();
+                _ = MessageBox.Show("Elementi aggiunti all'ordine.", "Ordine aggiornato.", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
                 _ = MessageBox.Show("Selezionare almeno un menù o un piatto.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
+        }
+
+        private void btnInviaOrdine_Click(object sender, RoutedEventArgs e)
+        {
+            List<int> idMenuOrdinati = new List<int>(quantitaMenu.Keys);
+            for (int i = 0; i < idMenuOrdinati.Count; i++)
+            {
+                Console.WriteLine(idMenuOrdinati[i] + "\n");
+            }
+            List<string> piattiOrdinati = new List<string>(quantitaPiatti.Keys);
+            controller.AggiungiOrdine(ControllerImpl.IdOrdine, data, pasto, idTavolo, idMenuOrdinati, piattiOrdinati);
+            for (int i = 0; i < idMenuOrdinati.Count; i++)
+            {
+                int quantita = quantitaMenu.ContainsKey(idMenuOrdinati[i]) ? quantitaMenu[idMenuOrdinati[i]] : 0;
+                controller.AggiungiMenuInContenenzaMenu(idMenuOrdinati[i], ControllerImpl.IdOrdine, quantita);
+            }
+
+            for (int i = 0; i < piattiOrdinati.Count; i++)
+            {
+                int quantita = quantitaPiatti.ContainsKey(piattiOrdinati[i]) ? quantitaPiatti[piattiOrdinati[i]] : 0;
+                controller.AggiungiPiattiInContenenzaPiatti(piattiOrdinati[i], ControllerImpl.IdOrdine, quantita);
+            }
+            _ = MessageBox.Show("L'ordine è stato completato.", "Ordine inviato.", MessageBoxButton.OK, MessageBoxImage.Information);
+            Close();
         }
     }
 }

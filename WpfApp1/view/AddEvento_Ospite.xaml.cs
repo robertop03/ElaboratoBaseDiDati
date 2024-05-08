@@ -83,7 +83,14 @@ namespace WpfApp1.view
             _ = addOspite.ShowDialog();
             if (addOspite.Result)
             {
-                controller.AggiungiOspite(addOspite.CodiceFiscale, addOspite.Cognome, addOspite.Nome, addOspite.NumeroTelefono, addOspite.Nickname);
+                try
+                {
+                    controller.AggiungiOspite(addOspite.CodiceFiscale, addOspite.Cognome, addOspite.Nome, addOspite.NumeroTelefono, addOspite.Nickname);
+                }
+                catch (Exception ex)
+                {
+                    _ = MessageBox.Show($"Attenzione: {ex.Message}.", "Operazione annullata", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
             }
         }
 
