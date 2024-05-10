@@ -135,8 +135,7 @@ namespace WpfApp1.controller.impl
                 if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
                 {
                     PrenotazioneOmbrellone prenotazione = new PrenotazioneOmbrellone(dataInizio, dataFine, numeroRiga, numeroColonna, codiceFiscalePrenotante, numeroLettiniAggiuntivi);
-                    ListaPrenotazioniOmbrelloni.Add(prenotazione);
-                    string query = $"INSERT INTO prenotazione_ombrellone (Data_inzio, Data_fine, Numero_lettini_aggiuntivi, Codice_fiscale, Numero_riga, Numero_colonna) VALUES (@dataInizio, @dataFine, @numeroLettiniAggiuntivi, @cf, @numeroRiga, @numeroColonna)";
+                    string query = $"INSERT INTO prenotazione_ombrellone (Data_inizio, Data_fine, Numero_lettini_aggiuntivi, Codice_fiscale, Numero_riga, Numero_colonna) VALUES (@dataInizio, @dataFine, @numeroLettiniAggiuntivi, @cf, @numeroRiga, @numeroColonna)";
                     List<MySqlParameter> parameters = new List<MySqlParameter>
                     {
                         new MySqlParameter("@dataInizio", MySqlDbType.Date) { Value = dataInizio },
@@ -144,10 +143,11 @@ namespace WpfApp1.controller.impl
                         new MySqlParameter("@numeroRiga", MySqlDbType.Int32) { Value = numeroRiga },
                         new MySqlParameter("@cf", MySqlDbType.VarChar, 16) { Value = codiceFiscalePrenotante },
                         new MySqlParameter("@numeroLettiniAggiuntivi", MySqlDbType.Int32) { Value = numeroLettiniAggiuntivi },
-                        new MySqlParameter("@numeroColonna", MySqlDbType.Int32) { Value = numeroRiga },
+                        new MySqlParameter("@numeroColonna", MySqlDbType.Int32) { Value = numeroColonna },
                     };
                     DBConnect dbConnect = new DBConnect();
                     _ = dbConnect.Insert(query, parameters);
+                    ListaPrenotazioniOmbrelloni.Add(prenotazione);
                 }
             }
         }
@@ -162,7 +162,7 @@ namespace WpfApp1.controller.impl
                     prenotazione.ColonnaOmbrellonePrenotato == numeroColonna)
                 {
                     _ = ListaPrenotazioniOmbrelloni.Remove(prenotazione);
-                    string query = $"DELETE FROM prenotazione_ombrellone WHERE Data_inzio = @dataInizio AND Numero_riga = @numeroRiga AND Numero_colonna = @numeroColonna";
+                    string query = $"DELETE FROM prenotazione_ombrellone WHERE Data_inizio = @dataInizio AND Numero_riga = @numeroRiga AND Numero_colonna = @numeroColonna";
                     List<MySqlParameter> parameters = new List<MySqlParameter>
                     {
                         new MySqlParameter("@dataInizio", MySqlDbType.Date) { Value = dataInizio },
@@ -258,7 +258,7 @@ namespace WpfApp1.controller.impl
             DataTable dataTable = dbConnect.Select(query, parameters);
             foreach (DataRow row in dataTable.Rows)
             {
-                DateTime dataInizio = DateTime.Parse(row["Data_inzio"].ToString());
+                DateTime dataInizio = DateTime.Parse(row["Data_inizio"].ToString());
                 DateTime dataFine = DateTime.Parse(row["Data_fine"].ToString());
                 int nLettiniAggiuntivi = int.Parse(row["Numero_lettini_aggiuntivi"].ToString());
                 string cf = row["Codice_fiscale"].ToString();
@@ -964,15 +964,14 @@ namespace WpfApp1.controller.impl
                 }
             }
             Evento evento = new Evento(titolo, data, orario, descrizione, costoIngrezzo, ospiti);
-            string orarioMySQL = orario.ToString(@"hh\:mm\:ss");
             string query = $"INSERT INTO Evento (Titolo, Data, Orario_inizio, Descrizione, Costo_ingresso) SELECT * FROM(SELECT @titolo, @data, @orarioInizio, @descrizione, @costoIngresso) AS evento_nuovo WHERE NOT EXISTS(SELECT 1 FROM Evento WHERE Titolo = '{titolo}' AND Data = '{data:yyyy-MM-dd}');";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@titolo", MySqlDbType.VarChar, 50) { Value = titolo },
                 new MySqlParameter("@data", MySqlDbType.Date) { Value = data },
-                new MySqlParameter("@orarioInizio", MySqlDbType.Time) { Value = orarioMySQL },
+                new MySqlParameter("@orarioInizio", MySqlDbType.Time) { Value = orario },
                 new MySqlParameter("@descrizione", MySqlDbType.VarChar, 300) { Value = descrizione },
-                new MySqlParameter("@costoIngresso", MySqlDbType.Date) { Value = costoIngrezzo }
+                new MySqlParameter("@costoIngresso", MySqlDbType.Double) { Value = costoIngrezzo }
             };
             DBConnect dbConnect = new DBConnect();
             int rowsAffected = dbConnect.Insert(query, parameters);
@@ -992,7 +991,7 @@ namespace WpfApp1.controller.impl
         private void AggiungiInAvviso(string titolo, DateTime data, string cf)
         {
             string query = $"INSERT INTO avviso (Titolo, Data, Codice_fiscale) SELECT * FROM (SELECT @titolo, @data, @cf)" +
-           $" AS nuova_convocazione WHERE NOT EXISTS(SELECT 1 FROM convocazione WHERE Titolo = @titolo AND Data = @data AND Codice_fiscale = @cf);";
+           $" AS nuova_convocazione WHERE NOT EXISTS(SELECT 1 FROM avviso WHERE Titolo = @titolo AND Data = @data AND Codice_fiscale = @cf);";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@titolo", MySqlDbType.VarChar, 50) { Value = titolo },
@@ -1191,7 +1190,7 @@ namespace WpfApp1.controller.impl
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@titolo", MySqlDbType.VarChar, 50) { Value = titolo },
-                new MySqlParameter("@data", MySqlDbType.Int32) { Value = data },
+                new MySqlParameter("@data", MySqlDbType.Date) { Value = data },
                 new MySqlParameter("@cf", MySqlDbType.VarChar, 16) { Value = codiceFiscale }
             };
             DBConnect dbConnect = new DBConnect();

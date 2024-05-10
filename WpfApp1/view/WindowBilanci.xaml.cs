@@ -42,31 +42,38 @@ namespace WpfApp1.view
             ComboBoxItem selectedSceltoPiuOMeno = (ComboBoxItem)cmbPiuMeno.SelectedItem;
             string stringSceltoPiuOMeno = selectedSceltoPiuOMeno.Content.ToString();
 
-            if (stringPiattoMenu.Equals("Piatto"))
+            if (dtpDataFine.SelectedDate.Value >= dtpDataInizio.SelectedDate.Value)
             {
-                if (stringSceltoPiuOMeno.Equals("Scelto meno"))
+                if (stringPiattoMenu.Equals("Piatto"))
                 {
-                    (string, int) result = controller.GetIdPiattoMenoOrdinato(dtpDataInizio.SelectedDate.Value, dtpDataFine.SelectedDate.Value);
-                    _ = lstResult.Items.Add($"Piatto: {result.Item1}, quantità: {result.Item2}");
+                    if (stringSceltoPiuOMeno.Equals("Scelto meno"))
+                    {
+                        (string, int) result = controller.GetIdPiattoMenoOrdinato(dtpDataInizio.SelectedDate.Value, dtpDataFine.SelectedDate.Value);
+                        _ = lstResult.Items.Add($"Piatto: {result.Item1}, quantità: {result.Item2}");
+                    }
+                    else if (stringSceltoPiuOMeno.Equals("Scelto di più"))
+                    {
+                        (string, int) result = controller.GetIdPiattoPiuOrdinato(dtpDataInizio.SelectedDate.Value, dtpDataFine.SelectedDate.Value);
+                        _ = lstResult.Items.Add($"Piatto: {result.Item1}, quantità: {result.Item2}");
+                    }
                 }
-                else if (stringSceltoPiuOMeno.Equals("Scelto di più"))
+                else if (stringPiattoMenu.Equals("Menù"))
                 {
-                    (string, int) result = controller.GetIdPiattoPiuOrdinato(dtpDataInizio.SelectedDate.Value, dtpDataFine.SelectedDate.Value);
-                    _ = lstResult.Items.Add($"Piatto: {result.Item1}, quantità: {result.Item2}");
+                    if (stringSceltoPiuOMeno.Equals("Scelto meno"))
+                    {
+                        (int, int) result = controller.GetIdMenuMenoOrdinato(dtpDataInizio.SelectedDate.Value, dtpDataFine.SelectedDate.Value);
+                        _ = lstResult.Items.Add($"Id menù: {result.Item1}, quantità: {result.Item2}");
+                    }
+                    else if (stringSceltoPiuOMeno.Equals("Scelto di più"))
+                    {
+                        (int, int) result = controller.GetIdMenuPiuOrdinato(dtpDataInizio.SelectedDate.Value, dtpDataFine.SelectedDate.Value);
+                        _ = lstResult.Items.Add($"Id menù: {result.Item1}, quantità: {result.Item2}");
+                    }
                 }
             }
-            else if (stringPiattoMenu.Equals("Menù"))
+            else
             {
-                if (stringSceltoPiuOMeno.Equals("Scelto meno"))
-                {
-                    (int, int) result = controller.GetIdMenuMenoOrdinato(dtpDataInizio.SelectedDate.Value, dtpDataFine.SelectedDate.Value);
-                    _ = lstResult.Items.Add($"Id menù: {result.Item1}, quantità: {result.Item2}");
-                }
-                else if (stringSceltoPiuOMeno.Equals("Scelto di più"))
-                {
-                    (int, int) result = controller.GetIdMenuPiuOrdinato(dtpDataInizio.SelectedDate.Value, dtpDataFine.SelectedDate.Value);
-                    _ = lstResult.Items.Add($"Id menù: {result.Item1}, quantità: {result.Item2}");
-                }
+                _ = MessageBox.Show("La data di fine non può essere prima della data di inizio.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -80,15 +87,22 @@ namespace WpfApp1.view
             ComboBoxItem selectedSpiaggiaRistorante = (ComboBoxItem)cmbSpiaggiaRistorante.SelectedItem;
             string stringSpiaggiaRistorante = selectedSpiaggiaRistorante.Content.ToString();
             double incasso = 0;
-            if (stringSpiaggiaRistorante.Equals("Spiaggia"))
+            if (dtpDataFineIncassi.SelectedDate.Value >= dtpDataInizioIncassi.SelectedDate.Value)
             {
-                incasso = controller.CalcolaIncassiSpiaggia(dtpDataInizioIncassi.SelectedDate.Value, dtpDataFineIncassi.SelectedDate.Value);
+                if (stringSpiaggiaRistorante.Equals("Spiaggia"))
+                {
+                    incasso = controller.CalcolaIncassiSpiaggia(dtpDataInizioIncassi.SelectedDate.Value, dtpDataFineIncassi.SelectedDate.Value);
+                }
+                else if (stringSpiaggiaRistorante.Equals("Ristorante"))
+                {
+                    incasso = controller.CalcolaIncassiRistorante(dtpDataInizioIncassi.SelectedDate.Value, dtpDataFineIncassi.SelectedDate.Value);
+                }
+                lblIncassi.Content = $"{incasso:0.00} €";
             }
-            else if (stringSpiaggiaRistorante.Equals("Ristorante"))
+            else
             {
-                incasso = controller.CalcolaIncassiRistorante(dtpDataInizioIncassi.SelectedDate.Value, dtpDataFineIncassi.SelectedDate.Value);
+                _ = MessageBox.Show("La data di fine non può essere prima della data di inizio.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            lblIncassi.Content = $"{incasso:0.00} €";
         }
     }
 }
