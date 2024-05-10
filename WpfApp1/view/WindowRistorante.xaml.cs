@@ -250,10 +250,10 @@ namespace WpfApp1.view
                                     if (controller.ControlloTavoloLibero(idTavolo, data, pasto))
                                     {
                                         bool existAClient = false;
+                                        _ = selectExistentClientDialog.ShowDialog();
                                         if (clienti.Count > 0)
                                         {
                                             existAClient = true;
-                                            _ = selectExistentClientDialog.ShowDialog();
                                         }
                                         if (selectExistentClientDialog.Result && existAClient)
                                         {

@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace WpfApp1.model.DB
@@ -69,38 +70,37 @@ namespace WpfApp1.model.DB
         }
         #endregion
 
-        public int Insert(string query)
+        public int Insert(string query, List<MySqlParameter> parameters)
         {
             int rowsAffected = 0;
             if (OpenConnection())
             {
-                //create command and assign the query and connection from the constructor
                 MySqlCommand cmd = new MySqlCommand(query, connection);
-
-                //Execute command
+                cmd.Parameters.AddRange(parameters.ToArray());
                 rowsAffected = cmd.ExecuteNonQuery();
-
                 CloseConnection();
             }
             return rowsAffected;
         }
 
-        public void Delete(string query)
+        public void Delete(string query, List<MySqlParameter> parameters)
         {
             if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddRange(parameters.ToArray());
                 _ = cmd.ExecuteNonQuery();
                 CloseConnection();
             }
         }
 
-        public DataTable Select(string query)
+        public DataTable Select(string query, List<MySqlParameter> parameters)
         {
             DataTable dataTable = new DataTable();
             if (OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddRange(parameters.ToArray());
                 MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
                 _ = adapter.Fill(dataTable);
                 CloseConnection();

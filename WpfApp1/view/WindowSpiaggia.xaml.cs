@@ -254,10 +254,10 @@ namespace WpfApp1.view
                                 if (controller.ControlloOmbrelloneLibero(riga, colonna, dataInizio, dataFine))
                                 {
                                     bool existAClient = false;
+                                    _ = selectExistentClientDialog.ShowDialog();
                                     if (clienti.Count > 0)
                                     {
                                         existAClient = true;
-                                        _ = selectExistentClientDialog.ShowDialog();
                                     }
                                     if (selectExistentClientDialog.Result && existAClient)
                                     {

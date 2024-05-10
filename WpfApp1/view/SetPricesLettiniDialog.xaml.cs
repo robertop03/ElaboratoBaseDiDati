@@ -19,7 +19,7 @@ namespace WpfApp1.view
         public double AltreBassa { get; private set; }
         public double AltreAlta { get; private set; }
 
-        private List<string> prezziFromDb = new List<string>();
+        private readonly List<string> prezziFromDb = new List<string>();
 
         internal SetPricesLettiniDialog(ControllerImpl controller)
         {
@@ -27,12 +27,15 @@ namespace WpfApp1.view
             // carico i prezzi dal database sulle textbox
             prezziFromDb = controller.GetPrezziLettini();
 
-            txtPrezzoPrimaFilaBassaStagione.Text = prezziFromDb[0];
-            txtPrezzoPrimaFilaAltaStagione.Text = prezziFromDb[1];
-            txtPrezzoSecondaFilaBassaStagione.Text = prezziFromDb[2];
-            txtPrezzoSecondaFilaAltaStagione.Text = prezziFromDb[3];
-            txtPrezzoAltreFileBassaStagione.Text = prezziFromDb[4];
-            txtPrezzoAltreFileAltaStagione.Text = prezziFromDb[5];
+            if (prezziFromDb.Count > 0)
+            {
+                txtPrezzoPrimaFilaBassaStagione.Text = prezziFromDb[0];
+                txtPrezzoPrimaFilaAltaStagione.Text = prezziFromDb[1];
+                txtPrezzoSecondaFilaBassaStagione.Text = prezziFromDb[2];
+                txtPrezzoSecondaFilaAltaStagione.Text = prezziFromDb[3];
+                txtPrezzoAltreFileBassaStagione.Text = prezziFromDb[4];
+                txtPrezzoAltreFileAltaStagione.Text = prezziFromDb[5];
+            }
 
             _ = txtPrezzoPrimaFilaBassaStagione.Focus();
         }

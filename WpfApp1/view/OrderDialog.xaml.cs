@@ -184,10 +184,6 @@ namespace WpfApp1.view
         private void btnInviaOrdine_Click(object sender, RoutedEventArgs e)
         {
             List<int> idMenuOrdinati = new List<int>(quantitaMenu.Keys);
-            for (int i = 0; i < idMenuOrdinati.Count; i++)
-            {
-                Console.WriteLine(idMenuOrdinati[i] + "\n");
-            }
             List<string> piattiOrdinati = new List<string>(quantitaPiatti.Keys);
             controller.AggiungiOrdine(ControllerImpl.IdOrdine, data, pasto, idTavolo, idMenuOrdinati, piattiOrdinati);
             for (int i = 0; i < idMenuOrdinati.Count; i++)

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using WpfApp1.controller.impl;
-using System.Linq;
-using System.Windows.Media;
 
 namespace WpfApp1.view
 {
@@ -22,19 +20,22 @@ namespace WpfApp1.view
         public double AltreBassa { get; private set; }
         public double AltreAlta { get; private set; }
 
-        private List<string> prezziFromDb = new List<string>();
+        private readonly List<string> prezziFromDb = new List<string>();
 
         internal SetPricesDialog(ControllerImpl controller)
         {
             InitializeComponent();
             prezziFromDb = controller.GetPrezziOmbrelloni();
 
-            txtPrezzoPrimaFilaBassaStagione.Text = prezziFromDb[0];
-            txtPrezzoPrimaFilaAltaStagione.Text = prezziFromDb[1];
-            txtPrezzoSecondaFilaBassaStagione.Text = prezziFromDb[2];
-            txtPrezzoSecondaFilaAltaStagione.Text = prezziFromDb[3];
-            txtPrezzoAltreFileBassaStagione.Text = prezziFromDb[4];
-            txtPrezzoAltreFileAltaStagione.Text = prezziFromDb[5];
+            if (prezziFromDb.Count > 0)
+            {
+                txtPrezzoPrimaFilaBassaStagione.Text = prezziFromDb[0];
+                txtPrezzoPrimaFilaAltaStagione.Text = prezziFromDb[1];
+                txtPrezzoSecondaFilaBassaStagione.Text = prezziFromDb[2];
+                txtPrezzoSecondaFilaAltaStagione.Text = prezziFromDb[3];
+                txtPrezzoAltreFileBassaStagione.Text = prezziFromDb[4];
+                txtPrezzoAltreFileAltaStagione.Text = prezziFromDb[5];
+            }
 
             _ = txtPrezzoPrimaFilaBassaStagione.Focus();
         }

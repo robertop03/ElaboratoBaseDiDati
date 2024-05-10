@@ -6,8 +6,36 @@
         xmlns:local="clr-namespace:WpfApp1.view"
         mc:Ignorable="d"
         x:Name="wndBilanci"
-        Title="Bilanci" Height="393.701" Width="594.882" ResizeMode="NoResize">
+        Title="Bilanci" Height="472.701" Width="542.882" ResizeMode="NoResize">
     <Grid>
-       
+        <ComboBox x:Name="cmbPiattoMenu" HorizontalAlignment="Left" Margin="27,22,0,0" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.483,0.318" Height="24">
+            <ComboBoxItem Content="Piatto" IsSelected="True"/>
+            <ComboBoxItem Content="Menù"/>
+        </ComboBox>
+        <DatePicker x:Name="dtpDataInizio" HorizontalAlignment="Left" Margin="203,23,0,0" VerticalAlignment="Top"/>
+        <DatePicker x:Name="dtpDataFine" HorizontalAlignment="Left" Margin="203,80,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="cmbPiuMeno" HorizontalAlignment="Left" Margin="27,79,0,0" VerticalAlignment="Top" Width="120" Height="24">
+            <ComboBoxItem Content="Scelto meno" IsSelected="True"/>
+            <ComboBoxItem Content="Scelto di più"/>
+        </ComboBox>
+        <ListBox x:Name="lstResult" HorizontalAlignment="Left" Height="39" Margin="27,124,0,0" VerticalAlignment="Top" Width="488"/>
+        <Label Content="Data inizio" HorizontalAlignment="Left" Margin="203,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="0,0.654"/>
+        <Label Content="Data fine" HorizontalAlignment="Left" Margin="203,54,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="btnCalcola" Content="Calcola" HorizontalAlignment="Left" Style="{StaticResource CustomButtonStyle}" Margin="392,44,0,0" VerticalAlignment="Top" Width="123" RenderTransformOrigin="0.147,0.55" Height="45" Click="btnCalcola_Click"/>
+        <Button x:Name="btnPercentualeClientiConMail" Content="Calcola percentuale clienti con email" HorizontalAlignment="Left" Style="{StaticResource CustomButtonStyle}" Margin="211,203,0,0" VerticalAlignment="Top" Width="304" Height="45" Click="btnPercentualeClientiConMail_Click"/>
+        <Label x:Name="lblPercentuale" Content="Percentuale clienti con email" HorizontalAlignment="Left" Margin="27,213,0,0" VerticalAlignment="Top"/>
+        <DatePicker x:Name="dtpDataInizioIncassi" HorizontalAlignment="Left" Margin="203,331,0,0" VerticalAlignment="Top"/>
+        <DatePicker x:Name="dtpDataFineIncassi" HorizontalAlignment="Left" Margin="203,389,0,0" VerticalAlignment="Top"/>
+        <Label Content="Data inizio" HorizontalAlignment="Left" Margin="203,300,0,0" VerticalAlignment="Top" RenderTransformOrigin="0,0.654"/>
+        <Label Content="Data fine" HorizontalAlignment="Left" Margin="203,359,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblIncassi" Content="Incassi - € " HorizontalAlignment="Left" Margin="27,377,0,0" VerticalAlignment="Top" Height="24"/>
+        <Button x:Name="btnCalcolaIncassi" Style="{StaticResource CustomButtonStyle}" Content="Calcola incassi" HorizontalAlignment="Left" Margin="392,349,0,0" VerticalAlignment="Top" Width="123" Height="45" Click="btnCalcolaIncassi_Click"/>
+        <ComboBox x:Name="cmbSpiaggiaRistorante" HorizontalAlignment="Left" Margin="27,315,0,0" VerticalAlignment="Top" Width="120">
+            <ComboBoxItem Content="Spiaggia" IsSelected="True"/>
+            <ComboBoxItem Content="Ristorante"/>
+        </ComboBox>
+        <Separator Height="37" Margin="0,248,-0.2,158.2" Width="537" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+        <Separator Height="37" Margin="0,161,-0.2,245.2" Width="537" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+
     </Grid>
 </Window>
