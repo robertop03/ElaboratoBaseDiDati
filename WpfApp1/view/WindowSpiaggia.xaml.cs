@@ -42,6 +42,7 @@ namespace WpfApp1.view
                 numeroRiga = numeroRigaEColonna.Item1;
                 numeroColonna = numeroRigaEColonna.Item2 + 1;
             }
+            MostraOmbrelloniPrenotati();
         }
 
         private const double MinimumSpacing = 17; // Spazio minimo tra gli ombrelloni
@@ -103,6 +104,30 @@ namespace WpfApp1.view
             _ = spiaggiaCanvas.Children.Add(newCheckBox); // Aggiungi l'ombrello al Canvas
 
             umbrellasPositions[(riga, colonna)] = new Point(leftPosition, topPosition);
+        }
+
+        private void MostraOmbrelloniPrenotati()
+        {
+            DateTime dataSelezionata = dtpCalendar.SelectedDate.Value;
+            List<(int, int)> ombrelloniPrenotati = controller.OmbrelloniPrenotati(dataSelezionata);
+            foreach (CheckBox checkBox in spiaggiaCanvas.Children.OfType<CheckBox>())
+            {
+                (int numeroRiga, int numeroColonna) = ((int, int))checkBox.Tag;
+                if (ombrelloniPrenotati.Contains((numeroRiga, numeroColonna)))
+                {
+                    if (checkBox.Content is Image image)
+                    {
+                        image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
+                    }
+                }
+                else
+                {
+                    if (checkBox.Content is Image image)
+                    {
+                        image.Source = new BitmapImage(new Uri("../resources/umbrella_icon.png", UriKind.Relative));
+                    }
+                }
+            }
         }
 
         private void spiaggiaCanvas_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -229,6 +254,12 @@ namespace WpfApp1.view
             }
         }
 
+        private bool ControllaDate(DateTime dataInizio, DateTime dataFine)
+        {
+            return (dataInizio.Month != 8 || dataFine.Month != 9) && (dataInizio.Month != 6 || dataFine.Month == 6) && (dataInizio.Month != 7 || dataFine.Month != 9);
+        }
+
+
         private void btnPrenotaOmbrellone_Click(object sender, RoutedEventArgs e)
         {
             if (spiaggiaCanvas.Children.OfType<CheckBox>().Any(cb => cb.IsChecked == true))
@@ -249,99 +280,107 @@ namespace WpfApp1.view
                             {
                                 DateTime dataInizio = dialog.DataInizio;
                                 DateTime dataFine = dialog.DataFine;
-                                CreationClientDialog creationClientDialog = new CreationClientDialog(dataInizio, dataFine);
-                                TimeSpan durata = dataFine - dataInizio;
-                                if (controller.ControlloOmbrelloneLibero(riga, colonna, dataInizio, dataFine))
+                                if (ControllaDate(dataInizio, dataFine))
                                 {
-                                    bool existAClient = false;
-                                    _ = selectExistentClientDialog.ShowDialog();
-                                    if (clienti.Count > 0)
+                                    CreationClientDialog creationClientDialog = new CreationClientDialog(dataInizio, dataFine);
+                                    TimeSpan durata = dataFine - dataInizio;
+                                    if (controller.ControlloOmbrelloneLibero(riga, colonna, dataInizio, dataFine))
                                     {
-                                        existAClient = true;
-                                    }
-                                    if (selectExistentClientDialog.Result && existAClient)
-                                    {
-                                        if (durata.Days >= 30)
+                                        bool existAClient = false;
+                                        _ = selectExistentClientDialog.ShowDialog();
+                                        if (clienti.Count > 0)
                                         {
-                                            AllDocuments allDocuments = new AllDocuments();
-                                            _ = allDocuments.ShowDialog();
-                                            if (allDocuments.Result)
+                                            existAClient = true;
+                                        }
+                                        if (selectExistentClientDialog.Result && existAClient)
+                                        {
+                                            if (durata.Days >= 30)
                                             {
-                                                if (allDocuments.CodiceFiscaleCliente.Equals(selectExistentClientDialog.CodiceFiscale))
+                                                AllDocuments allDocuments = new AllDocuments();
+                                                _ = allDocuments.ShowDialog();
+                                                if (allDocuments.Result)
+                                                {
+                                                    if (allDocuments.CodiceFiscaleCliente.Equals(selectExistentClientDialog.CodiceFiscale))
+                                                    {
+                                                        controller.PrenotaOmbrellone(riga, colonna, dataInizio, dataFine, selectExistentClientDialog.CodiceFiscale, dialog.NumeroLettiniAggiunti);
+                                                        image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
+                                                        _ = MessageBox.Show("Prenotazione avvenuta con successo.", "Prenotazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
+                                                    }
+                                                    else
+                                                    {
+                                                        _ = MessageBox.Show("Il documento selezionato non è del cliente selezionato.", "Prenotazione annullata.", MessageBoxButton.OK, MessageBoxImage.Information);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    AddDocument addDocument = new AddDocument();
+                                                    _ = addDocument.ShowDialog();
+                                                    if (addDocument.Result)
+                                                    {
+                                                        try
+                                                        {
+                                                            controller.AggiungiDocumento(addDocument.CodiceDocumento, selectExistentClientDialog.CodiceFiscale, addDocument.TipoDocumento);
+                                                            controller.PrenotaOmbrellone(riga, colonna, dataInizio, dataFine, selectExistentClientDialog.CodiceFiscale, dialog.NumeroLettiniAggiunti);
+                                                            image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
+                                                            _ = MessageBox.Show("Prenotazione avvenuta con successo.", "Prenotazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
+                                                        }
+                                                        catch (Exception ex)
+                                                        {
+                                                            _ = MessageBox.Show($"Attenzione: {ex.Message}", "Prenotazione annullata.", MessageBoxButton.OK, MessageBoxImage.Information);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                try
                                                 {
                                                     controller.PrenotaOmbrellone(riga, colonna, dataInizio, dataFine, selectExistentClientDialog.CodiceFiscale, dialog.NumeroLettiniAggiunti);
                                                     image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
                                                     _ = MessageBox.Show("Prenotazione avvenuta con successo.", "Prenotazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
                                                 }
-                                                else
+                                                catch (Exception ex)
                                                 {
-                                                    _ = MessageBox.Show("Il documento selezionato non è del cliente selezionato.", "Prenotazione annullata.", MessageBoxButton.OK, MessageBoxImage.Information);
+                                                    _ = MessageBox.Show($"Attenzione: {ex.Message}", "Prenotazione annullata.", MessageBoxButton.OK, MessageBoxImage.Information);
+                                                }
+                                            }
+                                        }
+                                        else if (!selectExistentClientDialog.UtenteChiudeScheda)
+                                        {
+                                            _ = creationClientDialog.ShowDialog();
+                                            if (creationClientDialog.Result)
+                                            {
+                                                try
+                                                {
+                                                    controller.AggiungiCliente(creationClientDialog.Nome, creationClientDialog.Cognome, creationClientDialog.NumeroTelefono, creationClientDialog.Città,
+                                                    creationClientDialog.Via, creationClientDialog.NumeroCivico, creationClientDialog.Email, creationClientDialog.CodiceFiscale);
+                                                    if (creationClientDialog.CodiceDocumento != null)
+                                                    {
+                                                        controller.AggiungiDocumento(creationClientDialog.CodiceDocumento, creationClientDialog.CodiceFiscale, creationClientDialog.TipoDocumento);
+                                                    }
+                                                    controller.PrenotaOmbrellone(riga, colonna, dataInizio, dataFine, creationClientDialog.CodiceFiscale, dialog.NumeroLettiniAggiunti);
+                                                    image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
+                                                    _ = MessageBox.Show("Registrazione avvenuta con successo.", "Registrazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    _ = MessageBox.Show($"Attenzione: {ex.Message}.", "Cliente non creato", MessageBoxButton.OK, MessageBoxImage.Error);
                                                 }
                                             }
                                             else
                                             {
-                                                AddDocument addDocument = new AddDocument();
-                                                _ = addDocument.ShowDialog();
-                                                if (addDocument.Result)
-                                                {
-                                                    try
-                                                    {
-                                                        controller.AggiungiDocumento(addDocument.CodiceDocumento, selectExistentClientDialog.CodiceFiscale, addDocument.TipoDocumento);
-                                                        controller.PrenotaOmbrellone(riga, colonna, dataInizio, dataFine, selectExistentClientDialog.CodiceFiscale, dialog.NumeroLettiniAggiunti);
-                                                        image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
-                                                        _ = MessageBox.Show("Prenotazione avvenuta con successo.", "Prenotazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
-                                                    }
-                                                    catch (Exception ex)
-                                                    {
-                                                        _ = MessageBox.Show($"Attenzione: {ex.Message}", "Prenotazione annullata.", MessageBoxButton.OK, MessageBoxImage.Information);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            try
-                                            {
-                                                controller.PrenotaOmbrellone(riga, colonna, dataInizio, dataFine, selectExistentClientDialog.CodiceFiscale, dialog.NumeroLettiniAggiunti);
-                                                image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
-                                                _ = MessageBox.Show("Prenotazione avvenuta con successo.", "Prenotazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                _ = MessageBox.Show($"Attenzione: {ex.Message}", "Prenotazione annullata.", MessageBoxButton.OK, MessageBoxImage.Information);
+                                                _ = MessageBox.Show("Registrazione annullata.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
                                             }
                                         }
                                     }
-                                    else if (!selectExistentClientDialog.UtenteChiudeScheda)
+                                    else
                                     {
-                                        _ = creationClientDialog.ShowDialog();
-                                        if (creationClientDialog.Result)
-                                        {
-                                            try
-                                            {
-                                                controller.AggiungiCliente(creationClientDialog.Nome, creationClientDialog.Cognome, creationClientDialog.NumeroTelefono, creationClientDialog.Città,
-                                                creationClientDialog.Via, creationClientDialog.NumeroCivico, creationClientDialog.Email, creationClientDialog.CodiceFiscale);
-                                                if (creationClientDialog.CodiceDocumento != null)
-                                                {
-                                                    controller.AggiungiDocumento(creationClientDialog.CodiceDocumento, creationClientDialog.CodiceFiscale, creationClientDialog.TipoDocumento);
-                                                }
-                                                controller.PrenotaOmbrellone(riga, colonna, dataInizio, dataFine, creationClientDialog.CodiceFiscale, dialog.NumeroLettiniAggiunti);
-                                                image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
-                                                _ = MessageBox.Show("Registrazione avvenuta con successo.", "Registrazione completata.", MessageBoxButton.OK, MessageBoxImage.Information);
-                                            }catch (Exception ex)
-                                            {
-                                                _ = MessageBox.Show($"Attenzione: {ex.Message}.", "Cliente non creato", MessageBoxButton.OK, MessageBoxImage.Error);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            _ = MessageBox.Show("Registrazione annullata.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
-                                        }
+                                        _ = MessageBox.Show("L'ombrellone risulta essere già prenotato in quel periodo.", "Errore", MessageBoxButton.OK, MessageBoxImage.Error);
                                     }
                                 }
                                 else
                                 {
-                                    _ = MessageBox.Show("L'ombrellone risulta essere già prenotato in quel periodo.", "Errore", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    _ = MessageBox.Show("La prenotazione non può accavalarsi tra bassa e alta stagione.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Error);
                                 }
                             }
                         }
@@ -357,26 +396,7 @@ namespace WpfApp1.view
 
         private void dtpCalendar_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            DateTime dataSelezionata = dtpCalendar.SelectedDate.Value;
-            List<(int, int)> ombrelloniPrenotati = controller.OmbrelloniPrenotati(dataSelezionata);
-            foreach (CheckBox checkBox in spiaggiaCanvas.Children.OfType<CheckBox>())
-            {
-                (int numeroRiga, int numeroColonna) = ((int, int))checkBox.Tag;
-                if (ombrelloniPrenotati.Contains((numeroRiga, numeroColonna)))
-                {
-                    if (checkBox.Content is Image image)
-                    {
-                        image.Source = new BitmapImage(new Uri("../resources/umbrella_icon_booked.png", UriKind.Relative));
-                    }
-                }
-                else
-                {
-                    if (checkBox.Content is Image image)
-                    {
-                        image.Source = new BitmapImage(new Uri("../resources/umbrella_icon.png", UriKind.Relative));
-                    }
-                }
-            }
+            MostraOmbrelloniPrenotati();
         }
 
         private void btnInfoOmbrellone_Click(object sender, RoutedEventArgs e)

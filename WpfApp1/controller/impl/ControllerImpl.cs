@@ -1297,6 +1297,30 @@ namespace WpfApp1.controller.impl
             return 0;
         }
 
+        public bool CheckPriceAreSetted()
+        {
+            DBConnect dbConnect = new DBConnect();
+            string queryPrezziOmbrelloni = "SELECT COUNT(*) AS nPrezziOmbrelloni FROM prezzo_ombrellone;";
+            int nPrezziOmbrelloni = 0, nPrezziLettini = 0;
+            List<MySqlParameter> parameters = new List<MySqlParameter>();
+            DataTable dataTable = dbConnect.Select(queryPrezziOmbrelloni, parameters);
+            if (dataTable.Rows.Count > 0)
+            {
+                DataRow row = dataTable.Rows[0];
+                nPrezziOmbrelloni = int.Parse(row["nPrezziOmbrelloni"].ToString());
+            }
+
+            string queryPrezziLettini = "SELECT COUNT(*) AS nPrezziLettini FROM prezzo_lettino;";
+            List<MySqlParameter> parameters2 = new List<MySqlParameter>();
+            DataTable dataTable2 = dbConnect.Select(queryPrezziLettini, parameters2);
+            if (dataTable2.Rows.Count > 0)
+            {
+                DataRow row = dataTable2.Rows[0];
+                nPrezziLettini = int.Parse(row["nPrezziLettini"].ToString());
+            }
+            return nPrezziLettini > 0 && nPrezziOmbrelloni > 0;
+        }
+
         public void SetRighe()
         {
             string query = $"INSERT INTO Riga (numero_riga) SELECT DISTINCT Numero_riga FROM ombrellone AS o WHERE NOT EXISTS( SELECT 1 FROM Riga AS r WHERE r.numero_riga = o.Numero_riga) ORDER BY Numero_riga DESC;";
@@ -1544,12 +1568,6 @@ namespace WpfApp1.controller.impl
             return 0;
         }
 
-        public double CalcolaIncassiSpiaggia(DateTime dataInizio, DateTime dataFine)
-        {
-
-            return 0;
-        }
-
         public double CalcolaIncassiRistorante(DateTime dataInizio, DateTime dataFine)
         {
             DBConnect dbConnect = new DBConnect();
@@ -1564,8 +1582,36 @@ namespace WpfApp1.controller.impl
             if (dataTable.Rows.Count > 0)
             {
                 DataRow row = dataTable.Rows[0];
-                double incassiSpiaggi = double.Parse(row["Incassi_totali"].ToString());
-                return incassiSpiaggi;
+                object incassiRistoranteObj = row["Incassi_totali"];
+                if (incassiRistoranteObj != DBNull.Value)
+                {
+                    double incassiRistorante = Convert.ToDouble(incassiRistoranteObj);
+                    return incassiRistorante;
+                }
+            }
+            return 0;
+        }
+
+        public double CalcolaIncassiSpiaggia(DateTime dataInizio, DateTime dataFine)
+        {
+            DBConnect dbConnect = new DBConnect();
+            string query = $"SELECT (SELECT SUM(po.Prezzo_giornaliero * (DATEDIFF(p.Data_fine, p.Data_inizio) + 1)) FROM prenotazione_ombrellone AS p JOIN prezzo_ombrellone AS po ON p.Numero_riga = po.Numero_riga WHERE p.Data_inizio >= @dataInizio AND p.Data_fine <= @dataFine AND ((po.Periodo = 'BassaStagione' AND MONTH(p.Data_inizio) IN(6, 9)) OR (po.Periodo = 'AltaStagione' AND MONTH(p.Data_inizio) IN(7, 8)))) + (SELECT SUM(pl.Prezzo_giornaliero * p.Numero_lettini_aggiuntivi * (DATEDIFF(p.Data_fine, p.Data_inizio) + 1))" +
+                $" FROM prenotazione_ombrellone AS p JOIN prezzo_lettino AS pl ON p.Numero_riga = pl.Numero_riga WHERE p.Data_inizio >= @dataInizio AND p.Data_fine <= @dataFine AND((pl.Periodo = 'BassaStagione' AND MONTH(p.Data_inizio) IN(6, 9)) OR (pl.Periodo = 'AltaStagione' AND MONTH(p.Data_inizio) IN(7, 8)))) AS Incasso_totale;";
+            List<MySqlParameter> parameters = new List<MySqlParameter>
+            {
+                new MySqlParameter("@dataInizio", MySqlDbType.Date) { Value = dataInizio },
+                new MySqlParameter("@dataFine", MySqlDbType.Date) { Value = dataFine },
+            };
+            DataTable dataTable = dbConnect.Select(query, parameters);
+            if (dataTable.Rows.Count > 0)
+            {
+                DataRow row = dataTable.Rows[0];
+                object incassiSpiaggiaObj = row["Incasso_totale"];
+                if (incassiSpiaggiaObj != DBNull.Value)
+                {
+                    double incassiSpiaggia = Convert.ToDouble(incassiSpiaggiaObj);
+                    return incassiSpiaggia;
+                }
             }
             return 0;
         }

@@ -31,8 +31,8 @@
         <Label x:Name="lblIncassi" Content="Incassi - € " HorizontalAlignment="Left" Margin="27,377,0,0" VerticalAlignment="Top" Height="24"/>
         <Button x:Name="btnCalcolaIncassi" Style="{StaticResource CustomButtonStyle}" Content="Calcola incassi" HorizontalAlignment="Left" Margin="392,349,0,0" VerticalAlignment="Top" Width="123" Height="45" Click="btnCalcolaIncassi_Click"/>
         <ComboBox x:Name="cmbSpiaggiaRistorante" HorizontalAlignment="Left" Margin="27,315,0,0" VerticalAlignment="Top" Width="120">
-            <ComboBoxItem Content="Spiaggia" IsSelected="True"/>
-            <ComboBoxItem Content="Ristorante"/>
+            <ComboBoxItem Content="Spiaggia"/>
+            <ComboBoxItem Content="Ristorante" IsSelected="True"/>
         </ComboBox>
         <Separator Height="37" Margin="0,248,-0.2,158.2" Width="537" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
         <Separator Height="37" Margin="0,161,-0.2,245.2" Width="537" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>

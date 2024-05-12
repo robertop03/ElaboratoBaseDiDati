@@ -89,13 +89,13 @@ namespace WpfApp1.view
             {
                 _ = textBox.Focus();
                 textBox.SelectAll();
-                throw new Exception($"I prezzi di {fieldName} devono contenere solo numeri compresi tra 5 e 100 (inclusi)");
+                throw new Exception($"I prezzi di {fieldName} devono contenere solo numeri compresi tra 1 e 100 (inclusi)");
             }
         }
 
         private bool IsStringAllNumericAndBetweenRange(string str)
         {
-            return double.TryParse(str, out double numericValue) && numericValue >= 5 && numericValue <= 100;
+            return double.TryParse(str, out double numericValue) && numericValue >= 1 && numericValue <= 100;
         }
     }
 }

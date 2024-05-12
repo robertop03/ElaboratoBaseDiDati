@@ -32,6 +32,8 @@ namespace WpfApp1.view
             dtpDataFineIncassi.DisplayDateStart = new DateTime(year, 6, 1);
             dtpDataFineIncassi.DisplayDateEnd = new DateTime(year, 9, 30);
             dtpDataFineIncassi.SelectedDate = dtpDataFineIncassi.DisplayDateStart;
+
+
         }
 
         private void btnCalcola_Click(object sender, RoutedEventArgs e)
@@ -91,7 +93,14 @@ namespace WpfApp1.view
             {
                 if (stringSpiaggiaRistorante.Equals("Spiaggia"))
                 {
-                    incasso = controller.CalcolaIncassiSpiaggia(dtpDataInizioIncassi.SelectedDate.Value, dtpDataFineIncassi.SelectedDate.Value);
+                    if (controller.CheckPriceAreSetted())
+                    {
+                        incasso = controller.CalcolaIncassiSpiaggia(dtpDataInizioIncassi.SelectedDate.Value, dtpDataFineIncassi.SelectedDate.Value);
+                    }
+                    else
+                    {
+                        _ = MessageBox.Show("Prima è necessario impostare i prezzi degli ombrelloni e dei lettini.", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
                 else if (stringSpiaggiaRistorante.Equals("Ristorante"))
                 {
