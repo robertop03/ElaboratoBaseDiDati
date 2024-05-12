@@ -77,13 +77,23 @@ namespace WpfApp1.controller.api
 
         #endregion
 
+        #region Cliente
         void AggiungiCliente(string nome, string cognome, string numeroTelefono, string città, string via, int civico, string email, string codiceFiscale);
 
         List<string> GetClienti();
 
+        void AggiungiDocumento(string codiceDocumento, string codiceFiscale, string tipo);
+
+        void LoadClientiFromDB();
+        #endregion
+
         #region Eventi e Ospiti
 
         void AggiungiEvento(string titolo, DateTime data, TimeSpan orario, string descrizione, double costoIngrezzo, List<string> ospitiEvento);
+
+        void LoadEventiFromDB();
+
+        void LoadOspitiFromDB();
 
         void RimuoviEvento(string titolo, DateTime data);
 
@@ -110,5 +120,35 @@ namespace WpfApp1.controller.api
         #endregion
 
         List<string> GetEmails();
+
+        #region Prezzi
+        bool CheckPriceAreSetted();
+
+        void SetRighe();
+
+        void AggiungiPrezziOmbrelloni(int nRiga, string periodo, double prezzo);
+
+        void AggiungiPrezziLettini(int nRiga, string periodo, double prezzo);
+
+        List<string> GetPrezziOmbrelloni();
+
+        List<string> GetPrezziLettini();
+        #endregion
+
+        #region Query per sezione bilanci
+        (int, int) GetIdMenuPiuOrdinato(DateTime dataInizio, DateTime dataFine);
+
+        (int, int) GetIdMenuMenoOrdinato(DateTime dataInizio, DateTime dataFine);
+
+        (string, int) GetIdPiattoPiuOrdinato(DateTime dataInizio, DateTime dataFine);
+
+        (string, int) GetIdPiattoMenoOrdinato(DateTime dataInizio, DateTime dataFine);
+
+        double CalcolaPercentualeClientiConMail();
+
+        double CalcolaIncassiRistorante(DateTime dataInizio, DateTime dataFine);
+
+        double CalcolaIncassiSpiaggia(DateTime dataInizio, DateTime dataFine);
+        #endregion
     }
 }

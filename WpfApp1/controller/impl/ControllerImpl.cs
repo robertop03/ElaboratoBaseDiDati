@@ -571,7 +571,7 @@ namespace WpfApp1.controller.impl
 
         private void AggiungiPiattoInElencoPiatti(int idMenu, string nome)
         {
-            string query = $"INSERT INTO elencoPiatti (Nome, Id_Menu) SELECT * FROM(SELECT , @idMenu) AS piatto_in_menu WHERE NOT EXISTS(SELECT 1 FROM elencoPiatti WHERE Nome = @nome AND Id_menu = @idMenu);";
+            string query = $"INSERT INTO elencoPiatti (Nome, Id_Menu) SELECT * FROM(SELECT @nome, @idMenu) AS piatto_in_menu WHERE NOT EXISTS(SELECT 1 FROM elencoPiatti WHERE Nome = @nome AND Id_menu = @idMenu);";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@idMenu", MySqlDbType.Int32) { Value = idMenu },
@@ -1297,6 +1297,7 @@ namespace WpfApp1.controller.impl
             return 0;
         }
 
+        #region Prezzi
         public bool CheckPriceAreSetted()
         {
             DBConnect dbConnect = new DBConnect();
@@ -1469,6 +1470,9 @@ namespace WpfApp1.controller.impl
             return toReturn;
         }
 
+        #endregion
+
+        #region Query per sezione bilanci
         public (int, int) GetIdMenuPiuOrdinato(DateTime dataInizio, DateTime dataFine) // restituisce l'id del menù più ordinato + la quantità
         {
             DBConnect dbConnect = new DBConnect();
@@ -1615,5 +1619,7 @@ namespace WpfApp1.controller.impl
             }
             return 0;
         }
+
+        #endregion
     }
 }
