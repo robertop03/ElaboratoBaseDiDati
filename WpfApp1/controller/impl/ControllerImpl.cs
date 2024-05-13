@@ -1381,56 +1381,28 @@ namespace WpfApp1.controller.impl
         {
             List<string> toReturn = new List<string>();
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT Prezzo_giornaliero FROM prezzo_ombrellone WHERE Periodo = 'BassaStagione' AND Numero_riga = 1;";
-            List<MySqlParameter> parameters = new List<MySqlParameter>();
-            DataTable dataTable = dbConnect.Select(query, parameters);
-            if (dataTable.Rows.Count > 0)
-            {
-                DataRow row = dataTable.Rows[0];
-                string prezzo = row["Prezzo_giornaliero"].ToString();
-                toReturn.Add(prezzo);
-            }
-            string query2 = "SELECT Prezzo_giornaliero FROM prezzo_ombrellone WHERE Periodo = 'AltaStagione' AND Numero_riga = 1;";
-            DataTable dataTable2 = dbConnect.Select(query2, parameters);
-            if (dataTable2.Rows.Count > 0)
-            {
-                DataRow row = dataTable2.Rows[0];
-                string prezzo = row["Prezzo_giornaliero"].ToString();
-                toReturn.Add(prezzo);
-            }
-            string query3 = "SELECT Prezzo_giornaliero FROM prezzo_ombrellone WHERE Periodo = 'BassaStagione' AND Numero_riga = 2;";
-            DataTable dataTable3 = dbConnect.Select(query3, parameters);
-            if (dataTable3.Rows.Count > 0)
-            {
-                DataRow row = dataTable3.Rows[0];
-                string prezzo = row["Prezzo_giornaliero"].ToString();
-                toReturn.Add(prezzo);
-            }
-            string query4 = "SELECT Prezzo_giornaliero FROM prezzo_ombrellone WHERE Periodo = 'AltaStagione' AND Numero_riga = 2;";
-            DataTable dataTable4 = dbConnect.Select(query4, parameters);
-            if (dataTable4.Rows.Count > 0)
-            {
-                DataRow row = dataTable4.Rows[0];
-                string prezzo = row["Prezzo_giornaliero"].ToString();
-                toReturn.Add(prezzo);
-            }
-            string query5 = "SELECT Prezzo_giornaliero FROM prezzo_ombrellone WHERE Periodo = 'BassaStagione' AND Numero_riga = 3;";
-            DataTable dataTable5 = dbConnect.Select(query5, parameters);
-            if (dataTable5.Rows.Count > 0)
-            {
-                DataRow row = dataTable5.Rows[0];
-                string prezzo = row["Prezzo_giornaliero"].ToString();
-                toReturn.Add(prezzo);
-            }
-            string query6 = "SELECT Prezzo_giornaliero FROM prezzo_ombrellone WHERE Periodo = 'AltaStagione' AND Numero_riga = 3;";
-            DataTable dataTable6 = dbConnect.Select(query6, parameters);
-            if (dataTable6.Rows.Count > 0)
-            {
-                DataRow row = dataTable6.Rows[0];
-                string prezzo = row["Prezzo_giornaliero"].ToString();
-                toReturn.Add(prezzo);
-            }
+            string[] periodi = { "BassaStagione", "AltaStagione" };
+            int[] righe = { 1, 2, 3 };
 
+            foreach (string periodo in periodi)
+            {
+                foreach (int riga in righe)
+                {
+                    string query = $"SELECT Prezzo_giornaliero FROM prezzo_ombrellone WHERE Periodo = @Periodo AND Numero_riga = @NumeroRiga;";
+                    List<MySqlParameter> parameters = new List<MySqlParameter>
+                    {
+                        new MySqlParameter("@Periodo", periodo),
+                        new MySqlParameter("@NumeroRiga", riga)
+                    };
+                    DataTable dataTable = dbConnect.Select(query, parameters);
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        DataRow row = dataTable.Rows[0];
+                        string prezzo = row["Prezzo_giornaliero"].ToString();
+                        toReturn.Add(prezzo);
+                    }
+                }
+            }
             return toReturn;
         }
 
@@ -1438,54 +1410,27 @@ namespace WpfApp1.controller.impl
         {
             List<string> toReturn = new List<string>();
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT Prezzo_giornaliero FROM prezzo_lettino WHERE Periodo = 'BassaStagione' AND Numero_riga = 1;";
-            List<MySqlParameter> parameters = new List<MySqlParameter>();
-            DataTable dataTable = dbConnect.Select(query, parameters);
-            if (dataTable.Rows.Count > 0)
+
+            string[] periodi = { "BassaStagione", "AltaStagione" };
+            int[] righe = { 1, 2, 3 };
+            foreach (string periodo in periodi)
             {
-                DataRow row = dataTable.Rows[0];
-                string prezzo = row["Prezzo_giornaliero"].ToString();
-                toReturn.Add(prezzo);
-            }
-            string query2 = "SELECT Prezzo_giornaliero FROM prezzo_lettino WHERE Periodo = 'AltaStagione' AND Numero_riga = 1;";
-            DataTable dataTable2 = dbConnect.Select(query2, parameters);
-            if (dataTable2.Rows.Count > 0)
-            {
-                DataRow row = dataTable2.Rows[0];
-                string prezzo = row["Prezzo_giornaliero"].ToString();
-                toReturn.Add(prezzo);
-            }
-            string query3 = "SELECT Prezzo_giornaliero FROM prezzo_lettino WHERE Periodo = 'BassaStagione' AND Numero_riga = 2;";
-            DataTable dataTable3 = dbConnect.Select(query3, parameters);
-            if (dataTable3.Rows.Count > 0)
-            {
-                DataRow row = dataTable3.Rows[0];
-                string prezzo = row["Prezzo_giornaliero"].ToString();
-                toReturn.Add(prezzo);
-            }
-            string query4 = "SELECT Prezzo_giornaliero FROM prezzo_lettino WHERE Periodo = 'AltaStagione' AND Numero_riga = 2;";
-            DataTable dataTable4 = dbConnect.Select(query4, parameters);
-            if (dataTable4.Rows.Count > 0)
-            {
-                DataRow row = dataTable4.Rows[0];
-                string prezzo = row["Prezzo_giornaliero"].ToString();
-                toReturn.Add(prezzo);
-            }
-            string query5 = "SELECT Prezzo_giornaliero FROM prezzo_lettino WHERE Periodo = 'BassaStagione' AND Numero_riga = 3;";
-            DataTable dataTable5 = dbConnect.Select(query5, parameters);
-            if (dataTable5.Rows.Count > 0)
-            {
-                DataRow row = dataTable5.Rows[0];
-                string prezzo = row["Prezzo_giornaliero"].ToString();
-                toReturn.Add(prezzo);
-            }
-            string query6 = "SELECT Prezzo_giornaliero FROM prezzo_lettino WHERE Periodo = 'AltaStagione' AND Numero_riga = 3;";
-            DataTable dataTable6 = dbConnect.Select(query6, parameters);
-            if (dataTable6.Rows.Count > 0)
-            {
-                DataRow row = dataTable6.Rows[0];
-                string prezzo = row["Prezzo_giornaliero"].ToString();
-                toReturn.Add(prezzo);
+                foreach (int riga in righe)
+                {
+                    string query = $"SELECT Prezzo_giornaliero FROM prezzo_lettino WHERE Periodo = @Periodo AND Numero_riga = @NumeroRiga;";
+                    List<MySqlParameter> parameters = new List<MySqlParameter>
+                    {
+                        new MySqlParameter("@Periodo", periodo),
+                        new MySqlParameter("@NumeroRiga", riga)
+                    };
+                    DataTable dataTable = dbConnect.Select(query, parameters);
+                    if (dataTable.Rows.Count > 0)
+                    {
+                        DataRow row = dataTable.Rows[0];
+                        string prezzo = row["Prezzo_giornaliero"].ToString();
+                        toReturn.Add(prezzo);
+                    }
+                }
             }
 
             return toReturn;
