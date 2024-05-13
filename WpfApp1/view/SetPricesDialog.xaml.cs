@@ -21,20 +21,42 @@ namespace WpfApp1.view
         public double AltreAlta { get; private set; }
 
         private readonly List<string> prezziFromDb = new List<string>();
+        private readonly int numeroRighe;
 
         internal SetPricesDialog(ControllerImpl controller)
         {
             InitializeComponent();
             prezziFromDb = controller.GetPrezziOmbrelloni();
+            numeroRighe = controller.GetNumeroRighe();
 
-            if (prezziFromDb.Count > 0)
+            if (numeroRighe < 2)
+            {
+                txtPrezzoSecondaFilaBassaStagione.IsEnabled = false;
+                txtPrezzoSecondaFilaAltaStagione.IsEnabled = false;
+                txtPrezzoAltreFileBassaStagione.IsEnabled = false;
+                txtPrezzoAltreFileAltaStagione.IsEnabled = false;
+            }
+            if (numeroRighe < 3)
+            {
+                txtPrezzoAltreFileAltaStagione.IsEnabled = false;
+                txtPrezzoAltreFileBassaStagione.IsEnabled = false;
+            }
+
+            if (prezziFromDb.Count > 0 )
             {
                 txtPrezzoPrimaFilaBassaStagione.Text = prezziFromDb[0];
                 txtPrezzoPrimaFilaAltaStagione.Text = prezziFromDb[1];
-                txtPrezzoSecondaFilaBassaStagione.Text = prezziFromDb[2];
-                txtPrezzoSecondaFilaAltaStagione.Text = prezziFromDb[3];
-                txtPrezzoAltreFileBassaStagione.Text = prezziFromDb[4];
-                txtPrezzoAltreFileAltaStagione.Text = prezziFromDb[5];
+                if (numeroRighe >= 2 && prezziFromDb.Count >= 4)
+                {
+                    txtPrezzoSecondaFilaBassaStagione.Text = prezziFromDb[2];
+                    txtPrezzoSecondaFilaAltaStagione.Text = prezziFromDb[3];
+                }
+
+                if (numeroRighe >= 3 && prezziFromDb.Count >= 6)
+                {
+                    txtPrezzoAltreFileBassaStagione.Text = prezziFromDb[4];
+                    txtPrezzoAltreFileAltaStagione.Text = prezziFromDb[5];
+                }
             }
 
             _ = txtPrezzoPrimaFilaBassaStagione.Focus();
@@ -54,17 +76,25 @@ namespace WpfApp1.view
                     (txtPrezzoAltreFileAltaStagione, "Prezzo altre file alta stagione")
                 };
 
-                foreach ((TextBox, string) field in fieldsToCheck)
+                for (int i = 0; i < fieldsToCheck.Count; i++)
                 {
-                    CheckField(field.Item1, field.Item2);
+                    if (i < numeroRighe)
+                    {
+                        CheckField(fieldsToCheck[i].Item1, fieldsToCheck[i].Item2);
+                    }
                 }
                 PrimaBassa = double.Parse(txtPrezzoPrimaFilaBassaStagione.Text);
                 PrimaAlta = double.Parse(txtPrezzoPrimaFilaAltaStagione.Text);
-                SecondaBassa = double.Parse(txtPrezzoSecondaFilaBassaStagione.Text);
-                SecondaAlta = double.Parse(txtPrezzoSecondaFilaAltaStagione.Text);
-                AltreBassa = double.Parse(txtPrezzoAltreFileBassaStagione.Text);
-                AltreAlta = double.Parse(txtPrezzoAltreFileAltaStagione.Text);
-
+                if (numeroRighe > 1)
+                {
+                    SecondaBassa = double.Parse(txtPrezzoSecondaFilaBassaStagione.Text);
+                    SecondaAlta = double.Parse(txtPrezzoSecondaFilaAltaStagione.Text);
+                    if (numeroRighe > 2)
+                    {
+                        AltreBassa = double.Parse(txtPrezzoAltreFileBassaStagione.Text);
+                        AltreAlta = double.Parse(txtPrezzoAltreFileAltaStagione.Text);
+                    }
+                }
                 Result = true;
                 Close();
             }

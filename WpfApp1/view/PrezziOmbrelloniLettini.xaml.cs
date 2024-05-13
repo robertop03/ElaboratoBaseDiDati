@@ -26,11 +26,14 @@ namespace WpfApp1.view
             {
                 controller.AggiungiPrezziOmbrelloni(i, "BassaStagione", setPricesDialog.PrimaBassa);
                 controller.AggiungiPrezziOmbrelloni(i, "AltaStagione", setPricesDialog.PrimaAlta);
-                i++;
-                controller.AggiungiPrezziOmbrelloni(i, "BassaStagione", setPricesDialog.SecondaBassa);
-                controller.AggiungiPrezziOmbrelloni(i, "AltaStagione", setPricesDialog.SecondaAlta);
-
-                for (i = 3; i <= controller.GetNumeroRighe(); i++)
+                int numeroRighe = controller.GetNumeroRighe();
+                if (numeroRighe > 1)
+                {
+                    i++;
+                    controller.AggiungiPrezziOmbrelloni(i, "BassaStagione", setPricesDialog.SecondaBassa);
+                    controller.AggiungiPrezziOmbrelloni(i, "AltaStagione", setPricesDialog.SecondaAlta);
+                }
+                for (i = 3; i <= numeroRighe; i++)
                 {
                     controller.AggiungiPrezziOmbrelloni(i, "BassaStagione", setPricesDialog.AltreBassa);
                     controller.AggiungiPrezziOmbrelloni(i, "AltaStagione", setPricesDialog.AltreAlta);

@@ -72,18 +72,8 @@ namespace WpfApp1.controller.impl
 
         public void AggiungiOmbrellone(int numeroRiga, int numeroColonna)
         {
-            Ombrellone ombrellone = new Ombrellone(numeroRiga, numeroColonna);
-            ListaOmbrelloni.Add(ombrellone);
-            string query = $"INSERT INTO Ombrellone (Numero_riga, Numero_colonna) VALUES (@numeroRiga, @numeroColonna)";
-            List<MySqlParameter> parameters = new List<MySqlParameter>
-            {
-                new MySqlParameter("@numeroRiga", MySqlDbType.Int32) { Value = numeroRiga },
-                new MySqlParameter("@numeroColonna", MySqlDbType.Int32) { Value = numeroColonna }
-            };
-            DBConnect dbConnect = new DBConnect();
-            _ = dbConnect.Insert(query, parameters);
-            bool isRigaPresente = false;
             DBConnect dbConnect2 = new DBConnect();
+            bool isRigaPresente = false;
             string query2 = "SELECT Numero_riga FROM riga;";
             List<MySqlParameter> parameters2 = new List<MySqlParameter>();
             DataTable dataTable2 = dbConnect2.Select(query2, parameters2);
@@ -105,6 +95,16 @@ namespace WpfApp1.controller.impl
                 };
                 _ = dbConnect3.Insert(query3, parameters3);
             }
+            Ombrellone ombrellone = new Ombrellone(numeroRiga, numeroColonna);
+            ListaOmbrelloni.Add(ombrellone);
+            string query = $"INSERT INTO Ombrellone (Numero_riga, Numero_colonna) VALUES (@numeroRiga, @numeroColonna)";
+            List<MySqlParameter> parameters = new List<MySqlParameter>
+            {
+                new MySqlParameter("@numeroRiga", MySqlDbType.Int32) { Value = numeroRiga },
+                new MySqlParameter("@numeroColonna", MySqlDbType.Int32) { Value = numeroColonna }
+            };
+            DBConnect dbConnect = new DBConnect();
+            _ = dbConnect.Insert(query, parameters);
             AggiuntoOmbrellone?.Invoke(this, EventArgs.Empty);
         }
 
@@ -553,7 +553,7 @@ namespace WpfApp1.controller.impl
         {
             Piatto piatto = new Piatto(nome, prezzo, descrizione);
             ListaPiatti.Add(piatto);
-            string query = $"INSERT INTO Piatto (Nome, Prezzo, Descrizione) SELECT * FROM(SELECT @nome, @prezzo, @descrizione) AS piatto_nuovo WHERE NOT EXISTS(SELECT 1 FROM Piatto WHERE Nome = @nome);";
+            string query = $"INSERT INTO Piatto (Nome, Prezzo, Descrizione) VALUES( @nome, @prezzo, @descrizione);";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@prezzo", MySqlDbType.Double) { Value = prezzo },
@@ -571,7 +571,7 @@ namespace WpfApp1.controller.impl
 
         private void AggiungiPiattoInElencoPiatti(int idMenu, string nome)
         {
-            string query = $"INSERT INTO elencoPiatti (Nome, Id_Menu) SELECT * FROM(SELECT @nome, @idMenu) AS piatto_in_menu WHERE NOT EXISTS(SELECT 1 FROM elencoPiatti WHERE Nome = @nome AND Id_menu = @idMenu);";
+            string query = $"INSERT INTO elencoPiatti (Nome, Id_Menu) VALUES(@nome, @idMenu)";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@idMenu", MySqlDbType.Int32) { Value = idMenu },
@@ -640,7 +640,7 @@ namespace WpfApp1.controller.impl
             {
                 Menu menu = new Menu(idMenu, listaPiatti, prezzo);
                 ListaMenu.Add(menu);
-                string query = $"INSERT INTO Menu (Id_menu, Prezzo) SELECT * FROM(SELECT @idMenu, @prezzo) AS menu_nuovo WHERE NOT EXISTS(SELECT 1 FROM Menu WHERE Id_menu = @idMenu);";
+                string query = $"INSERT INTO Menu (Id_menu, Prezzo) VALUES(@idMenu, @prezzo);";
                 List<MySqlParameter> parameters = new List<MySqlParameter>
                 {
                     new MySqlParameter("@idMenu", MySqlDbType.Int32) { Value = idMenu },
@@ -795,7 +795,7 @@ namespace WpfApp1.controller.impl
                 }
             }
             Ordine ordine = new Ordine(idOrdine, ListaPrenotazioniTavoli[indexPrenotazioneTavolo], piatti, menus);
-            string query = $"INSERT INTO ordine (Id_ordine, Id_tavolo, Data, Pasto) SELECT * FROM (SELECT @idOrdine AS Id_ordine, @idTavolo AS Id_tavolo, @data AS Data, @pasto AS Pasto) AS ordine_nuovo WHERE NOT EXISTS (SELECT 1 FROM ordine WHERE Id_ordine = @idOrdine);";
+            string query = $"INSERT INTO ordine (Id_ordine, Id_tavolo, Data, Pasto) VALUES(@idOrdine, @idTavolo, @data, @pasto);";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@idOrdine", MySqlDbType.Int32) { Value = idOrdine },
@@ -889,17 +889,9 @@ namespace WpfApp1.controller.impl
                 new MySqlParameter("@civico", MySqlDbType.Int32) { Value = civico },
                 new MySqlParameter("@email", MySqlDbType.VarChar, 255) { Value = email },
             };
-            string query;
-            if (email.Equals(""))
-            {
-                query = $"INSERT INTO Cliente (Codice_fiscale, Nome, Cognome, Numero_telefono, Ind_Citta, Ind_Via, Ind_Civico, Email) SELECT * FROM(SELECT @cf, @nome, @cognome, @numeroTelefono, @città, @via, @civico, NULL) AS cliente_nuovo " +
-                $"WHERE NOT EXISTS(SELECT 1 FROM Cliente WHERE Codice_fiscale = @cf);";
-            }
-            else
-            {
-                query = $"INSERT INTO Cliente (Codice_fiscale, Nome, Cognome, Numero_telefono, Ind_Citta, Ind_Via, Ind_Civico, Email) SELECT * FROM(SELECT @cf, @nome, @cognome, @numeroTelefono, @città, @via, @civico, @email) AS cliente_nuovo " +
-                $"WHERE NOT EXISTS(SELECT 1 FROM Cliente WHERE Codice_fiscale = @cf);";
-            }
+            string query = email.Equals("")
+                ? $"INSERT INTO Cliente (Codice_fiscale, Nome, Cognome, Numero_telefono, Ind_Citta, Ind_Via, Ind_Civico, Email) VALUES(@cf, @nome, @cognome, @numeroTelefono, @città, @via, @civico, NULL);"
+                : $"INSERT INTO Cliente (Codice_fiscale, Nome, Cognome, Numero_telefono, Ind_Citta, Ind_Via, Ind_Civico, Email) VALUES(@cf, @nome, @cognome, @numeroTelefono, @città, @via, @civico, @email);";
             ListaClienti.Add(cliente);
             DBConnect dbConnect = new DBConnect();
             int rowsAffected = dbConnect.Insert(query, parameters);
@@ -925,8 +917,7 @@ namespace WpfApp1.controller.impl
             TipoDocumento tipoDocumento = (TipoDocumento)Enum.Parse(typeof(TipoDocumento), tipo);
             Documento documento = new Documento(codiceDocumento, codiceFiscale, tipoDocumento);
             ListaDocumenti.Add(documento);
-            string query = $"INSERT INTO Documento (Codice_documento, Codice_fiscale, Tipo) SELECT @codiceDocumento, @cf, @tipo" +
-                $" WHERE NOT EXISTS (SELECT * FROM Documento WHERE Codice_documento = @codiceDocumento AND Codice_fiscale = @cf)";
+            string query = $"INSERT INTO Documento (Codice_documento, Codice_fiscale, Tipo) VALUES (@codiceDocumento, @cf, @tipo)";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@codiceDocumento", MySqlDbType.VarChar, 50) { Value = codiceDocumento},
@@ -939,6 +930,21 @@ namespace WpfApp1.controller.impl
             {
                 throw new InvalidOperationException("Il documento non è stato inserito perché già esistente");
             }
+        }
+
+        private List<string> GetClientiConEmail()
+        {
+            DBConnect dbConnect = new DBConnect();
+            List<string> clientiConMail = new List<string>();
+            string query = "select Codice_fiscale from cliente where email is not null;";
+            List<MySqlParameter> parameters = new List<MySqlParameter>();
+            DataTable dataTable = dbConnect.Select(query, parameters);
+            foreach (DataRow row in dataTable.Rows)
+            {
+                string cf = row["Codice_fiscale"].ToString();
+                clientiConMail.Add(cf);
+            }
+            return clientiConMail;
         }
         #endregion
 
@@ -964,7 +970,7 @@ namespace WpfApp1.controller.impl
                 }
             }
             Evento evento = new Evento(titolo, data, orario, descrizione, costoIngrezzo, ospiti);
-            string query = $"INSERT INTO Evento (Titolo, Data, Orario_inizio, Descrizione, Costo_ingresso) SELECT * FROM(SELECT @titolo, @data, @orarioInizio, @descrizione, @costoIngresso) AS evento_nuovo WHERE NOT EXISTS(SELECT 1 FROM Evento WHERE Titolo = '{titolo}' AND Data = '{data:yyyy-MM-dd}');";
+            string query = $"INSERT INTO Evento (Titolo, Data, Orario_inizio, Descrizione, Costo_ingresso) VALUES(@titolo, @data, @orarioInizio, @descrizione, @costoIngresso);";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@titolo", MySqlDbType.VarChar, 50) { Value = titolo },
@@ -982,7 +988,11 @@ namespace WpfApp1.controller.impl
             foreach (Ospite ospite in ospiti)
             {
                 AggiungiInConvocazione(titolo, data, ospite.CodiceFiscale);
-                AggiungiInAvviso(titolo, data, ospite.CodiceFiscale);
+            }
+            List<string> clientiDaAvvisare = GetClientiConEmail();
+            for (int i = 0; i < clientiDaAvvisare.Count; i++)
+            {
+                AggiungiInAvviso(titolo, data, clientiDaAvvisare[i]);
             }
             ListaEventi.Add(evento);
             AggiuntoEvento?.Invoke(this, EventArgs.Empty);
@@ -990,8 +1000,7 @@ namespace WpfApp1.controller.impl
 
         private void AggiungiInAvviso(string titolo, DateTime data, string cf)
         {
-            string query = $"INSERT INTO avviso (Titolo, Data, Codice_fiscale) SELECT * FROM (SELECT @titolo, @data, @cf)" +
-           $" AS nuova_convocazione WHERE NOT EXISTS(SELECT 1 FROM avviso WHERE Titolo = @titolo AND Data = @data AND Codice_fiscale = @cf);";
+            string query = $"INSERT INTO avviso (Titolo, Data, Codice_fiscale) VALUES (@titolo, @data, @cf)";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@titolo", MySqlDbType.VarChar, 50) { Value = titolo },
@@ -1019,12 +1028,25 @@ namespace WpfApp1.controller.impl
                         new MySqlParameter("@data", MySqlDbType.Date) { Value = data }
                     };
                     RimuoviDaConvocazione(titolo, data);
+                    RimuoviDaAvviso(titolo, data);
                     DBConnect dbConnect = new DBConnect();
                     dbConnect.Delete(query, parameters);
                     ListaEventi.RemoveAt(i);
                 }
             }
             RimossoEvento?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void RimuoviDaAvviso(string titolo, DateTime data)
+        {
+            string query = $"DELETE FROM avviso WHERE Titolo = @titolo AND Data = @data";
+            List<MySqlParameter> parameters = new List<MySqlParameter>
+            {
+                new MySqlParameter("@titolo", MySqlDbType.VarChar, 50) { Value = titolo },
+                new MySqlParameter("@data", MySqlDbType.Date) { Value = data }
+            };
+            DBConnect dbConnect = new DBConnect();
+            dbConnect.Delete(query, parameters);
         }
 
         private void RimuoviDaConvocazione(string titolo, DateTime data)
@@ -1115,7 +1137,7 @@ namespace WpfApp1.controller.impl
         public void AggiungiOspite(string codiceFiscale, string cognome, string nome, string numeroTelefono, string nickname)
         {
             Ospite ospite = new Ospite(codiceFiscale, cognome, nome, numeroTelefono, nickname);
-            string query = $"INSERT INTO Ospite (Codice_fiscale, Nome, Cognome, Numero_telefono, Nickname) SELECT * FROM(SELECT @cf, @nome, @cognome, @numeroTelefono, @nickname) AS ospite_nuovo WHERE NOT EXISTS(SELECT 1 FROM Ospite WHERE Codice_fiscale = @cf);";
+            string query = $"INSERT INTO Ospite (Codice_fiscale, Nome, Cognome, Numero_telefono, Nickname) VALUES (@cf, @nome, @cognome, @numeroTelefono, @nickname);";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@cf", MySqlDbType.VarChar, 16) { Value = codiceFiscale },
@@ -1185,8 +1207,7 @@ namespace WpfApp1.controller.impl
 
         private void AggiungiInConvocazione(string titolo, DateTime data, string codiceFiscale)
         {
-            string query = $"INSERT INTO convocazione (Titolo, Data, Codice_fiscale) SELECT * FROM (SELECT @titolo, @data, @cf)" +
-                $" AS nuova_convocazione WHERE NOT EXISTS(SELECT 1 FROM convocazione WHERE Titolo = @titolo AND Data = @data AND Codice_fiscale = @cf);";
+            string query = $"INSERT INTO convocazione (Titolo, Data, Codice_fiscale) VALUES(@titolo, @data, @cf)";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@titolo", MySqlDbType.VarChar, 50) { Value = titolo },
@@ -1209,7 +1230,7 @@ namespace WpfApp1.controller.impl
         {
             ScontoOmbrellone scontoOmbrellone = new ScontoOmbrellone(numeroGiorni, percentualeSconto);
             ListaScontiOmbrellone.Add(scontoOmbrellone);
-            string query = $"INSERT INTO sconto_ombrelloni (Numero_giorni, Sconto_corrispondente) SELECT @numeroGiorni, @percentualeSconto WHERE NOT EXISTS (SELECT * FROM sconto_ombrelloni WHERE Numero_giorni = @numeroGiorni)";
+            string query = $"INSERT INTO sconto_ombrelloni (Numero_giorni, Sconto_corrispondente) VALUES(@numeroGiorni, @percentualeSconto)";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@numeroGiorni", MySqlDbType.Int32) { Value = numeroGiorni },
