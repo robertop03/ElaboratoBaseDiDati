@@ -552,7 +552,6 @@ namespace WpfApp1.controller.impl
         public void AggiungiPiatto(string nome, double prezzo, string descrizione)
         {
             Piatto piatto = new Piatto(nome, prezzo, descrizione);
-            ListaPiatti.Add(piatto);
             string query = $"INSERT INTO Piatto (Nome, Prezzo, Descrizione) VALUES( @nome, @prezzo, @descrizione);";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
@@ -566,6 +565,7 @@ namespace WpfApp1.controller.impl
             {
                 throw new InvalidOperationException("Il piatto non è stato inserito perché già esistente un piatto con lo stesso nome");
             }
+            ListaPiatti.Add(piatto);
             AggiuntoPiatto?.Invoke(this, EventArgs.Empty);
         }
 
@@ -892,7 +892,6 @@ namespace WpfApp1.controller.impl
             string query = email.Equals("")
                 ? $"INSERT INTO Cliente (Codice_fiscale, Nome, Cognome, Numero_telefono, Ind_Citta, Ind_Via, Ind_Civico, Email) VALUES(@cf, @nome, @cognome, @numeroTelefono, @città, @via, @civico, NULL);"
                 : $"INSERT INTO Cliente (Codice_fiscale, Nome, Cognome, Numero_telefono, Ind_Citta, Ind_Via, Ind_Civico, Email) VALUES(@cf, @nome, @cognome, @numeroTelefono, @città, @via, @civico, @email);";
-            ListaClienti.Add(cliente);
             DBConnect dbConnect = new DBConnect();
             int rowsAffected = dbConnect.Insert(query, parameters);
 
@@ -900,6 +899,7 @@ namespace WpfApp1.controller.impl
             {
                 throw new InvalidOperationException("Il cliente non è stato inserito perché già esistente");
             }
+            ListaClienti.Add(cliente);
         }
 
         public List<string> GetClienti()

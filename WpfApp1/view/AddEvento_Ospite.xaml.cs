@@ -47,13 +47,15 @@ namespace WpfApp1.view
             _ = addEventoDialog.ShowDialog();
             if (addEventoDialog.Result)
             {
-                controller.AggiungiEvento(addEventoDialog.Titolo, addEventoDialog.Data, addEventoDialog.Orario, addEventoDialog.Descrizione, addEventoDialog.CostoIngresso, ospiti);
-                List<string> emails = controller.GetEmails();
-                foreach (string email in emails)
+                try
                 {
-
+                    controller.AggiungiEvento(addEventoDialog.Titolo, addEventoDialog.Data, addEventoDialog.Orario, addEventoDialog.Descrizione, addEventoDialog.CostoIngresso, ospiti);
+                    _ = MessageBox.Show("L'evento è stato aggiunto con successo e comunicato agli iscritti in newsletter.", "Evento aggiunto.", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                _ = MessageBox.Show("L'evento è stato aggiunto con successo e comunicato agli iscritti in newsletter.", "Evento aggiunto.", MessageBoxButton.OK, MessageBoxImage.Information);
+                catch (Exception ex)
+                {
+                    _ = MessageBox.Show($"Attenzione: {ex.Message}.", "Operazione annullata", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
             }
         }
 
@@ -89,7 +91,7 @@ namespace WpfApp1.view
                 }
                 catch (Exception ex)
                 {
-                    _ = MessageBox.Show($"Attenzione: {ex.Message}.", "Operazione annullata", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    _ = MessageBox.Show($"Attenzione: {ex.Message}.", "Operazione annullata", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

@@ -95,7 +95,7 @@ namespace WpfApp1.view
                 }
                 catch (Exception ex)
                 {
-                    _ = MessageBox.Show($"Attenzione: {ex.Message}", "Piatto non aggiunto.", MessageBoxButton.OK, MessageBoxImage.Information);
+                    _ = MessageBox.Show($"Attenzione: {ex.Message}", "Piatto non aggiunto.", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -185,19 +185,27 @@ namespace WpfApp1.view
         {
             List<int> idMenuOrdinati = new List<int>(quantitaMenu.Keys);
             List<string> piattiOrdinati = new List<string>(quantitaPiatti.Keys);
-            controller.AggiungiOrdine(ControllerImpl.IdOrdine, data, pasto, idTavolo, idMenuOrdinati, piattiOrdinati);
-            for (int i = 0; i < idMenuOrdinati.Count; i++)
+            try
             {
-                int quantita = quantitaMenu.ContainsKey(idMenuOrdinati[i]) ? quantitaMenu[idMenuOrdinati[i]] : 0;
-                controller.AggiungiMenuInContenenzaMenu(idMenuOrdinati[i], ControllerImpl.IdOrdine, quantita);
+                controller.AggiungiOrdine(ControllerImpl.IdOrdine, data, pasto, idTavolo, idMenuOrdinati, piattiOrdinati);
+                for (int i = 0; i < idMenuOrdinati.Count; i++)
+                {
+                    int quantita = quantitaMenu.ContainsKey(idMenuOrdinati[i]) ? quantitaMenu[idMenuOrdinati[i]] : 0;
+                    controller.AggiungiMenuInContenenzaMenu(idMenuOrdinati[i], ControllerImpl.IdOrdine, quantita);
+                }
+
+                for (int i = 0; i < piattiOrdinati.Count; i++)
+                {
+                    int quantita = quantitaPiatti.ContainsKey(piattiOrdinati[i]) ? quantitaPiatti[piattiOrdinati[i]] : 0;
+                    controller.AggiungiPiattiInContenenzaPiatti(piattiOrdinati[i], ControllerImpl.IdOrdine, quantita);
+                }
+                _ = MessageBox.Show("L'ordine è stato completato.", "Ordine inviato.", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                _ = MessageBox.Show($"Attenzione: {ex.Message}", "Operazione annullata.", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
-            for (int i = 0; i < piattiOrdinati.Count; i++)
-            {
-                int quantita = quantitaPiatti.ContainsKey(piattiOrdinati[i]) ? quantitaPiatti[piattiOrdinati[i]] : 0;
-                controller.AggiungiPiattiInContenenzaPiatti(piattiOrdinati[i], ControllerImpl.IdOrdine, quantita);
-            }
-            _ = MessageBox.Show("L'ordine è stato completato.", "Ordine inviato.", MessageBoxButton.OK, MessageBoxImage.Information);
             Close();
         }
     }
