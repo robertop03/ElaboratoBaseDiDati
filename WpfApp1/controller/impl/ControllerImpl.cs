@@ -74,7 +74,7 @@ namespace WpfApp1.controller.impl
         {
             DBConnect dbConnect2 = new DBConnect();
             bool isRigaPresente = false;
-            string query2 = "SELECT Numero_riga FROM riga;";
+            string query2 = "SELECT Numero_riga FROM righe;";
             List<MySqlParameter> parameters2 = new List<MySqlParameter>();
             DataTable dataTable2 = dbConnect2.Select(query2, parameters2);
             foreach (DataRow row in dataTable2.Rows)
@@ -88,7 +88,7 @@ namespace WpfApp1.controller.impl
             if (!isRigaPresente)
             {
                 DBConnect dbConnect3 = new DBConnect();
-                string query3 = $"INSERT INTO Riga VALUES(@numeroRiga);";
+                string query3 = $"INSERT INTO Righe VALUES(@numeroRiga);";
                 List<MySqlParameter> parameters3 = new List<MySqlParameter>
                 {
                     new MySqlParameter("@numeroRiga", MySqlDbType.Int32) { Value = numeroRiga }
@@ -97,7 +97,7 @@ namespace WpfApp1.controller.impl
             }
             Ombrellone ombrellone = new Ombrellone(numeroRiga, numeroColonna);
             ListaOmbrelloni.Add(ombrellone);
-            string query = $"INSERT INTO Ombrellone (Numero_riga, Numero_colonna) VALUES (@numeroRiga, @numeroColonna)";
+            string query = $"INSERT INTO Ombrelloni (Numero_riga, Numero_colonna) VALUES (@numeroRiga, @numeroColonna)";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@numeroRiga", MySqlDbType.Int32) { Value = numeroRiga },
@@ -114,7 +114,7 @@ namespace WpfApp1.controller.impl
             {
                 if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
                 {
-                    string query = $"DELETE FROM ombrellone WHERE Numero_riga = @numeroRiga AND Numero_colonna = @numeroColonna";
+                    string query = $"DELETE FROM ombrelloni WHERE Numero_riga = @numeroRiga AND Numero_colonna = @numeroColonna";
                     List<MySqlParameter> parameters = new List<MySqlParameter>
                     {
                         new MySqlParameter("@numeroRiga", MySqlDbType.Int32) { Value = numeroRiga },
@@ -135,7 +135,7 @@ namespace WpfApp1.controller.impl
                 if (ListaOmbrelloni[i].NumeroRiga == numeroRiga && ListaOmbrelloni[i].NumeroColonna == numeroColonna)
                 {
                     PrenotazioneOmbrellone prenotazione = new PrenotazioneOmbrellone(dataInizio, dataFine, numeroRiga, numeroColonna, codiceFiscalePrenotante, numeroLettiniAggiuntivi);
-                    string query = $"INSERT INTO prenotazione_ombrellone (Data_inizio, Data_fine, Numero_lettini_aggiuntivi, Codice_fiscale, Numero_riga, Numero_colonna) VALUES (@dataInizio, @dataFine, @numeroLettiniAggiuntivi, @cf, @numeroRiga, @numeroColonna)";
+                    string query = $"INSERT INTO prenotazioni_ombrelloni (Data_inizio, Data_fine, Numero_lettini_aggiuntivi, Codice_fiscale, Numero_riga, Numero_colonna) VALUES (@dataInizio, @dataFine, @numeroLettiniAggiuntivi, @cf, @numeroRiga, @numeroColonna)";
                     List<MySqlParameter> parameters = new List<MySqlParameter>
                     {
                         new MySqlParameter("@dataInizio", MySqlDbType.Date) { Value = dataInizio },
@@ -162,7 +162,7 @@ namespace WpfApp1.controller.impl
                     prenotazione.ColonnaOmbrellonePrenotato == numeroColonna)
                 {
                     _ = ListaPrenotazioniOmbrelloni.Remove(prenotazione);
-                    string query = $"DELETE FROM prenotazione_ombrellone WHERE Data_inizio = @dataInizio AND Numero_riga = @numeroRiga AND Numero_colonna = @numeroColonna";
+                    string query = $"DELETE FROM prenotazioni_ombrelloni WHERE Data_inizio = @dataInizio AND Numero_riga = @numeroRiga AND Numero_colonna = @numeroColonna";
                     List<MySqlParameter> parameters = new List<MySqlParameter>
                     {
                         new MySqlParameter("@dataInizio", MySqlDbType.Date) { Value = dataInizio },
@@ -195,7 +195,7 @@ namespace WpfApp1.controller.impl
         public int GetNumeroOmbrelloni()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT COUNT(DISTINCT CONCAT(numero_riga, '-', numero_colonna)) AS numero_ombrelloni FROM ombrellone;";
+            string query = "SELECT COUNT(DISTINCT CONCAT(numero_riga, '-', numero_colonna)) AS numero_ombrelloni FROM ombrelloni;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             if (dataTable.Rows.Count > 0)
@@ -239,7 +239,7 @@ namespace WpfApp1.controller.impl
         public void LoadOmbrelloniFromDB()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT * FROM ombrellone;";
+            string query = "SELECT * FROM ombrelloni;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             foreach (DataRow row in dataTable.Rows)
@@ -253,7 +253,7 @@ namespace WpfApp1.controller.impl
         public void LoadPrenotazioniOmbrelloneFromDB()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT * FROM prenotazione_ombrellone;";
+            string query = "SELECT * FROM prenotazioni_ombrelloni;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             foreach (DataRow row in dataTable.Rows)
@@ -282,7 +282,7 @@ namespace WpfApp1.controller.impl
         public (int, int) RigaEColonna()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT numero_riga, numero_colonna FROM Ombrellone ORDER BY numero_riga DESC, numero_colonna DESC LIMIT 1;";
+            string query = "SELECT numero_riga, numero_colonna FROM Ombrelloni ORDER BY numero_riga DESC, numero_colonna DESC LIMIT 1;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             if (dataTable.Rows.Count > 0)
@@ -298,7 +298,7 @@ namespace WpfApp1.controller.impl
         public void LoadDocumentiFromDB()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT * FROM documento;";
+            string query = "SELECT * FROM documenti;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             foreach (DataRow row in dataTable.Rows)
@@ -330,7 +330,7 @@ namespace WpfApp1.controller.impl
         {
             Tavolo tavolo = new Tavolo(idTavolo, numeroPosti);
             ListaTavoli.Add(tavolo);
-            string query = $"INSERT INTO Tavolo (Id_tavolo, Numero_posti) VALUES (@idTavolo, @numeroPosti)";
+            string query = $"INSERT INTO Tavoli (Id_tavolo, Numero_posti) VALUES (@idTavolo, @numeroPosti)";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@idTavolo", MySqlDbType.Int32) { Value = idTavolo },
@@ -347,7 +347,7 @@ namespace WpfApp1.controller.impl
             {
                 if (ListaTavoli[i].IdTavolo == idTavolo)
                 {
-                    string query = $"DELETE FROM tavolo WHERE Id_tavolo = @idTavolo";
+                    string query = $"DELETE FROM tavoli WHERE Id_tavolo = @idTavolo";
                     List<MySqlParameter> parameters = new List<MySqlParameter>
                     {
                         new MySqlParameter("@idTavolo", MySqlDbType.Int32) { Value = idTavolo }
@@ -369,7 +369,7 @@ namespace WpfApp1.controller.impl
                     Pasto pastoEnum = (Pasto)Enum.Parse(typeof(Pasto), pasto);
                     PrenotazioneTavolo prenotazione = new PrenotazioneTavolo(data, pastoEnum, idTavolo, codiceFiscalePrenotante, numeroPersonePrenotanti);
                     ListaPrenotazioniTavoli.Add(prenotazione);
-                    string query = $"INSERT INTO prenotazione_tavolo (Id_tavolo, Data, Pasto, Numero_persone_prenotanti, Codice_fiscale) VALUES (@idTavolo, @data, @pasto, @numeroPersonePrenotanti, @cf)";
+                    string query = $"INSERT INTO prenotazioni_tavoli (Id_tavolo, Data, Pasto, Numero_persone_prenotanti, Codice_fiscale) VALUES (@idTavolo, @data, @pasto, @numeroPersonePrenotanti, @cf)";
                     List<MySqlParameter> parameters = new List<MySqlParameter>
                     {
                         new MySqlParameter("@idTavolo", MySqlDbType.Int32) { Value = idTavolo },
@@ -387,7 +387,7 @@ namespace WpfApp1.controller.impl
         public void LoadPrenotazioniTavoloFromDB()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT * FROM prenotazione_tavolo;";
+            string query = "SELECT * FROM prenotazioni_tavoli;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             foreach (DataRow row in dataTable.Rows)
@@ -411,7 +411,7 @@ namespace WpfApp1.controller.impl
                     prenotazione.Pasto.ToString() == pasto)
                 {
                     _ = ListaPrenotazioniTavoli.Remove(prenotazione);
-                    string query = $"DELETE FROM prenotazione_tavolo WHERE Id_tavolo = @idTavolo AND Data = @data AND Pasto = @pasto";
+                    string query = $"DELETE FROM prenotazioni_tavoli WHERE Id_tavolo = @idTavolo AND Data = @data AND Pasto = @pasto";
                     List<MySqlParameter> parameters = new List<MySqlParameter>
                     {
                         new MySqlParameter("@idTavolo", MySqlDbType.Int32) { Value = idTavolo },
@@ -440,7 +440,7 @@ namespace WpfApp1.controller.impl
         public int GetNumeroTavoli()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT COUNT(Id_tavolo) AS numero_tavoli FROM tavolo;";
+            string query = "SELECT COUNT(Id_tavolo) AS numero_tavoli FROM tavoli;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             if (dataTable.Rows.Count > 0)
@@ -519,7 +519,7 @@ namespace WpfApp1.controller.impl
         public void LoadTavoliFromDB()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT * FROM tavolo;";
+            string query = "SELECT * FROM tavoli;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             foreach (DataRow row in dataTable.Rows)
@@ -533,7 +533,7 @@ namespace WpfApp1.controller.impl
         public int GetLastIdTavolo()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT MAX(Id_tavolo) AS MaxId FROM tavolo;";
+            string query = "SELECT MAX(Id_tavolo) AS MaxId FROM tavoli;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             if (dataTable.Rows.Count > 0)
@@ -552,7 +552,7 @@ namespace WpfApp1.controller.impl
         public void AggiungiPiatto(string nome, double prezzo, string descrizione)
         {
             Piatto piatto = new Piatto(nome, prezzo, descrizione);
-            string query = $"INSERT INTO Piatto (Nome, Prezzo, Descrizione) VALUES( @nome, @prezzo, @descrizione);";
+            string query = $"INSERT INTO Piatti (Nome, Prezzo, Descrizione) VALUES( @nome, @prezzo, @descrizione);";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@prezzo", MySqlDbType.Double) { Value = prezzo },
@@ -571,7 +571,7 @@ namespace WpfApp1.controller.impl
 
         private void AggiungiPiattoInElencoPiatti(int idMenu, string nome)
         {
-            string query = $"INSERT INTO elencoPiatti (Nome, Id_Menu) VALUES(@nome, @idMenu)";
+            string query = $"INSERT INTO elenchiPiatti (Nome, Id_Menu) VALUES(@nome, @idMenu)";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@idMenu", MySqlDbType.Int32) { Value = idMenu },
@@ -591,7 +591,7 @@ namespace WpfApp1.controller.impl
             {
                 if (ListaPiatti[i].Nome == nome)
                 {
-                    string query = $"DELETE FROM piatto WHERE Nome = @nome";
+                    string query = $"DELETE FROM piatti WHERE Nome = @nome";
                     List<MySqlParameter> parameters = new List<MySqlParameter>
                     {
                         new MySqlParameter("@nome", MySqlDbType.VarChar, 50) { Value = nome }
@@ -607,7 +607,7 @@ namespace WpfApp1.controller.impl
         public void LoadPiattiFromDB()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT * FROM piatto;";
+            string query = "SELECT * FROM piatti;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             foreach (DataRow row in dataTable.Rows)
@@ -677,7 +677,7 @@ namespace WpfApp1.controller.impl
                     };
                     DBConnect dbConnect = new DBConnect();
                     dbConnect.Delete(query, parameters);
-                    string query2 = $"DELETE FROM elencoPiatti WHERE Id_menu = @idMenu";
+                    string query2 = $"DELETE FROM elenchiPiatti WHERE Id_menu = @idMenu";
                     DBConnect dbConnect2 = new DBConnect();
                     dbConnect2.Delete(query2, parameters);
                     ListaMenu.RemoveAt(i);
@@ -698,7 +698,7 @@ namespace WpfApp1.controller.impl
                 double prezzo = double.Parse(row["Prezzo"].ToString());
                 List<Piatto> elencoPiatti = new List<Piatto>();
                 DBConnect dbConnect2 = new DBConnect();
-                string query2 = $"SELECT * FROM elencoPiatti WHERE Id_menu = {id_menu};";
+                string query2 = $"SELECT * FROM elenchiPiatti WHERE Id_menu = {id_menu};";
                 List<MySqlParameter> parameters2 = new List<MySqlParameter>
                 {
                     new MySqlParameter("@idMenu", MySqlDbType.Int32) { Value = id_menu }
@@ -709,7 +709,7 @@ namespace WpfApp1.controller.impl
                     int id_menuElencoPiatti = int.Parse(row2["Id_menu"].ToString());
                     string nomePiatto = row2["Nome"].ToString();
                     DBConnect dbConnect3 = new DBConnect();
-                    string query3 = $"SELECT * FROM Piatto WHERE Nome = @nomePiatto;";
+                    string query3 = $"SELECT * FROM Piatti WHERE Nome = @nomePiatto;";
                     List<MySqlParameter> parameters3 = new List<MySqlParameter>
                     {
                         new MySqlParameter("@nomePiatto", MySqlDbType.VarChar, 50) { Value = nomePiatto }
@@ -795,7 +795,7 @@ namespace WpfApp1.controller.impl
                 }
             }
             Ordine ordine = new Ordine(idOrdine, ListaPrenotazioniTavoli[indexPrenotazioneTavolo], piatti, menus);
-            string query = $"INSERT INTO ordine (Id_ordine, Id_tavolo, Data, Pasto) VALUES(@idOrdine, @idTavolo, @data, @pasto);";
+            string query = $"INSERT INTO ordini (Id_ordine, Id_tavolo, Data, Pasto) VALUES(@idOrdine, @idTavolo, @data, @pasto);";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@idOrdine", MySqlDbType.Int32) { Value = idOrdine },
@@ -849,7 +849,7 @@ namespace WpfApp1.controller.impl
         public int GetNumeroOrdini()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT COUNT(Id_ordine) AS numero_ordini FROM ordine;";
+            string query = "SELECT COUNT(Id_ordine) AS numero_ordini FROM ordini;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             if (dataTable.Rows.Count > 0)
@@ -864,7 +864,7 @@ namespace WpfApp1.controller.impl
         public int GetLastIdOrdine()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT MAX(Id_ordine) AS max_id FROM ordine;";
+            string query = "SELECT MAX(Id_ordine) AS max_id FROM ordini;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             return dataTable.Rows.Count > 0 && dataTable.Rows[0]["max_id"] != DBNull.Value
@@ -890,8 +890,8 @@ namespace WpfApp1.controller.impl
                 new MySqlParameter("@email", MySqlDbType.VarChar, 255) { Value = email },
             };
             string query = email.Equals("")
-                ? $"INSERT INTO Cliente (Codice_fiscale, Nome, Cognome, Numero_telefono, Ind_Citta, Ind_Via, Ind_Civico, Email) VALUES(@cf, @nome, @cognome, @numeroTelefono, @città, @via, @civico, NULL);"
-                : $"INSERT INTO Cliente (Codice_fiscale, Nome, Cognome, Numero_telefono, Ind_Citta, Ind_Via, Ind_Civico, Email) VALUES(@cf, @nome, @cognome, @numeroTelefono, @città, @via, @civico, @email);";
+                ? $"INSERT INTO Clienti (Codice_fiscale, Nome, Cognome, Numero_telefono, Ind_Citta, Ind_Via, Ind_Civico, Email) VALUES(@cf, @nome, @cognome, @numeroTelefono, @città, @via, @civico, NULL);"
+                : $"INSERT INTO Clienti (Codice_fiscale, Nome, Cognome, Numero_telefono, Ind_Citta, Ind_Via, Ind_Civico, Email) VALUES(@cf, @nome, @cognome, @numeroTelefono, @città, @via, @civico, @email);";
             DBConnect dbConnect = new DBConnect();
             int rowsAffected = dbConnect.Insert(query, parameters);
 
@@ -917,7 +917,7 @@ namespace WpfApp1.controller.impl
             TipoDocumento tipoDocumento = (TipoDocumento)Enum.Parse(typeof(TipoDocumento), tipo);
             Documento documento = new Documento(codiceDocumento, codiceFiscale, tipoDocumento);
             ListaDocumenti.Add(documento);
-            string query = $"INSERT INTO Documento (Codice_documento, Codice_fiscale, Tipo) VALUES (@codiceDocumento, @cf, @tipo)";
+            string query = $"INSERT INTO Documenti (Codice_documento, Codice_fiscale, Tipo) VALUES (@codiceDocumento, @cf, @tipo)";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@codiceDocumento", MySqlDbType.VarChar, 50) { Value = codiceDocumento},
@@ -936,7 +936,7 @@ namespace WpfApp1.controller.impl
         {
             DBConnect dbConnect = new DBConnect();
             List<string> clientiConMail = new List<string>();
-            string query = "select Codice_fiscale from cliente where email is not null;";
+            string query = "select Codice_fiscale from clienti where email is not null;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             foreach (DataRow row in dataTable.Rows)
@@ -970,7 +970,7 @@ namespace WpfApp1.controller.impl
                 }
             }
             Evento evento = new Evento(titolo, data, orario, descrizione, costoIngrezzo, ospiti);
-            string query = $"INSERT INTO Evento (Titolo, Data, Orario_inizio, Descrizione, Costo_ingresso) VALUES(@titolo, @data, @orarioInizio, @descrizione, @costoIngresso);";
+            string query = $"INSERT INTO Eventi (Titolo, Data, Orario_inizio, Descrizione, Costo_ingresso) VALUES(@titolo, @data, @orarioInizio, @descrizione, @costoIngresso);";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@titolo", MySqlDbType.VarChar, 50) { Value = titolo },
@@ -1000,7 +1000,7 @@ namespace WpfApp1.controller.impl
 
         private void AggiungiInAvviso(string titolo, DateTime data, string cf)
         {
-            string query = $"INSERT INTO avviso (Titolo, Data, Codice_fiscale) VALUES (@titolo, @data, @cf)";
+            string query = $"INSERT INTO avvisi (Titolo, Data, Codice_fiscale) VALUES (@titolo, @data, @cf)";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@titolo", MySqlDbType.VarChar, 50) { Value = titolo },
@@ -1021,7 +1021,7 @@ namespace WpfApp1.controller.impl
             {
                 if (ListaEventi[i].Titolo == titolo && ListaEventi[i].Data == data)
                 {
-                    string query = $"DELETE FROM evento WHERE Titolo = @titolo AND Data = @data";
+                    string query = $"DELETE FROM eventi WHERE Titolo = @titolo AND Data = @data";
                     List<MySqlParameter> parameters = new List<MySqlParameter>
                     {
                         new MySqlParameter("@titolo", MySqlDbType.VarChar, 50) { Value = titolo },
@@ -1039,7 +1039,7 @@ namespace WpfApp1.controller.impl
 
         private void RimuoviDaAvviso(string titolo, DateTime data)
         {
-            string query = $"DELETE FROM avviso WHERE Titolo = @titolo AND Data = @data";
+            string query = $"DELETE FROM avvisi WHERE Titolo = @titolo AND Data = @data";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@titolo", MySqlDbType.VarChar, 50) { Value = titolo },
@@ -1051,7 +1051,7 @@ namespace WpfApp1.controller.impl
 
         private void RimuoviDaConvocazione(string titolo, DateTime data)
         {
-            string query = $"DELETE FROM convocazione WHERE Titolo = @titolo AND Data = @data";
+            string query = $"DELETE FROM convocazioni WHERE Titolo = @titolo AND Data = @data";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@titolo", MySqlDbType.VarChar, 50) { Value = titolo },
@@ -1064,7 +1064,7 @@ namespace WpfApp1.controller.impl
         public void LoadEventiFromDB()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT * FROM evento;";
+            string query = "SELECT * FROM eventi;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             foreach (DataRow row in dataTable.Rows)
@@ -1076,7 +1076,7 @@ namespace WpfApp1.controller.impl
                 double costoIngresso = double.Parse(row["Costo_ingresso"].ToString());
                 List<Ospite> ospiti = new List<Ospite>();
                 DBConnect dbConnect2 = new DBConnect();
-                string query2 = $"SELECT * FROM convocazione WHERE Titolo = @titolo AND Data = @data;";
+                string query2 = $"SELECT * FROM convocazioni WHERE Titolo = @titolo AND Data = @data;";
                 List<MySqlParameter> parameters2 = new List<MySqlParameter>
                 {
                     new MySqlParameter("@titolo", MySqlDbType.VarChar, 50) { Value = titolo },
@@ -1087,7 +1087,7 @@ namespace WpfApp1.controller.impl
                 {
                     string cf = row2["Codice_fiscale"].ToString();
                     DBConnect dbConnect3 = new DBConnect();
-                    string query3 = $"SELECT * FROM Ospite WHERE Codice_fiscale = @cf;";
+                    string query3 = $"SELECT * FROM Ospiti WHERE Codice_fiscale = @cf;";
                     List<MySqlParameter> parameters3 = new List<MySqlParameter>
                     {
                         new MySqlParameter("@cf", MySqlDbType.VarChar, 1) { Value = cf },
@@ -1110,7 +1110,7 @@ namespace WpfApp1.controller.impl
         public void LoadOspitiFromDB()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT * FROM ospite;";
+            string query = "SELECT * FROM ospiti;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             foreach (DataRow row in dataTable.Rows)
@@ -1137,7 +1137,7 @@ namespace WpfApp1.controller.impl
         public void AggiungiOspite(string codiceFiscale, string cognome, string nome, string numeroTelefono, string nickname)
         {
             Ospite ospite = new Ospite(codiceFiscale, cognome, nome, numeroTelefono, nickname);
-            string query = $"INSERT INTO Ospite (Codice_fiscale, Nome, Cognome, Numero_telefono, Nickname) VALUES (@cf, @nome, @cognome, @numeroTelefono, @nickname);";
+            string query = $"INSERT INTO Ospiti (Codice_fiscale, Nome, Cognome, Numero_telefono, Nickname) VALUES (@cf, @nome, @cognome, @numeroTelefono, @nickname);";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@cf", MySqlDbType.VarChar, 16) { Value = codiceFiscale },
@@ -1162,7 +1162,7 @@ namespace WpfApp1.controller.impl
             {
                 if (ListaOspiti[i].CodiceFiscale == codiceFiscale)
                 {
-                    string query = $"DELETE FROM Ospite WHERE Codice_fiscale = @cf";
+                    string query = $"DELETE FROM Ospiti WHERE Codice_fiscale = @cf";
                     List<MySqlParameter> parameters = new List<MySqlParameter>
                     {
                         new MySqlParameter("@cf", MySqlDbType.VarChar, 16) { Value = codiceFiscale },
@@ -1188,7 +1188,7 @@ namespace WpfApp1.controller.impl
         public void LoadClientiFromDB()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT * FROM cliente;";
+            string query = "SELECT * FROM clienti;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             foreach (DataRow row in dataTable.Rows)
@@ -1207,7 +1207,7 @@ namespace WpfApp1.controller.impl
 
         private void AggiungiInConvocazione(string titolo, DateTime data, string codiceFiscale)
         {
-            string query = $"INSERT INTO convocazione (Titolo, Data, Codice_fiscale) VALUES(@titolo, @data, @cf)";
+            string query = $"INSERT INTO convocazioni (Titolo, Data, Codice_fiscale) VALUES(@titolo, @data, @cf)";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@titolo", MySqlDbType.VarChar, 50) { Value = titolo },
@@ -1230,7 +1230,7 @@ namespace WpfApp1.controller.impl
         {
             ScontoOmbrellone scontoOmbrellone = new ScontoOmbrellone(numeroGiorni, percentualeSconto);
             ListaScontiOmbrellone.Add(scontoOmbrellone);
-            string query = $"INSERT INTO sconto_ombrelloni (Numero_giorni, Sconto_corrispondente) VALUES(@numeroGiorni, @percentualeSconto)";
+            string query = $"INSERT INTO sconti_ombrelloni (Numero_giorni, Sconto_corrispondente) VALUES(@numeroGiorni, @percentualeSconto)";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@numeroGiorni", MySqlDbType.Int32) { Value = numeroGiorni },
@@ -1252,7 +1252,7 @@ namespace WpfApp1.controller.impl
             {
                 if (ListaScontiOmbrellone[i].NumeroGiorni == numeroGiorni)
                 {
-                    string query = $"DELETE FROM sconto_ombrelloni WHERE Numero_giorni = @numeroGiorni";
+                    string query = $"DELETE FROM sconti_ombrelloni WHERE Numero_giorni = @numeroGiorni";
                     List<MySqlParameter> parameters = new List<MySqlParameter>
                     {
                         new MySqlParameter("@numeroGiorni", MySqlDbType.Int32) { Value = numeroGiorni }
@@ -1278,7 +1278,7 @@ namespace WpfApp1.controller.impl
         public void LoadScontiFromDB()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT * FROM sconto_ombrelloni;";
+            string query = "SELECT * FROM sconti_ombrelloni;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             foreach (DataRow row in dataTable.Rows)
@@ -1306,7 +1306,7 @@ namespace WpfApp1.controller.impl
         public int GetNumeroRighe()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT COUNT(Numero_riga) AS nRighe FROM riga;";
+            string query = "SELECT COUNT(Numero_riga) AS nRighe FROM righe;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             if (dataTable.Rows.Count > 0)
@@ -1322,7 +1322,7 @@ namespace WpfApp1.controller.impl
         public bool CheckPriceAreSetted()
         {
             DBConnect dbConnect = new DBConnect();
-            string queryPrezziOmbrelloni = "SELECT COUNT(*) AS nPrezziOmbrelloni FROM prezzo_ombrellone;";
+            string queryPrezziOmbrelloni = "SELECT COUNT(*) AS nPrezziOmbrelloni FROM prezzi_ombrelloni;";
             int nPrezziOmbrelloni = 0, nPrezziLettini = 0;
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(queryPrezziOmbrelloni, parameters);
@@ -1332,7 +1332,7 @@ namespace WpfApp1.controller.impl
                 nPrezziOmbrelloni = int.Parse(row["nPrezziOmbrelloni"].ToString());
             }
 
-            string queryPrezziLettini = "SELECT COUNT(*) AS nPrezziLettini FROM prezzo_lettino;";
+            string queryPrezziLettini = "SELECT COUNT(*) AS nPrezziLettini FROM prezzi_lettini;";
             List<MySqlParameter> parameters2 = new List<MySqlParameter>();
             DataTable dataTable2 = dbConnect.Select(queryPrezziLettini, parameters2);
             if (dataTable2.Rows.Count > 0)
@@ -1345,7 +1345,7 @@ namespace WpfApp1.controller.impl
 
         public void SetRighe()
         {
-            string query = $"INSERT INTO Riga (numero_riga) SELECT DISTINCT Numero_riga FROM ombrellone AS o WHERE NOT EXISTS( SELECT 1 FROM Riga AS r WHERE r.numero_riga = o.Numero_riga) ORDER BY Numero_riga DESC;";
+            string query = $"INSERT INTO Righe (numero_riga) SELECT DISTINCT Numero_riga FROM ombrelloni AS o WHERE NOT EXISTS( SELECT 1 FROM righe AS r WHERE r.numero_riga = o.Numero_riga) ORDER BY Numero_riga DESC;";
             DBConnect dbConnect = new DBConnect();
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             _ = dbConnect.Insert(query, parameters);
@@ -1353,7 +1353,7 @@ namespace WpfApp1.controller.impl
 
         public void AggiungiPrezziOmbrelloni(int nRiga, string periodo, double prezzo)
         {
-            string query = $"INSERT INTO prezzo_ombrellone (Numero_riga, Periodo, Prezzo_giornaliero) VALUES (@nRiga, @periodo, @prezzo) ON DUPLICATE KEY UPDATE Prezzo_giornaliero = VALUES(Prezzo_giornaliero); ";
+            string query = $"INSERT INTO prezzi_ombrelloni (Numero_riga, Periodo, Prezzo_giornaliero) VALUES (@nRiga, @periodo, @prezzo) ON DUPLICATE KEY UPDATE Prezzo_giornaliero = VALUES(Prezzo_giornaliero); ";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@nRiga", MySqlDbType.Int32) { Value = nRiga },
@@ -1366,7 +1366,7 @@ namespace WpfApp1.controller.impl
 
         public void AggiungiPrezziLettini(int nRiga, string periodo, double prezzo)
         {
-            string query = $"INSERT INTO prezzo_lettino (Periodo, Prezzo_giornaliero, Numero_riga) VALUES (@periodo, @prezzo, @nRiga) ON DUPLICATE KEY UPDATE Prezzo_giornaliero = VALUES(Prezzo_giornaliero); ";
+            string query = $"INSERT INTO prezzi_lettini (Periodo, Prezzo_giornaliero, Numero_riga) VALUES (@periodo, @prezzo, @nRiga) ON DUPLICATE KEY UPDATE Prezzo_giornaliero = VALUES(Prezzo_giornaliero); ";
             DBConnect dbConnect = new DBConnect();
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
@@ -1388,7 +1388,7 @@ namespace WpfApp1.controller.impl
             {
                 foreach (int riga in righe)
                 {
-                    string query = $"SELECT Prezzo_giornaliero FROM prezzo_ombrellone WHERE Periodo = @Periodo AND Numero_riga = @NumeroRiga;";
+                    string query = $"SELECT Prezzo_giornaliero FROM prezzi_ombrelloni WHERE Periodo = @Periodo AND Numero_riga = @NumeroRiga;";
                     List<MySqlParameter> parameters = new List<MySqlParameter>
                     {
                         new MySqlParameter("@Periodo", periodo),
@@ -1417,7 +1417,7 @@ namespace WpfApp1.controller.impl
             {
                 foreach (int riga in righe)
                 {
-                    string query = $"SELECT Prezzo_giornaliero FROM prezzo_lettino WHERE Periodo = @Periodo AND Numero_riga = @NumeroRiga;";
+                    string query = $"SELECT Prezzo_giornaliero FROM prezzi_lettini WHERE Periodo = @Periodo AND Numero_riga = @NumeroRiga;";
                     List<MySqlParameter> parameters = new List<MySqlParameter>
                     {
                         new MySqlParameter("@Periodo", periodo),
@@ -1442,8 +1442,8 @@ namespace WpfApp1.controller.impl
         public (int, int) GetIdMenuPiuOrdinato(DateTime dataInizio, DateTime dataFine) // restituisce l'id del menù più ordinato + la quantità
         {
             DBConnect dbConnect = new DBConnect();
-            string query = $"SELECT Id_menu, SUM(quantità) AS quantità_totale FROM(SELECT m.Id_menu, SUM(m.quantità) AS quantità FROM ordine o INNER JOIN contenenza_menu m ON o.Id_ordine = m.Id_ordine " +
-                $"WHERE EXISTS(SELECT * FROM prenotazione_tavolo p WHERE p.Id_tavolo = o.Id_tavolo AND p.Data BETWEEN @dataInizio AND @dataFine AND p.Pasto = o.Pasto) " +
+            string query = $"SELECT Id_menu, SUM(quantità) AS quantità_totale FROM(SELECT m.Id_menu, SUM(m.quantità) AS quantità FROM ordini o INNER JOIN contenenza_menu m ON o.Id_ordine = m.Id_ordine " +
+                $"WHERE EXISTS(SELECT * FROM prenotazioni_tavoli p WHERE p.Id_tavolo = o.Id_tavolo AND p.Data BETWEEN @dataInizio AND @dataFine AND p.Pasto = o.Pasto) " +
                 $"GROUP BY m.Id_menu, o.Id_ordine) AS menu_ordine GROUP BY Id_menu ORDER BY quantità_totale DESC LIMIT 1;";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
@@ -1464,8 +1464,8 @@ namespace WpfApp1.controller.impl
         public (int, int) GetIdMenuMenoOrdinato(DateTime dataInizio, DateTime dataFine)
         {
             DBConnect dbConnect = new DBConnect();
-            string query = $"SELECT Id_menu, SUM(quantità) AS quantità_totale FROM(SELECT m.Id_menu, SUM(m.quantità) AS quantità FROM ordine o INNER JOIN contenenza_menu m ON o.Id_ordine = m.Id_ordine " +
-                $"WHERE EXISTS(SELECT * FROM prenotazione_tavolo p WHERE p.Id_tavolo = o.Id_tavolo AND p.Data BETWEEN @dataInizio AND @dataFine AND p.Pasto = o.Pasto) " +
+            string query = $"SELECT Id_menu, SUM(quantità) AS quantità_totale FROM(SELECT m.Id_menu, SUM(m.quantità) AS quantità FROM ordini o INNER JOIN contenenza_menu m ON o.Id_ordine = m.Id_ordine " +
+                $"WHERE EXISTS(SELECT * FROM prenotazioni_tavoli p WHERE p.Id_tavolo = o.Id_tavolo AND p.Data BETWEEN @dataInizio AND @dataFine AND p.Pasto = o.Pasto) " +
                 $"GROUP BY m.Id_menu, o.Id_ordine) AS menu_ordine GROUP BY Id_menu ORDER BY quantità_totale ASC LIMIT 1;";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
@@ -1486,7 +1486,7 @@ namespace WpfApp1.controller.impl
         public (string, int) GetIdPiattoPiuOrdinato(DateTime dataInizio, DateTime dataFine)
         {
             DBConnect dbConnect = new DBConnect();
-            string query = $"SELECT cp.Nome, SUM(cp.quantità) AS quantità_totale FROM prenotazione_tavolo pt JOIN ordine o ON pt.Id_tavolo = o.Id_tavolo JOIN contenenza_piatti cp ON o.Id_ordine = cp.Id_ordine WHERE pt.Data BETWEEN @dataInizio AND @dataFine GROUP BY cp.Nome ORDER BY quantità_totale DESC LIMIT 1;";
+            string query = $"SELECT cp.Nome, SUM(cp.quantità) AS quantità_totale FROM prenotazioni_tavoli pt JOIN ordini o ON pt.Id_tavolo = o.Id_tavolo JOIN contenenza_piatti cp ON o.Id_ordine = cp.Id_ordine WHERE pt.Data BETWEEN @dataInizio AND @dataFine GROUP BY cp.Nome ORDER BY quantità_totale DESC LIMIT 1;";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@dataInizio", MySqlDbType.Date) { Value = dataInizio },
@@ -1506,7 +1506,7 @@ namespace WpfApp1.controller.impl
         public (string, int) GetIdPiattoMenoOrdinato(DateTime dataInizio, DateTime dataFine)
         {
             DBConnect dbConnect = new DBConnect();
-            string query = $"SELECT cp.Nome, SUM(cp.quantità) AS quantità_totale FROM prenotazione_tavolo pt JOIN ordine o ON pt.Id_tavolo = o.Id_tavolo JOIN contenenza_piatti cp ON o.Id_ordine = cp.Id_ordine WHERE pt.Data BETWEEN @dataInizio AND @dataFine GROUP BY cp.Nome ORDER BY quantità_totale ASC LIMIT 1;";
+            string query = $"SELECT cp.Nome, SUM(cp.quantità) AS quantità_totale FROM prenotazioni_tavoli pt JOIN ordini o ON pt.Id_tavolo = o.Id_tavolo JOIN contenenza_piatti cp ON o.Id_ordine = cp.Id_ordine WHERE pt.Data BETWEEN @dataInizio AND @dataFine GROUP BY cp.Nome ORDER BY quantità_totale ASC LIMIT 1;";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@dataInizio", MySqlDbType.Date) { Value = dataInizio },
@@ -1526,7 +1526,7 @@ namespace WpfApp1.controller.impl
         public double CalcolaPercentualeClientiConMail()
         {
             DBConnect dbConnect = new DBConnect();
-            string query = $"SELECT (SUM(Email IS NOT NULL) / COUNT(*)) * 100 AS Percentuale_mail FROM cliente;";
+            string query = $"SELECT (SUM(Email IS NOT NULL) / COUNT(*)) * 100 AS Percentuale_mail FROM clienti;";
             List<MySqlParameter> parameters = new List<MySqlParameter>();
             DataTable dataTable = dbConnect.Select(query, parameters);
             if (dataTable.Rows.Count > 0)
@@ -1541,8 +1541,8 @@ namespace WpfApp1.controller.impl
         public double CalcolaIncassiRistorante(DateTime dataInizio, DateTime dataFine)
         {
             DBConnect dbConnect = new DBConnect();
-            string query = $"SELECT SUM(Incassi_totali) AS Incassi_totali FROM(SELECT SUM((IF(cm.menu_prezzo_totale IS NULL, 0, cm.menu_prezzo_totale)) + (IF(cp.piatti_prezzo_totale IS NULL, 0, cp.piatti_prezzo_totale))) AS Incassi_totali FROM prenotazione_tavolo pt INNER JOIN ordine o ON pt.Id_tavolo = o.Id_tavolo AND pt.Data = o.Data AND pt.Pasto = o.Pasto LEFT JOIN(SELECT Id_ordine, SUM(m.Prezzo * quantità) AS menu_prezzo_totale FROM contenenza_menu cm LEFT JOIN menu m ON cm.Id_menu = m.Id_menu GROUP BY Id_ordine)" +
-                $" AS cm ON o.Id_ordine = cm.Id_ordine LEFT JOIN(SELECT Id_ordine, SUM(p.Prezzo * quantità) AS piatti_prezzo_totale FROM contenenza_piatti cp LEFT JOIN piatto p ON cp.Nome = p.Nome GROUP BY Id_ordine) AS cp ON o.Id_ordine = cp.Id_ordine WHERE pt.Data BETWEEN @dataInizio AND @dataFine) AS totali;";
+            string query = $"SELECT SUM(Incassi_totali) AS Incassi_totali FROM(SELECT SUM((IF(cm.menu_prezzo_totale IS NULL, 0, cm.menu_prezzo_totale)) + (IF(cp.piatti_prezzo_totale IS NULL, 0, cp.piatti_prezzo_totale))) AS Incassi_totali FROM prenotazioni_tavoli pt INNER JOIN ordini o ON pt.Id_tavolo = o.Id_tavolo AND pt.Data = o.Data AND pt.Pasto = o.Pasto LEFT JOIN(SELECT Id_ordine, SUM(m.Prezzo * quantità) AS menu_prezzo_totale FROM contenenza_menu cm LEFT JOIN menu m ON cm.Id_menu = m.Id_menu GROUP BY Id_ordine)" +
+                $" AS cm ON o.Id_ordine = cm.Id_ordine LEFT JOIN(SELECT Id_ordine, SUM(p.Prezzo * quantità) AS piatti_prezzo_totale FROM contenenza_piatti cp LEFT JOIN piatti p ON cp.Nome = p.Nome GROUP BY Id_ordine) AS cp ON o.Id_ordine = cp.Id_ordine WHERE pt.Data BETWEEN @dataInizio AND @dataFine) AS totali;";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@dataInizio", MySqlDbType.Date) { Value = dataInizio },
@@ -1565,8 +1565,8 @@ namespace WpfApp1.controller.impl
         public double CalcolaIncassiSpiaggia(DateTime dataInizio, DateTime dataFine)
         {
             DBConnect dbConnect = new DBConnect();
-            string query = "SELECT (SELECT SUM((po.Prezzo_giornaliero * (DATEDIFF(p.Data_fine, p.Data_inizio) + 1)) * (1 - IFNULL((SELECT MAX(Sconto_corrispondente) FROM sconto_ombrelloni WHERE Numero_giorni <= DATEDIFF(p.Data_fine, p.Data_inizio) + 1), 0) / 100)) FROM prenotazione_ombrellone AS p JOIN prezzo_ombrellone AS po ON p.Numero_riga = po.Numero_riga WHERE p.Data_inizio >= @dataInizio AND p.Data_fine <= @dataFine AND( (po.Periodo = 'BassaStagione' AND MONTH(p.Data_inizio) IN(6, 9)) OR (po.Periodo = 'AltaStagione'" +
-                " AND MONTH(p.Data_inizio) IN(7, 8)))) + (SELECT SUM((pl.Prezzo_giornaliero * p.Numero_lettini_aggiuntivi * (DATEDIFF(p.Data_fine, p.Data_inizio) + 1)) * (1 - IFNULL((SELECT MAX(Sconto_corrispondente) FROM sconto_ombrelloni WHERE Numero_giorni <= DATEDIFF(p.Data_fine, p.Data_inizio) + 1), 0) / 100)) FROM prenotazione_ombrellone AS p JOIN prezzo_lettino AS pl ON p.Numero_riga = pl.Numero_riga WHERE p.Data_inizio >= @dataInizio AND p.Data_fine <= @dataFine AND ((pl.Periodo = 'BassaStagione' AND MONTH(p.Data_inizio) IN(6, 9)) OR (pl.Periodo = 'AltaStagione' AND MONTH(p.Data_inizio) IN(7, 8)))) AS Incasso_totale;";
+            string query = "SELECT (SELECT SUM((po.Prezzo_giornaliero * (DATEDIFF(p.Data_fine, p.Data_inizio) + 1)) * (1 - IFNULL((SELECT MAX(Sconto_corrispondente) FROM sconti_ombrelloni WHERE Numero_giorni <= DATEDIFF(p.Data_fine, p.Data_inizio) + 1), 0) / 100)) FROM prenotazioni_ombrelloni AS p JOIN prezzi_ombrelloni AS po ON p.Numero_riga = po.Numero_riga WHERE p.Data_inizio >= @dataInizio AND p.Data_fine <= @dataFine AND( (po.Periodo = 'BassaStagione' AND MONTH(p.Data_inizio) IN(6, 9)) OR (po.Periodo = 'AltaStagione'" +
+                " AND MONTH(p.Data_inizio) IN(7, 8)))) + (SELECT SUM((pl.Prezzo_giornaliero * p.Numero_lettini_aggiuntivi * (DATEDIFF(p.Data_fine, p.Data_inizio) + 1)) * (1 - IFNULL((SELECT MAX(Sconto_corrispondente) FROM sconti_ombrelloni WHERE Numero_giorni <= DATEDIFF(p.Data_fine, p.Data_inizio) + 1), 0) / 100)) FROM prenotazioni_ombrelloni AS p JOIN prezzi_lettini AS pl ON p.Numero_riga = pl.Numero_riga WHERE p.Data_inizio >= @dataInizio AND p.Data_fine <= @dataFine AND ((pl.Periodo = 'BassaStagione' AND MONTH(p.Data_inizio) IN(6, 9)) OR (pl.Periodo = 'AltaStagione' AND MONTH(p.Data_inizio) IN(7, 8)))) AS Incasso_totale;";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@dataInizio", MySqlDbType.Date) { Value = dataInizio },

@@ -187,6 +187,10 @@ namespace WpfApp1.view
             List<string> piattiOrdinati = new List<string>(quantitaPiatti.Keys);
             try
             {
+                if (quantitaMenu.Count == 0 && quantitaPiatti.Count == 0)
+                {
+                    throw new Exception("Aggiungere almeno un piatto o un menù all'ordine prima di inviare l'ordine");
+                }
                 controller.AggiungiOrdine(ControllerImpl.IdOrdine, data, pasto, idTavolo, idMenuOrdinati, piattiOrdinati);
                 for (int i = 0; i < idMenuOrdinati.Count; i++)
                 {

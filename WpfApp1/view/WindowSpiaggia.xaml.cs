@@ -28,9 +28,13 @@ namespace WpfApp1.view
             lblNumeroOmbrelloni.Content = $"Numero ombrelloni: {controller.GetNumeroOmbrelloni()}";
 
             int year = DateTime.Now.Year;
-            dtpCalendar.DisplayDateStart = new DateTime(year, 6, 1);
-            dtpCalendar.DisplayDateEnd = new DateTime(year, 9, 30);
-            dtpCalendar.SelectedDate = dtpCalendar.DisplayDateStart;
+            DateTime startDate = new DateTime(year, 6, 1);
+            DateTime endDate = new DateTime(year, 9, 30);
+            dtpCalendar.DisplayDateStart = startDate;
+            dtpCalendar.DisplayDateEnd = endDate;
+            DateTime today = DateTime.Today;
+            DateTime resultDate = (today >= startDate && today <= endDate) ? today : startDate;
+            dtpCalendar.SelectedDate = resultDate;
             controller.LoadOmbrelloniFromDB();
             foreach ((int, int) ombrellone in controller.GetOmbrelloni())
             {
