@@ -1442,9 +1442,7 @@ namespace WpfApp1.controller.impl
         public (int, int) GetIdMenuPiuOrdinato(DateTime dataInizio, DateTime dataFine) // restituisce l'id del menù più ordinato + la quantità
         {
             DBConnect dbConnect = new DBConnect();
-            string query = $"SELECT Id_menu, SUM(quantità) AS quantità_totale FROM(SELECT m.Id_menu, SUM(m.quantità) AS quantità FROM ordini o INNER JOIN contenenza_menu m ON o.Id_ordine = m.Id_ordine " +
-                $"WHERE EXISTS(SELECT * FROM prenotazioni_tavoli p WHERE p.Id_tavolo = o.Id_tavolo AND p.Data BETWEEN @dataInizio AND @dataFine AND p.Pasto = o.Pasto) " +
-                $"GROUP BY m.Id_menu, o.Id_ordine) AS menu_ordine GROUP BY Id_menu ORDER BY quantità_totale DESC LIMIT 1;";
+            string query = $"SELECT cm.Id_menu, SUM(cm.quantità) AS quantità_totale FROM prenotazioni_tavoli pt JOIN ordini o ON pt.Id_tavolo = o.Id_tavolo JOIN contenenza_menu cm ON o.Id_ordine = cm.Id_ordine WHERE pt.Data BETWEEN @dataInizio AND @dataFine GROUP BY cm.Id_menu ORDER BY quantità_totale DESC LIMIT 1;";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@dataInizio", MySqlDbType.Date) { Value = dataInizio },
@@ -1464,9 +1462,7 @@ namespace WpfApp1.controller.impl
         public (int, int) GetIdMenuMenoOrdinato(DateTime dataInizio, DateTime dataFine)
         {
             DBConnect dbConnect = new DBConnect();
-            string query = $"SELECT Id_menu, SUM(quantità) AS quantità_totale FROM(SELECT m.Id_menu, SUM(m.quantità) AS quantità FROM ordini o INNER JOIN contenenza_menu m ON o.Id_ordine = m.Id_ordine " +
-                $"WHERE EXISTS(SELECT * FROM prenotazioni_tavoli p WHERE p.Id_tavolo = o.Id_tavolo AND p.Data BETWEEN @dataInizio AND @dataFine AND p.Pasto = o.Pasto) " +
-                $"GROUP BY m.Id_menu, o.Id_ordine) AS menu_ordine GROUP BY Id_menu ORDER BY quantità_totale ASC LIMIT 1;";
+            string query = $"SELECT cm.Id_menu, SUM(cm.quantità) AS quantità_totale FROM prenotazioni_tavoli pt JOIN ordini o ON pt.Id_tavolo = o.Id_tavolo JOIN contenenza_menu cm ON o.Id_ordine = cm.Id_ordine WHERE pt.Data BETWEEN @dataInizio AND @dataFine GROUP BY cm.Id_menu ORDER BY quantità_totale LIMIT 1;";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
                 new MySqlParameter("@dataInizio", MySqlDbType.Date) { Value = dataInizio },
