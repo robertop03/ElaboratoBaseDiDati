@@ -96,7 +96,6 @@ namespace WpfApp1.controller.impl
                 _ = dbConnect3.Insert(query3, parameters3);
             }
             Ombrellone ombrellone = new Ombrellone(numeroRiga, numeroColonna);
-            ListaOmbrelloni.Add(ombrellone);
             string query = $"INSERT INTO Ombrelloni (Numero_riga, Numero_colonna) VALUES (@numeroRiga, @numeroColonna)";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
@@ -105,6 +104,7 @@ namespace WpfApp1.controller.impl
             };
             DBConnect dbConnect = new DBConnect();
             _ = dbConnect.Insert(query, parameters);
+            ListaOmbrelloni.Add(ombrellone);
             AggiuntoOmbrellone?.Invoke(this, EventArgs.Empty);
         }
 
@@ -1229,7 +1229,6 @@ namespace WpfApp1.controller.impl
         public void AggiungiSconto(int numeroGiorni, double percentualeSconto)
         {
             ScontoOmbrellone scontoOmbrellone = new ScontoOmbrellone(numeroGiorni, percentualeSconto);
-            ListaScontiOmbrellone.Add(scontoOmbrellone);
             string query = $"INSERT INTO sconti_ombrelloni (Numero_giorni, Sconto_corrispondente) VALUES(@numeroGiorni, @percentualeSconto)";
             List<MySqlParameter> parameters = new List<MySqlParameter>
             {
@@ -1243,6 +1242,7 @@ namespace WpfApp1.controller.impl
             {
                 throw new InvalidOperationException("Esiste già uno sconto per questo numero di giorni");
             }
+            ListaScontiOmbrellone.Add(scontoOmbrellone);
             AggiuntoSconto?.Invoke(this, EventArgs.Empty);
         }
 
